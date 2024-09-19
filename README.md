@@ -18,3 +18,6 @@ The website will contain the following features:
 |        Nasib Guma          |     40283693     |      Frontend    |
 |     Anthony Mousaoubaa     |     40284605     |      Frontend    |
 |   Mugisha Samuel Rugomwa   |     40265564     |      Frontend    |
+
+Meetings every Wednesday at 10:15pm to 12:30pm
+

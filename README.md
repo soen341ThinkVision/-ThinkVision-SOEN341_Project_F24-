@@ -1,5 +1,5 @@
 # ThinkVision-SOEN341_Project_F24
-Team ThinkVision repository for COMP 341 Fall 2024
+Team ThinkVision repository for SOEN 341 Fall 2024
 This project will revolve around creation of a website for a peer assessment system.
 
 The website will contain the following features:
@@ -8,21 +8,13 @@ The website will contain the following features:
 - A peer assessment form with numerical values assigned to said peer, based on a number of criteria
 - Exportation of data to CSV files
 
-The project is managed by the following students:
-- Ariel Kegeles (Backend)
-- Robert Craciunescu (Backend)
-- Hugo Galvao Valente (Backend)
-- Nasib Guma (Frontend)
-- Anthony Mousaoubaa (Frontend)
-- Mugisha Samuel Rugomwa (Frontend)
+        The project is managed by the following students
 
-
-
-|             Name           |     Student ID   | 
-|----------------------------|------------------|
-|       Ariel Kegeles        |     40264293     |
-|     Robert Craciunescu     |                  |
-|     Hugo Galvao Valente    |                  |
-|        Nasib Guma          |                  |
-|     Anthony Mousaoubaa     |                  |
-|   Mugisha Samuel Rugomwa   |      40265564    |
+|             Name           |    Student ID    |       Roles      |
+|----------------------------|------------------|------------------|
+|       Ariel Kegeles        |     40264293     |      Backend     |
+|     Robert Craciunescu     |     40282245     |      Backend     |
+|     Hugo Galvao Valente    |     40282022     |      Backend     |
+|        Nasib Guma          |     40283693     |      Frontend    |
+|     Anthony Mousaoubaa     |     40284605     |      Frontend    |
+|   Mugisha Samuel Rugomwa   |     40265564     |      Frontend    |

@@ -18,7 +18,7 @@ The project is managed by the following students:
 
 
 
-|             Name           |     Student ID   |    Roles
+|             Name           |     Student ID   | 
 |----------------------------|------------------|
 |       Ariel Kegeles        |                  |
 |     Robert Craciunescu     |                  |

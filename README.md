@@ -22,7 +22,7 @@ The project is managed by the following students:
 |----------------------------|------------------|
 |       Ariel Kegeles        |     40264293     |
 |     Robert Craciunescu     |                  |
-|     Hugo Galvao Valente    |                  |
+|     Hugo Galvao Valente    |     40282022     |
 |        Nasib Guma          |                  |
 |     Anthony Mousaoubaa     |                  |
 |   Mugisha Samuel Rugomwa   |      40265564    |

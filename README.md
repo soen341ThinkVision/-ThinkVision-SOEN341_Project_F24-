@@ -15,3 +15,14 @@ The project is managed by the following students:
 - Nasib Guma (Frontend)
 - Anthony Mousaoubaa (Frontend)
 - Mugisha Samuel Rugomwa (Frontend)
+
+
+
+|             Name           |     Student ID   |    Roles
+|----------------------------|------------------|
+|       Ariel Kegeles        |                  |
+|     Robert Craciunescu     |                  |
+|     Hugo Galvao Valente    |                  |
+|        Nasib Guma          |                  |
+|     Anthony Mousaoubaa     |                  |
+|   Mugisha Samuel Rugomwa   |      40265564    |

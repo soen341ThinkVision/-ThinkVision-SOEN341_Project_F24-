@@ -8,7 +8,7 @@ The website will contain the following features:
 - A peer assessment form with numerical values assigned to said peer, based on a number of criteria
 - Exportation of data to CSV files
 
-        The project is managed by the following students
+ The project is managed by the following students
 
 |             Name           |    Student ID    |       Roles      |
 |----------------------------|------------------|------------------|

@@ -1,0 +1,16 @@
+.LoginForm {
+    text-align:center;
+    border:1px black solid;
+    position:inherit;
+    margin-top:10%;
+    background-color: rgb(255, 255, 255);
+    padding:30px;
+}
+
+.LoginForm h2 {
+    padding-bottom:15px;
+}
+
+body {
+    background-color: rgb(243, 8, 8);
+}

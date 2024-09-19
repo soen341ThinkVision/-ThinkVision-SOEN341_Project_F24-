@@ -20,7 +20,7 @@ The project is managed by the following students:
 
 |             Name           |     Student ID   | 
 |----------------------------|------------------|
-|       Ariel Kegeles        |                  |
+|       Ariel Kegeles        |     40264293     |
 |     Robert Craciunescu     |                  |
 |     Hugo Galvao Valente    |                  |
 |        Nasib Guma          |                  |

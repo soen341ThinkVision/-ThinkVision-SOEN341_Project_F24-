@@ -1,7 +1,7 @@
--We created the organisation, repository
--Started to breakdown tasks for sprint 1
--Created user stories for sprint 1
--Created branches for each team mates
--Talked about our objectives for sprint 1
+- We created the organisation, repository
+- Started to breakdown tasks for sprint 1
+- Created user stories for sprint 1
+- Created branches for each team mates
+- Talked about our objectives for sprint 1
 - Finished the project description READ.md file
 - Determined when we will do our future meetings

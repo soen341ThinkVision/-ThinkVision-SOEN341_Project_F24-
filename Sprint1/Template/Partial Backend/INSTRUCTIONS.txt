@@ -1,5 +1,7 @@
 Instructions for backend usage
 
+server.js contains the database connection
+
 XAMPP was used to run MySQL database
 
 setup on port 5000
@@ -11,3 +13,7 @@ Username (VARCHAR)(Length: 255)
 Password (VARCHAR)(Length: 255)
 
 Only Signup page is current working and registers users
+
+Ignore routes
+
+views contains the pages used such as SignUp page and Login page (Login currently not functioning)

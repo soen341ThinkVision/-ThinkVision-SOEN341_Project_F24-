@@ -1,0 +1,13 @@
+Instructions for backend usage
+
+XAMPP was used to run MySQL database
+
+setup on port 5000
+database name: students
+
+students have 3 attributes
+ID (Int)(Length: 11)
+Username (VARCHAR)(Length: 255)
+Password (VARCHAR)(Length: 255)
+
+Only Signup page is current working and registers users

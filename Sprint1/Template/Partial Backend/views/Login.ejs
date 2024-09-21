@@ -1,0 +1,37 @@
+<HTML>
+    <head>
+        <title>
+            PAS Concordia
+        </title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/LoginStyle.css">
+    </head>
+    <body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Peer Assessment System</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Fellow Students</a></li>
+            <li><a href="#">Teacher</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/SignUp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          </ul>
+        </div>
+      </nav>
+    
+      <form action="/LogUser" method="POST" class="LoginForm"> 
+        <h2> Login Page </h2>
+        <h4> Username: </h4>
+        <input type="textbox" id="Username" name="Username">
+        <h4> Password: </h4>
+        <input type="textbox" id="Password" name="Password">
+        <p></p>
+        <input type="Submit" value="Submit">
+        <input type="Reset" value="Reset">
+     </form>
+    </body>

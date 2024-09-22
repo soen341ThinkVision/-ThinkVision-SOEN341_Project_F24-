@@ -21,10 +21,10 @@ The system will have "Automated Score Sharing and Anonymous Peer Feedback" and I
 |             Name           |    Student ID    |       Roles      |
 |----------------------------|------------------|------------------|
 |       Ariel Kegeles        |     40264293     |      Backend     |
-|     Robert Craciunescu     |     40282245     |      Backend     |
+|     Anthony Mousaoubaa     |     40282245     |      Backend     |
 |     Hugo Galvao Valente    |     40282022     |      Backend     |
 |        Nasib Guma          |     40283693     |      Frontend    |
-|     Anthony Mousaoubaa     |     40284605     |      Frontend    |
+|     Robert Craciunescu     |     40284605     |      Frontend    |
 |   Mugisha Samuel Rugomwa   |     40265564     |      Frontend    |
 
 Meetings every Wednesday at 10:15pm to 12:30pm

@@ -45,9 +45,6 @@ app.get('/SignUp', (req,res) => {
     res.render("SignUp.ejs")
 })
 
-//Reroute
-
-
 
 // POSTS
 
@@ -71,4 +68,28 @@ app.post('/Register', (req,res) => {
             }
         })
     
+})
+
+app.post('/LogUser', (req,res) => {
+    console.log("Recieved POST body request for login", req.body);
+
+    const {Username,Password} = req.body;
+
+    
+    const TryQuery = 'SELECT * FROM students WHERE Username = ?'
+
+    db.query(TryQuery, Username, (err,result) => {
+        if(result.length > 0) {
+            if(result[0].Password == Password) {
+                console.log("User Sucessfully Logged In");
+                alert("Sucessful Log In");
+            } else {
+                console.log("Wrong Password");
+                alert("Wrong Password");
+            }
+        } else {
+            console.log("User Was not found");
+            alert("User was not found");
+        }
+    })
 })

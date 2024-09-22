@@ -17,3 +17,10 @@ Only Signup page is current working and registers users
 Ignore routes
 
 views contains the pages used such as SignUp page and Login page (Login currently not functioning)
+
+
+TO WORK:
+
+make sure to have nodemon and nodejs installed
+use npm start and node server.js
+

@@ -8,6 +8,14 @@ The website will contain the following features:
 - A peer assessment form with numerical values assigned to said peer, based on a number of criteria
 - Exportation of data to CSV files
 
+Students will be able to evaluate their peers on
+a) Cooperation
+b) Conceptual Contribution (e.g. Researching and gathering information )
+c) Practical Contribution (e.g  Writing of the report(s) )
+d) Work Ethic
+
+The system will have "Automated Score Sharing and Anonymous Peer Feedback" and Instructor Dashboard
+
  The project is managed by the following students
 
 |             Name           |    Student ID    |       Roles      |

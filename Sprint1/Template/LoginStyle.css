@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.LoginForm {
+    text-align: center;
+    position: inherit;
+    margin-top: 10%;
+    background-color: rgb(224, 189, 131);
+    padding: 30px;
+    box-shadow: 3px 3px 10px 3px rgba(0, 0, 0, 0.10);
+
+}
+
+.LoginForm h2 {
+    padding-bottom: 15px;
+    font-family: monospace;
+}
+
+body {
+
+    background-color: burlywood;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.wrapper {
+
+    padding: 5%;
+    display: grid;
+
+}
+
+.wrapper h2 {
+    text-align: center;
+}
+
+.wrapper .input-box {
+    width: 100%;
+}
+
+.input-box input {
+
+    border: none;
+    outline: none;
+    border: 2px solid rgba(203, 95, 95, 0.1);
+    border-radius: 10px;
+
+}
+
+.input-box i {
+
+    font-size: 18px;
+    padding: 10px;
+}
+
+.remember-forgot label input {
+    accent-color: white;
+    margin-right: 3px;
+}
+
+.remember-forgot a {
+    text-decoration: none;
+
+}
+
+.remember-forgot a:hover {
+    text-decoration: underline;
+}
+
+.wrapper .btn {
+    background-color: rgb(160, 131, 84);
+    color: white;
+    padding: 10px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 20%;
+    border-radius: 10px;
+    font-size: 18px;
+}

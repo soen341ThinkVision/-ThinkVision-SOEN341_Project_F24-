@@ -4,7 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Peer Assessment Tool</title>
-    <link rel="stylesheet" href="MainPageStyle.css">
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            margin: 0;
+            background-color:rgb(224, 189, 131); 
+            font-family: monospace;
+        }
+
+        #intro {
+    margin-top: 20px; /* Adjust this value to move it higher */
+        }
+
+        #intro h2 {
+    font-size: 2.5em; /* Increase the font size */
+    margin-bottom: 10px; /* Add some space below the heading */
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color:burlywood; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+
+        .wrapper .input-box {
+            width: 100%;
+        }
+
+        .input-box input {
+            border: none;
+            outline: none;
+            border: 2px solid rgba(203, 95, 95, 0.1);
+            border-radius: 10px;
+            padding: 10px; /* Add some padding for better appearance */
+            width: 80%; /* Set a width for the input */
+            margin-bottom: 10px; /* Add space between inputs */
+        }
+
+        .remember-forgot label input {
+            accent-color: white;
+            margin-right: 3px;
+        }
+
+        .remember-forgot a {
+            text-decoration: none;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .wrapper .btn {
+            background-color: rgb(160, 131, 84);
+            color: white;
+            padding: 15px 30px; /* Increased padding */
+            margin: 10px 0; /* Vertical margin */
+            border: none;
+            cursor: pointer;
+            width: 200px; /* Fixed width for the buttons */
+            border-radius: 10px;
+            font-size: 20px; /* Increased font size */
+            transition: background-color 0.3s; /* Smooth background transition */
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        .wrapper .btn:hover {
+            background-color: rgb(140, 120, 70); /* Darken button on hover */
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #ccc; /* Darker background for the footer */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -20,8 +109,10 @@
         <section id="auth-options">
             <h3>Please choose an option:</h3>
             <div class="button-container">
-                <a href="/SignUp" class="cta-button">Sign Up</a>
-                <a href="/Login" class="cta-button">Log In</a>
+                <div class="wrapper">
+                    <button class="btn" onclick="window.location.href='/Signup'">Sign Up</button>
+                    <button class="btn" onclick="window.location.href='/Login'">Log In</button>
+                </div>
             </div>
         </section>
     </main>

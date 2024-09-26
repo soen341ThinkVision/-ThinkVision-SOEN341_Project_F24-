@@ -26,6 +26,7 @@ The system will have "Automated Score Sharing and Anonymous Peer Feedback" and I
 |        Nasib Guma          |     40283693     |      Frontend    |
 |     Robert Craciunescu     |     40284605     |      Frontend    |
 |   Mugisha Samuel Rugomwa   |     40265564     |      Frontend    |
+|   Rafael Maia              |     40022446     |      Backend     |
 
-Meetings every Wednesday at 10:15pm to 12:30pm
+Meetings every Wednesday at 10:15am to 12:30pm
 

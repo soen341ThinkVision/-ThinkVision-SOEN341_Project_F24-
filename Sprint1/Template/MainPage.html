@@ -4,96 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Peer Assessment Tool</title>
-    
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 100vh;
-            margin: 0;
-            background-color:rgb(224, 189, 131); 
-            font-family: monospace;
-        }
 
-        #intro {
-    margin-top: 20px;
-        }
+        <link rel="stylesheet" href="/MainPage.css">
 
-        #intro h2 {
-    font-size: 2.5em; 
-    margin-bottom: 10px;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background-color:burlywood; 
-            padding: 20px; 
-            border-radius: 10px; 
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-        }
-
-        .wrapper .input-box {
-            width: 100%;
-        }
-
-        .input-box input {
-            border: none;
-            outline: none;
-            border: 2px solid rgba(203, 95, 95, 0.1);
-            border-radius: 10px;
-            padding: 10px; 
-            width: 80%; 
-            margin-bottom: 10px; 
-        }
-
-        .remember-forgot label input {
-            accent-color: white;
-            margin-right: 3px;
-        }
-
-        .remember-forgot a {
-            text-decoration: none;
-        }
-
-        .remember-forgot a:hover {
-            text-decoration: underline;
-        }
-
-        .wrapper .btn {
-            background-color: rgb(160, 131, 84);
-            color: white;
-            padding: 15px 30px; 
-            margin: 10px 0; 
-            border: none;
-            cursor: pointer;
-            width: 200px; 
-            border-radius: 10px;
-            font-size: 20px; 
-            transition: background-color 0.3s; 
-            white-space: nowrap; 
-        }
-
-        .wrapper .btn:hover {
-            background-color: rgb(140, 120, 70); 
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #ccc; 
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -102,18 +15,49 @@
 
     <main>
         <section id="intro">
+        <% if (Username && Role == 'Student') { %>
+            <h2>Welcome <%= Username %></h2>
+        <% } %>
+        <% if (Username && Role == 'Teacher') { %>
+            <h2>Welcome Professor <%= Username %></h2>
+        <% } %>
+        
+        <% if (!Username) { %>
+        <div class="AllUsersW">
             <h2>Get Started</h2>
             <p>Join our community and enhance your learning through peer feedback!</p>
+        </div>
+        <% } %>
         </section>
 
+        <% if (Username  && Role === "Student") { %>
+            <div class="button-container"></div>
+                <div class="wrapper">
+            <button class="btn" onclick="window.location.href='/Login'"> Rate Teammates </button>
+            <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
+                </div>
+            </div>
+        <% } %>
+        <% if (Username && Role === "Teacher" ) { %>
+            <div class="button-container"></div>
+                <div class="wrapper">
+            <button class="btn" onclick="window.location.href='/Login'"> Form Teams </button>
+            <button class="btn" onclick="window.location.href='/Login'"> View Teams </button>
+            <button class="btn" onclick="window.location.href='/UploadRoster'">Upload Roster</button>
+            <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
+                </div>
+            </div>
+        <% } %>
+        <% if (!Username) { %>
         <section id="auth-options">
             <h3>Please choose an option:</h3>
             <div class="button-container">
                 <div class="wrapper">
-                    <button class="btn" onclick="window.location.href='/Signup'">Sign Up</button>
+                    <button class="btn" onclick="window.location.href='/SignUp'">Sign Up</button>
                     <button class="btn" onclick="window.location.href='/Login'">Log In</button>
                 </div>
             </div>
+        <% } %>
         </section>
     </main>
 

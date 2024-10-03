@@ -23,10 +23,10 @@ The Peer Assessment System will include the following functionality:
 |             Name           |    Student ID    |       Roles      |
 |----------------------------|------------------|------------------|
 |       Ariel Kegeles        |     40264293     |      Backend     |
-|     Anthony Mousaoubaa     |     40282245     |      Backend     |
+|     Anthony Mousaoubaa     |     40284605     |      Backend     |
 |     Hugo Galvao Valente    |     40282022     |      Backend     |
 |        Nasib Guma          |     40283693     |      Frontend    |
-|     Robert Craciunescu     |     40284605     |      Frontend    |
+|     Robert Craciunescu     |     40282245     |      Frontend    |
 |   Mugisha Samuel Rugomwa   |     40265564     |      Frontend    |
 |        Rafael Maia         |     40022446     |      Backend     |
 

@@ -83,6 +83,32 @@ app.get('/TeamVis', (req,res) => {
     })
 });
 
+app.get('/AllTeamVis', (req,res) => {
+    console.log("Session object:", req.session);
+
+    const TryQuery = "SELECT * FROM teams";
+
+    db.query(TryQuery, (err,result) => {
+        let teams = [];
+            result.forEach(team => {
+                let teamMembers = [];
+
+                if (team.Member1) teamMembers.push(team.Member1);
+                if (team.Member2) teamMembers.push(team.Member2);
+                if (team.Member3) teamMembers.push(team.Member3);
+                if (team.Member4) teamMembers.push(team.Member4);
+
+                teams.push ({
+                    teamName: team.TeamName,
+                    teamMembers: teamMembers
+                });
+
+            });
+
+            res.render("AllTeams.ejs", {teams});
+        });
+    });
+
 app.get('/Logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {

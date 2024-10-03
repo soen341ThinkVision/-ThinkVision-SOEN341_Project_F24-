@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div id="welcome-section">
+        <h1> <%= teamName %>  </h1>
+        <% teamMembers.forEach(function(member) { %>
+        <div class="square">
+            <img id="profile-pic" src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg" alt="Profile Picture">
+            <div class="info">
+                <h2 id="profile-name"> <%= member %> </h2>
+                <p id="profile-id">ID: 40404040</p>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+</body>
+</html>

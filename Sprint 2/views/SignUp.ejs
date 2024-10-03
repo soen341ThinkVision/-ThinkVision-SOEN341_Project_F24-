@@ -1,0 +1,32 @@
+<HTML>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            PAS Concordia
+        </title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/SignUp.css">
+    </head>
+    <body>
+      <body>
+        <div class="signup-container">
+            <h1>Sign Up</h1>
+            <form action="/Register" method="POST">
+                <input type="text" name="ID" placeholder="ID" required>
+                <input type="text" name="Username" placeholder="Full Name" required>
+                <input type="password" name="Password" placeholder="Password" required>
+                <input type="radio" name="Option" value="Student">
+                <label for="Option1"> Student </label>
+                <input type="radio" name="Option" value="Teacher">
+                <label for="Option2"> Teacher </label><br>
+                <button type="submit">Sign Up</button>
+            </form>
+            <div class="button-container">
+              <div class="wrapper">
+                  <button class="btn" onclick="window.location.href='/Login'">Already Have An Account? Log In Here </button>
+              </div>
+          </div>
+        </div>
+        </body>
+</HTML>

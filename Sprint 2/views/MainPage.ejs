@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Peer Assessment Tool</title>
+
+        <link rel="stylesheet" href="/MainPage.css">
+
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Peer Assessment Tool</h1>
+    </header>
+
+    <main>
+        <section id="intro">
+        <% if (Username && Role == 'Student') { %>
+            <h2>Welcome <%= Username %></h2>
+        <% } %>
+        <% if (Username && Role == 'Teacher') { %>
+            <h2>Welcome Professor <%= Username %></h2>
+        <% } %>
+        
+        <% if (!Username) { %>
+        <div class="AllUsersW">
+            <h2>Get Started</h2>
+            <p>Join our community and enhance your learning through peer feedback!</p>
+        </div>
+        <% } %>
+        </section>
+
+        <% if (Username  && Role === "Student") { %>
+            <div class="button-container"></div>
+                <div class="wrapper">
+            <button class="btn" onclick="window.location.href='/TeamVis'"> View Teammates </button>
+            <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
+                </div>
+            </div>
+        <% } %>
+        <% if (Username && Role === "Teacher" ) { %>
+            <div class="button-container"></div>
+                <div class="wrapper">
+            <button class="btn" onclick="window.location.href='/Login'"> Form Teams </button>
+            <button class="btn" onclick="window.location.href='/Login'"> View Teams </button>
+            <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
+                </div>
+            </div>
+        <% } %>
+        <% if (!Username) { %>
+        <section id="auth-options">
+            <h3>Please choose an option:</h3>
+            <div class="button-container">
+                <div class="wrapper">
+                    <button class="btn" onclick="window.location.href='/SignUp'">Sign Up</button>
+                    <button class="btn" onclick="window.location.href='/Login'">Log In</button>
+                </div>
+            </div>
+        <% } %>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team ThinkVision</p>
+    </footer>
+</body>
+</html>

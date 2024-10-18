@@ -19,7 +19,7 @@ app.use(session({
 
 //Terminal Listen Notif
 app.listen(5002, () => {
-    console.log("Server running on port 5000")
+    console.log("Server running on port 5002")
 })
 
 //Database Connection

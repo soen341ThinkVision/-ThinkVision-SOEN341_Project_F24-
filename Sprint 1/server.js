@@ -64,6 +64,23 @@ app.get('/Logout', (req, res) => {
     });
 });
 
+// app.post(`/RateTeacher`, (req,res) => {
+//     const {rating, username} = req.body;
+//     db.find({username: username}, (err, result) => {
+//         if (err) {
+//             console.log("Error finding user");
+//         } else {
+//             console.log("User found", result);
+//             db.update({username: username}, {rating: rating}, (err, result) => {
+//                 if (err) {
+//                     console.log("Error updating user");
+//                 } else {
+//                     console.log("User updated", result);
+//                 }
+//             })
+//         }
+//     })
+// })
 
 // POSTS
 

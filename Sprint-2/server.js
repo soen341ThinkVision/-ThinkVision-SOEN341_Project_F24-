@@ -1,9 +1,13 @@
 //Importing Libraries (npm)
 const express = require("express");
-const app = express();
+const multer = require("multer");
+const csvtojson = require("csvtojson");
+const { createReadStream, unlinkSync } = require("fs");
 const session = require("express-session");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
+
+const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -37,14 +41,43 @@ db.connect((err) => {
     console.log("Error connecting to database");
   } else {
     console.log("MySql database connected");
+    db.query("DROP TABLE students", (err, drop) => {
+      var createStudents =
+        "CREATE TABLE students (ID int, Username varchar(255), " +
+        "Password varchar(255));";
+
+      db.query(createStudents, (err, drop) => {
+        if (err) console.log("ERROR: ", err);
+      });
+    });
+    db.query("DROP TABLE teachers", (err, drop) => {
+      var createTeachers =
+        "CREATE TABLE teachers (ID int, Username varchar(255), " +
+        "Password varchar(255));";
+
+      db.query(createTeachers, (err, drop) => {
+        if (err) console.log("ERROR: ", err);
+      });
+    });
   }
 });
+
+// Sets up file storage and naming
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, "students.csv");
+  },
+});
+const upload = multer({ storage: storage, limits: {fileSize: 10000000} });
 
 // Routes
 
 app.get("/", (req, res) => {
   const { username: Username, role: Role } = req.session.user || {};
-  console.log("Username:", Username, "Role:", Role);
   res.render("MainPage.ejs", { Username, Role });
 });
 
@@ -54,6 +87,16 @@ app.get("/login", (req, res) => {
 
 app.get("/SignUp", (req, res) => {
   res.render("SignUp.ejs");
+});
+
+app.get("/Upload", (req, res) => {
+  var uploaded = false;
+  res.render("Upload.ejs", { uploaded });
+});
+
+app.get("/upload-complete", (req, res) => {
+  var uploaded = true;
+  res.render("Upload.ejs", { uploaded });
 });
 
 app.get("/Logout", (req, res) => {
@@ -135,6 +178,28 @@ app.post("/LogUser", (req, res) => {
   });
 });
 
+app.post("/upload-students", upload.single("file"), (req, res) => {
+  csvtojson()
+    .fromFile("uploads/students.csv")
+    .then((source) => {
+      unlinkSync("uploads/students.csv");
+
+      for (let i = 0; i < source.length; i++) {
+        let values = [];
+        values.push(source[i].ID, source[i].Name);
+        let insertStatement =
+          "INSERT INTO students (ID, Username) VALUES (?, ?)";
+
+        db.query(insertStatement, values, (err, results, fields) => {
+          if (err) {
+            console.log("Unable to insert student #", values[0]);
+            return console.log(err);
+          }
+        });
+      }
+    });
+});
+
 function isAuthenticated(req, res, next) {
   if (req.session.user) {
     return next();
@@ -142,44 +207,3 @@ function isAuthenticated(req, res, next) {
     res.redirect("/login");
   }
 }
-
-
-const multer = require("multer");
-const csv = require("csv-parser");
-const { createReadStream } = require("fs");
-
-// Sets up file storage and naming
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now();
-    cb(null, "students.csv");
-  },
-});
-const upload = multer({ storage: storage });
-
-
-app.post("/uploadStudents", upload.single("file"), (req, res) => {
-  let students = [];
-  createReadStream("uploads/students.csv")
-    .pipe(csv({}))
-    .on("data", (data) => students.push(data))
-    .on("end", () => {
-      for (let i = 0; i < students.length; i++) {
-        let values = [];
-        values.push(students[i].ID, students[i].Name);
-
-        db.query(
-          "INSERT INTO students (ID, Username) VALUES (?, ?)",
-          values,
-          (err, result) => {
-            if (err) throw err;
-          }
-        );
-      }
-    });
-});
-
-// Converts CSV into a json object, then parses it into the db

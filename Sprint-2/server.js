@@ -142,3 +142,26 @@ function isAuthenticated(req, res, next) {
     res.redirect("/login");
   }
 }
+
+// Converts CSV into a json object, then parses it into the db
+const csv = require("csv-parser");
+const { createReadStream } = require("fs");
+let students = [];
+
+createReadStream("test.csv")
+  .pipe(csv({}))
+  .on("data", (data) => students.push(data))
+  .on("end", () => {
+    for (let i = 0; i < students.length; i++) {
+      let values = [];
+      values.push(students[i].ID, students[i].Name);
+
+      db.query(
+        "INSERT INTO students (ID, Username) VALUES (?, ?)",
+        values,
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+    }
+  });

@@ -143,25 +143,43 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-// Converts CSV into a json object, then parses it into the db
+
+const multer = require("multer");
 const csv = require("csv-parser");
 const { createReadStream } = require("fs");
-let students = [];
 
-createReadStream("test.csv")
-  .pipe(csv({}))
-  .on("data", (data) => students.push(data))
-  .on("end", () => {
-    for (let i = 0; i < students.length; i++) {
-      let values = [];
-      values.push(students[i].ID, students[i].Name);
+// Sets up file storage and naming
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, "students.csv");
+  },
+});
+const upload = multer({ storage: storage });
 
-      db.query(
-        "INSERT INTO students (ID, Username) VALUES (?, ?)",
-        values,
-        (err, result) => {
-          if (err) throw err;
-        }
-      );
-    }
-  });
+
+app.post("/uploadStudents", upload.single("file"), (req, res) => {
+  let students = [];
+  createReadStream("uploads/students.csv")
+    .pipe(csv({}))
+    .on("data", (data) => students.push(data))
+    .on("end", () => {
+      for (let i = 0; i < students.length; i++) {
+        let values = [];
+        values.push(students[i].ID, students[i].Name);
+
+        db.query(
+          "INSERT INTO students (ID, Username) VALUES (?, ?)",
+          values,
+          (err, result) => {
+            if (err) throw err;
+          }
+        );
+      }
+    });
+});
+
+// Converts CSV into a json object, then parses it into the db

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Course Roster</title>
+    <link rel="stylesheet" href="/MainPage.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Peer Assessment Tool</h1>
+    </header>
+
+    <main>
+      <section id="intro">
+        <h2>Upload Course Roster</h2>
+      </section>
+      <% if (!uploaded) { %>
+      <form>
+        <input type="file" accept=".csv" name="file" id="csv" /><br /><br />
+        <button type="submit">Submit</button>
+      </form>
+      <% } %> <% if (uploaded) { %>
+      <h4>File uploaded successfully.</h4>
+      <button class="btn" onclick="window.location.href='/'">
+        Back to Homepage
+      </button>
+      <% } %>
+
+      <script>
+        const form = document.querySelector("form");
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const files = document.getElementById("csv");
+          const formData = new FormData();
+          formData.append("file", files.files[0]);
+
+          fetch("/upload-students", {
+            method: "POST",
+            body: formData,
+          });
+
+          window.location.href = "/upload-complete";
+        });
+      </script>
+    </main>
+
+    <footer>
+      <p>
+        &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
+        ThinkVision
+      </p>
+    </footer>
+  </body>
+</html>

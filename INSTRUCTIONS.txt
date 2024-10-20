@@ -1,20 +1,37 @@
-INSTRUCTIONS ON HOW TO SET UP SPRINT 1
+*** INSTRUCTIONS ON HOW TO RUN THE APP ***
 
-1) Make sure to have XAMPP and node.js installed
+    1) Make sure to have XAMPP and Node.js installed
 
-2) Extract the zip file and open the folder in your desired editor (Visual Studio Code was primarily used for this sprint)
+    2) Clone the remote repo, two main ways:
+        (a) Extracting the zip file on your chosen directory
+        (b) Or through the command line, from your chosen directory execute: 
+            git clone https://github.com/soen341ThinkVision/-ThinkVision-SOEN341_Project_F24-.git
 
-3) Open XAMPP and start MySQL and Apache
+    3) Open the folder in your editor (Visual Studio Code has been mainly used so far)
 
-4) In MySQL, create a database called "pas"
+    4) Open XAMPP and start MySQL and Apache
 
-5) In the command line enter npm install to install the needed node_modules
+    5) In MySQL (I recommend Workbench for an easy MySQL interface) create a database called "pas"
 
-(IMPORTANT! If the previous step fails, attempt to reconfigure the directory by doing the following:
-    - Copy the path of the directory, that is right click on the Sprint 1 folder and click copy path
-    - In the command line, type: Set-Loaction "..." , where ... are the copied path
+    6) In the command line, cd into the folder of the current sprint, and to install the necessary
+        packages execute: npm install
 
-6) Type npm start or node server.js
-(Should say in the command line "Server running on port 5000" (It is port 5002) and "MySQL database connected")
+    *IMPORTANT!* If the previous step fails, try to reconfigure the directory by doing the following:
+        - Copy the directory path, that is, right click on the Sprint folder and click 'copy path',
+        - Then in the command line, run: Set-Location <copied path>
 
-7) Enter "localhost:5002" in your desired browser (currently tested on firefox and chrome)
+    6) To launch the server, execute from the command line either npm start or node server.js
+        - It should log to console "Server running on port 5002" and "MySQL database connected"
+
+    7) Then to use the app enter "localhost:5002" in your browser (currently tested on firefox & chrome)
+
+*** IMPORTANT OBSERVATIONS ***
+
+    - Whenever the server is reloaded, the database is cleared and the tables are reset, if you'd
+        like to disable that while testing new features, just comment out lines 44-61 of server.js,
+        but then you must set up the teachers and students table yourself in your local database.
+
+    - When a professor user uploads a .csv file with the course roster, the file must be formatted 
+        as follows: first column labeled "ID" and second column labeled "Name".
+        - See test.csv for a simple example.
+

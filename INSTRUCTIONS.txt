@@ -16,14 +16,14 @@
     6) In the command line, cd into the folder of the current sprint, and to install the necessary
         packages execute: npm install
 
-    *IMPORTANT!* If the previous step fails, try to reconfigure the directory by doing the following:
-        - Copy the directory path, that is, right click on the Sprint folder and click 'copy path',
-        - Then in the command line, run: Set-Location <copied path>
+        *IMPORTANT!* If the previous step fails, try to reconfigure the directory by doing the following:
+            - Copy the directory path, that is, right click on the Sprint folder and click 'copy path',
+            - Then in the command line, run: Set-Location <copied path>
 
-    6) To launch the server, execute from the command line either npm start or node server.js
+    7) To launch the server, execute from the command line either npm start or node server.js
         - It should log to console "Server running on port 5002" and "MySQL database connected"
 
-    7) Then to use the app enter "localhost:5002" in your browser (currently tested on firefox & chrome)
+    8) Then to use the app enter "localhost:5002" in your browser (currently tested on firefox & chrome)
 
 *** IMPORTANT OBSERVATIONS ***
 

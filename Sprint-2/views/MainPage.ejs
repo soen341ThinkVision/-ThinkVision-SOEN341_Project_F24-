@@ -15,64 +15,50 @@
 
     <main>
       <section id="intro">
-        <% if (Username && Role=='Student' ) { %>
-        <h2>Welcome <%= Username %></h2>
-        <% } %> <% if (Username && Role=='Teacher' ) { %>
-        <h2>Welcome Professor <%= Username %></h2>
-        <% } %> <% if (!Username) { %>
-        <div class="AllUsersW">
+      <% if (Username && Role == 'Student') { %>
+          <h2>Welcome <%= Username %></h2>
+      <% } %>
+      <% if (Username && Role == 'Teacher') { %>
+          <h2>Welcome Professor <%= Username %></h2>
+      <% } %>
+      
+      <% if (!Username) { %>
+      <div class="AllUsersW">
           <h2>Get Started</h2>
-          <p>
-            Join our community and enhance your learning through peer feedback!
-          </p>
-        </div>
-        <% } %>
+          <p>Join our community and enhance your learning through peer feedback!</p>
+      </div>
+      <% } %>
       </section>
 
-      <% if (Username && Role==="Student" ) { %>
-      <div class="button-container">
-        <div class="wrapper">
-          <button class="btn" onclick="window.location.href='/Login'">
-            Rate Teammates
-          </button>
-          <button class="btn" onclick="window.location.href='/Logout'">
-            Log Out
-          </button>
-        </div>
-      </div>
-      <% } %> <% if (Username && Role==="Teacher" ) { %>
-      <div class="button-container">
-        <div class="wrapper">
-          <button class="btn" onclick="window.location.href='/Upload'">
-            Upload Course Roster
-          </button>
-          <button class="btn" onclick="window.location.href='/Login'">
-            Form Teams
-          </button>
-          <button class="btn" onclick="window.location.href='/Login'">
-            View Teams
-          </button>
-          <button class="btn" onclick="window.location.href='/Logout'">
-            Log Out
-          </button>
-        </div>
-      </div>
-      <% } %> <% if (!Username) { %>
-      <section id="auth-options">
-        <h3>Please choose an option:</h3>
-        <div class="button-container">
-          <div class="wrapper">
-            <button class="btn" onclick="window.location.href='/SignUp'">
-              Sign Up
-            </button>
-            <button class="btn" onclick="window.location.href='/Login'">
-              Log In
-            </button>
+      <% if (Username  && Role === "Student") { %>
+          <div class="button-container"></div>
+              <div class="wrapper">
+          <button class="btn" onclick="window.location.href='/TeamVis'"> View Teammates </button>
+          <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
+              </div>
           </div>
-        </div>
-        <% } %>
+      <% } %>
+      <% if (Username && Role === "Teacher" ) { %>
+          <div class="button-container"></div>
+              <div class="wrapper">
+          <button class="btn" onclick="window.location.href='/Upload'"> Form Teams </button>
+          <button class="btn" onclick="window.location.href='/AllTeamVis'"> View Teams </button>
+          <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
+              </div>
+          </div>
+      <% } %>
+      <% if (!Username) { %>
+      <section id="auth-options">
+          <h3>Please choose an option:</h3>
+          <div class="button-container">
+              <div class="wrapper">
+                  <button class="btn" onclick="window.location.href='/SignUp'">Sign Up</button>
+                  <button class="btn" onclick="window.location.href='/Login'">Log In</button>
+              </div>
+          </div>
+      <% } %>
       </section>
-    </main>
+  </main>
 
     <footer>
       <p>

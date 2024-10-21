@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assign Teams</title>
+    <link rel="stylesheet" href="/MainPage.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Peer Assessment Tool</h1>
+    </header>
+
+    <main>
+      <section id="intro">
+        <h2>Assign Teams</h2>
+      </section>
+      <h3>Enter team name or number under column "Team".</h3>
+      <h4>
+        Note, after assigning a student to a team, enter "-" to unassign them.
+      </h4>
+      <br />
+      <table style="width: 33%">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody id="results"></tbody>
+      </table>
+      <br /><br />
+      <button class="btn" onclick="window.location.href='/'">
+        Back to Homepage
+      </button>
+
+      <script>
+        const results_body = document.querySelector("#results");
+
+        document
+          .getElementById("results")
+          .addEventListener("keydown", (evt) => {
+            if (evt.keyCode === 13) {
+              evt.preventDefault();
+              results_body.blur();
+            }
+          });
+
+        load_data();
+
+        function load_data() {
+          const request = new XMLHttpRequest();
+
+          request.open(`GET`, `/get_students`);
+
+          let html = "";
+
+          request.onreadystatechange = () => {
+            if (
+              request.readyState === XMLHttpRequest.DONE &&
+              request.status === 200
+            ) {
+              const results = JSON.parse(request.responseText);
+              results.forEach((result) => {
+                if (typeof result.Team === "object") {
+                  var team = "---";
+                } else {
+                  var team = result.Team;
+                }
+                html +=
+                  `<tr>
+                        <td>` +
+                  result.ID +
+                  `</td>
+                        <td style="text-align:left">` +
+                  result.Username +
+                  `</td>
+                        <td contenteditable onblur="update_data(this, '` +
+                  result.Username +
+                  `', ` +
+                  result.ID +
+                  `, '` +
+                  team +
+                  `')">` +
+                  team +
+                  `</td>
+                    </tr>`;
+              });
+
+              results_body.innerHTML = html;
+            }
+          };
+
+          request.send();
+        }
+
+        function update_data(element, name, id, currentTeam) {
+          var input = element.innerHTML;
+          if (input.length > 0 && input != "---" && input != currentTeam) {
+            const param = `&team=` + input + `&id=` + id + ``;
+
+            const request = new XMLHttpRequest();
+
+            request.open(`POST`, `/update_team`, true);
+
+            request.setRequestHeader(
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            );
+
+            request.onreadystatechange = () => {
+              if (
+                request.readyState === XMLHttpRequest.DONE &&
+                request.status === 200
+              ) {
+                if (input != "-") {
+                  alert(`${name}, ID# ${id}, was assigned to team ${input}`);
+                } else {
+                  alert(`${name}, ID# ${id}, has been removed from any teams.`);
+                }
+                window.location.href = "/assign-teams";
+              }
+            };
+
+            request.send(param);
+          } else if (input.length === 0) {
+            alert(`Request failed. Please enter a team name and try again.`);
+          }
+        }
+      </script>
+    </main>
+
+    <footer>
+      <p>
+        &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
+        ThinkVision
+      </p>
+    </footer>
+  </body>
+</html>

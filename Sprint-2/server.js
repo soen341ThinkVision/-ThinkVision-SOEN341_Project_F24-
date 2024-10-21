@@ -59,6 +59,14 @@ db.connect((err) => {
         if (err) console.log("ERROR: ", err);
       });
     });
+    db.query("DROP TABLE teams", (err,drop) => {
+      var createTeams = 
+      "CREATE TABLE teams (TeamName varchar(255), Member1 varchar(255), Member2 varchar(255), Member3 varchar(255), Member4 varchar(255))";
+      
+      db.query(createTeams, (err, drop) => {
+        if (err) console.log ("ERROR: ", err);
+      });
+  });
   }
 });
 

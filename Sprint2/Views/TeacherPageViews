@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/TeacherPage.css">
+</head>
+<body>
+<div class="dashboard-container">
+  <!-- Welcome Message with Teacher's Name -->
+  <h1>Welcome, Teacher {{teacherName}}!</h1>
+
+  <!-- Team Section (clickable team pictures) -->
+  <div class="team-card">
+    <a href="/team/1"><img src="team1.jpg" alt="Team 1 Picture"></a>
+    <h2>Team 1</h2>
+  </div>
+
+  <div class="team-card">
+    <a href="/team/2"><img src="team2.jpg" alt="Team 2 Picture"></a>
+    <h2>Team 2</h2>
+  </div>
+
+  <div class="team-card">
+    <a href="/team/3"><img src="team3.jpg" alt="Team 3 Picture"></a>
+    <h2>Team 3</h2>
+  </div>
+
+  <div class="team-card">
+    <a href="/team/4"><img src="team4.jpg" alt="Team 4 Picture"></a>
+    <h2>Team 4</h2>
+  </div>
+
+  <div class="team-card">
+    <a href="/team/5"><img src="team5.jpg" alt="Team 5 Picture"></a>
+    <h2>Team 5</h2>
+  </div>
+
+  <div class="team-card">
+    <a href="/team/6"><img src="team6.jpg" alt="Team 6 Picture"></a>
+    <h2>Team 6</h2>
+  </div>
+</div>
+</body>
+</html>

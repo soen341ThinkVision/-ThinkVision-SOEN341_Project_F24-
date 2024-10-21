@@ -1,0 +1,113 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f8ff; 
+}
+
+
+#welcome-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+}
+
+.team-block {
+  visibility: hidden;
+  transform: translateX(100%);
+  position: absolute; 
+  opacity: 0;
+  transition: visibility 0.5s, transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+.team-block.active {
+  position: relative; 
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+  transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+.team-block.fade-out {
+  position: relative; 
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: visibility 0.5s, transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+.AllTeams-container {
+  position: absolute;
+  height: 100%; /* Adjust height to fit all content */
+  overflow: hidden; /* Hide overflow for smooth transitions */
+}
+
+
+.team-container {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.team-block {
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+
+#next-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+#next-btn:hover {
+  background-color: #0056b3;
+}
+
+.square {
+    width: 300px;
+    height: 300px;
+    background-color: #4682b4; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px; 
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+
+.square img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid white;
+}
+
+
+.info h2 {
+    font-size: 22px;
+    color: white;
+    margin: 0;
+}
+
+.info p {
+    font-size: 18px;
+    color: white;
+}

@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static("css"));
 
@@ -60,8 +60,6 @@ db.connect((err) => {
       db.query(createTeachers, (err, drop) => {
         if (err) console.log("ERROR: ", err);
       });
-
-      db.query("INSERT INTO teachers VALUES (1, 'Z', 1)");
     });
   }
 });
@@ -105,18 +103,6 @@ app.get("/upload-complete", (req, res) => {
 
 app.get("/assign-teams", (req, res) => {
   res.render("AssignTeams.ejs");
-
-  // var query = "SELECT ID, Username, Team FROM students ORDER BY Team ASC";
-  // db.query(query, (err, data) => {
-  // if (err) {
-  //   throw err;
-  // } else {
-  //   res.render("AssignTeams.ejs", {
-  //     action: "list",
-  //     sampleData: data,
-  //   });
-  // }
-  // });
 });
 
 app.get("/get_students", (req, res) => {

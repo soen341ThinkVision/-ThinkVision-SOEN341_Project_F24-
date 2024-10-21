@@ -44,8 +44,8 @@ body {
 
 .AllTeams-container {
   position: absolute;
-  height: 100%; /* Adjust height to fit all content */
-  overflow: hidden; /* Hide overflow for smooth transitions */
+  height: 100%; 
+  overflow: hidden;
 }
 
 

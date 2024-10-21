@@ -108,6 +108,55 @@ app.get("/Logout", (req, res) => {
   });
 });
 
+app.get('/TeamVis', (req,res) => {
+
+  console.log("Session object:", req.session);
+
+  const teamName = req.session.user.team;
+
+  const teamQuery = "SELECT * FROM teams WHERE TeamName = ?";
+
+  db.query(teamQuery, [teamName], (err,result) => {
+      if(result && result.length > 0) {
+          let teamMembers = [];
+          result.forEach(team => {
+              if (team.Member1) teamMembers.push(team.Member1);
+              if (team.Member2) teamMembers.push(team.Member2);
+              if (team.Member3) teamMembers.push(team.Member3);
+              if (team.Member4) teamMembers.push(team.Member4);
+          });
+
+          res.render("TeamVisibility.ejs", {teamMembers: teamMembers, teamName: teamName});
+      }
+  })
+});
+
+app.get('/AllTeamVis', (req,res) => {
+  console.log("Session object:", req.session);
+
+  const TryQuery = "SELECT * FROM teams";
+
+  db.query(TryQuery, (err,result) => {
+      let teams = [];
+          result.forEach(team => {
+              let teamMembers = [];
+
+              if (team.Member1) teamMembers.push(team.Member1);
+              if (team.Member2) teamMembers.push(team.Member2);
+              if (team.Member3) teamMembers.push(team.Member3);
+              if (team.Member4) teamMembers.push(team.Member4);
+
+              teams.push ({
+                  teamName: team.TeamName,
+                  teamMembers: teamMembers
+              });
+
+          });
+
+          res.render("AllTeams.ejs", {teams});
+      });
+  });
+
 // POSTS
 
 app.post("/Register", (req, res) => {
@@ -140,42 +189,61 @@ app.post("/Register", (req, res) => {
   });
 });
 
-app.post("/LogUser", (req, res) => {
+app.post('/LogUser', (req,res) => {
   console.log("Recieved POST body request for login", req.body);
 
-  const { Username, Password, Option } = req.body;
+  const {Username,Password,Option} = req.body;
 
   let TryQuery;
 
-  if (Option === "Student") {
-    TryQuery = "SELECT * FROM students WHERE Username = ?";
+  if(Option === 'Student') {
+      TryQuery = "SELECT * FROM students WHERE Username = ?";
   }
 
-  if (Option === "Teacher") {
-    TryQuery = "SELECT * FROM teachers WHERE Username = ?";
+  if(Option === 'Teacher') {
+      TryQuery = "SELECT * FROM teachers WHERE Username = ?";
   }
 
   console.log("Executing query:", TryQuery, "with Username:", Username);
 
-  db.query(TryQuery, Username, (err, result) => {
-    if (result.length > 0) {
-      if (result[0].Password == Password) {
-        console.log("User Sucessfully Logged In");
-        req.session.user = {
-          id: result[0].ID,
-          username: result[0].Username,
-          role: Option,
-        };
+  db.query(TryQuery, Username, (err,result) => {
 
-        console.log("Session after login:", req.session.user);
-        res.redirect("/");
+      if(result && result.length > 0 ) {
+          if(result[0].Password == Password) {
+              console.log("User Sucessfully Logged In");
+
+              req.session.user = {
+                  id: result[0].ID,
+                  username: result[0].Username,
+                  role: Option,
+                  team: null
+              };
+
+              console.log("Session after login:", req.session.user);
+
+              if (req.session.user.role === "Student") {
+                  const StudentName = result[0].Username;
+
+                  const CheckQuery = "SELECT * FROM teams WHERE Member1 = ? OR Member2 = ? OR Member3 = ? OR Member4 = ?";
+
+                  db.query(CheckQuery, [StudentName,StudentName,StudentName,StudentName], (error,newresult) => {
+                      if(newresult && newresult.length > 0) {
+                          console.log("Student belongs to team", newresult[0].TeamName);
+                          req.session.user.team = newresult[0].TeamName;
+                          return res.redirect('/');
+                      }
+                  });
+              } else {
+                  return res.redirect('/');
+              }
+
+          } else {
+              console.log("Wrong Password");
+          }
       } else {
-        console.log("Wrong Password");
+          console.log("User Was not found");
       }
-    } else {
-      console.log("User Was not found");
-    }
-  });
+  })
 });
 
 app.post("/upload-students", upload.single("file"), (req, res) => {

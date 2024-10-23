@@ -1,15 +1,17 @@
 //Importing Libraries (npm)
 const express = require("express");
-const multer = require("multer");
-const csvtojson = require("csvtojson");
-const { createReadStream, unlinkSync } = require("fs");
-const session = require("express-session");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
+const session = require("express-session");
+const { createReadStream, unlinkSync } = require("fs");
+const multer = require("multer");
+const csvtojson = require("csvtojson");
 
 const app = express();
 
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+//app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static("css"));
 
@@ -22,17 +24,17 @@ app.use(
   })
 );
 
-// Terminal listen notification
-app.listen(5002, () => {
-  console.log("Server running on port 5002");
-});
-
 // Database connection
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "pas",
+});
+
+// Terminal listen notification
+app.listen(5002, () => {
+  console.log("Server running on port 5002");
 });
 
 // Database connection notification
@@ -105,6 +107,39 @@ app.get("/Upload", (req, res) => {
 app.get("/upload-complete", (req, res) => {
   var uploaded = true;
   res.render("Upload.ejs", { uploaded });
+});
+
+app.get("/assign-teams", (req, res) => {
+  res.render("AssignTeams.ejs");
+});
+
+app.get("/get_students", (req, res) => {
+  const sql = "SELECT ID, Username, Team FROM students ORDER BY Team ASC";
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      throw err;
+    } else {
+      res.send(results);
+    }
+  });
+});
+
+app.post("/update_team", (req, res) => {
+  const id = req.body.id;
+  if (req.body.team === "-") {
+    var sql = `UPDATE students SET Team= NULL WHERE ID = "${id}"`;
+  } else {
+    var sql = `UPDATE students SET Team= "${req.body.team}" WHERE ID = "${id}"`;
+  }
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      throw err;
+    } else {
+      res.json({ message: "Data Updated" });
+    }
+  });
 });
 
 app.get("/Logout", (req, res) => {

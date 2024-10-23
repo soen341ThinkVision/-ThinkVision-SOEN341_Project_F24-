@@ -134,6 +134,23 @@ app.post("/update_team", (req, res) => {
   });
 });
 
+app.post("/auto-assign-teams", (req, res) => {
+  db.query("SELECT COUNT(*) AS count FROM students", (err, result) => {
+    var numOfStudents = result[0].count;
+    numOfTeams = Math.ceil(numOfStudents / req.body.size);
+
+    db.query("SELECT * FROM students", (err, result) => {
+      for (let i = 0; i < numOfStudents; i++) {
+        team = (i % numOfTeams) + 1;
+        db.query(
+          `UPDATE students SET Team ='${team}' WHERE ID=${result[i].ID}`
+        );
+      }
+      res.send("Teams auto-assigned.");
+    });
+  });
+});
+
 app.get("/Logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {

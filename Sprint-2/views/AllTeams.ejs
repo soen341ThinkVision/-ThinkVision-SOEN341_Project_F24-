@@ -8,16 +8,20 @@
 </head>
 <body>
     <div class="AllTeams-container">
-        <% teams.forEach(function(team, index) { %>
+        <%Object.keys(teams).forEach(function(Team) { %>
         <div class="team-block">
             <div class="team-container">
-                <h1> <%= team.teamName %>  </h1>
-                <% team.teamMembers.forEach(function(member) { %>
+            <% if(Team == "null") { %>
+                <h1> No Team Assigned</h1>
+            <% } else { %>
+                <h1> Team <%= Team %>  </h1>
+            <% } %>
+                <% teams[Team].forEach(function(member) { %>
                 <div class="team-member">
                     <img id="profile-pic" src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg" alt="Profile Picture">
                     <div class="info">
-                        <h2 id="profile-name"> <%= member %> </h2>
-                        <p id="profile-id">ID: 40404040</p>
+                        <h2 id="profile-name"> <%= member.Username %> </h2>
+                        <p id="profile-id"> <%= member.ID %></p>
                     </div>
                 </div>
                 <% }) %>

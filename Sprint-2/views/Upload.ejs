@@ -32,6 +32,7 @@
         const form = document.querySelector("form");
         form.addEventListener("submit", (event) => {
           event.preventDefault();
+          console.log("pre fetch");
 
           const files = document.getElementById("csv");
           const formData = new FormData();
@@ -41,6 +42,7 @@
             method: "POST",
             body: formData,
           });
+          console.log("post fetch");
 
           window.location.href = "/upload-complete";
         });

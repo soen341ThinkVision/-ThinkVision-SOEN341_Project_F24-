@@ -45,13 +45,13 @@ body {
 .AllTeams-container {
   position: absolute;
   height: 100%; 
-  overflow: hidden;
 }
 
 
 .team-container {
   position: relative;
   max-width: 500px;
+  max-height:700px;
   margin: 0 auto;
 }
 

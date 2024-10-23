@@ -61,14 +61,6 @@ db.connect((err) => {
         if (err) console.log("ERROR: ", err);
       });
     });
-    db.query("DROP TABLE teams", (err, drop) => {
-      var createTeams =
-        "CREATE TABLE teams (TeamName varchar(255), Member1 varchar(255), Member2 varchar(255), Member3 varchar(255), Member4 varchar(255))";
-
-      db.query(createTeams, (err, drop) => {
-        if (err) console.log("ERROR: ", err);
-      });
-    });
   }
 });
 
@@ -156,16 +148,13 @@ app.get("/TeamVis", (req, res) => {
 
   const teamName = req.session.user.team;
 
-  const teamQuery = "SELECT * FROM teams WHERE TeamName = ?";
+  const teamQuery = "SELECT * FROM students WHERE Team = ?";
 
   db.query(teamQuery, [teamName], (err, result) => {
     if (result && result.length > 0) {
       let teamMembers = [];
-      result.forEach((team) => {
-        if (team.Member1) teamMembers.push(team.Member1);
-        if (team.Member2) teamMembers.push(team.Member2);
-        if (team.Member3) teamMembers.push(team.Member3);
-        if (team.Member4) teamMembers.push(team.Member4);
+      result.forEach((student) => {
+        teamMembers.push(student);
       });
 
       res.render("TeamVisibility.ejs", {
@@ -179,23 +168,17 @@ app.get("/TeamVis", (req, res) => {
 app.get("/AllTeamVis", (req, res) => {
   console.log("Session object:", req.session);
 
-  const TryQuery = "SELECT * FROM teams";
+  const TryQuery = "SELECT Team, Username, ID FROM students ORDER BY Team ASC";
 
   db.query(TryQuery, (err, result) => {
-    let teams = [];
-    result.forEach((team) => {
-      let teamMembers = [];
-
-      if (team.Member1) teamMembers.push(team.Member1);
-      if (team.Member2) teamMembers.push(team.Member2);
-      if (team.Member3) teamMembers.push(team.Member3);
-      if (team.Member4) teamMembers.push(team.Member4);
-
-      teams.push({
-        teamName: team.TeamName,
-        teamMembers: teamMembers,
-      });
-    });
+    let teams = {};
+    result.forEach((student) => {
+      const {Team, Username, ID} = student;
+      if (!teams[Team]) {
+          teams[Team] = [];
+      }
+      teams[Team].push(student);  // Add the student to the corresponding team
+  });
 
     res.render("AllTeams.ejs", { teams });
   });
@@ -222,7 +205,7 @@ app.post("/Register", (req, res) => {
           res.send({ resgistered: false });
         } else {
           // If they're in the system, registers student's password
-          updateQuery = `UPDATE students SET Password = ${Password} WHERE ID=${ID}`;
+          updateQuery = `UPDATE students SET Password="${Password}" WHERE ID="${ID}"`;
           db.query(updateQuery, (error, result) => {
             if (error) {
               console.log("Error registering student");

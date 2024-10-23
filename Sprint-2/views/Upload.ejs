@@ -30,8 +30,8 @@
 
       <script>
         const form = document.querySelector("form");
-        form.addEventListener("submit", (e) => {
-          e.preventDefault();
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
 
           const files = document.getElementById("csv");
           const formData = new FormData();

@@ -300,7 +300,6 @@ app.post("/LogUser", (req, res) => {
 
 // Adds students in the course through an uploaded csv file
 app.post("/upload-students", upload.single("file"), (req, res) => {
-  console.log("on upload");
   csvtojson()
     .fromFile("uploads/students.csv")
     .then((source) => {

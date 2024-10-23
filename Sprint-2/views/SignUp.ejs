@@ -1,0 +1,76 @@
+<HTML>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PAS Concordia</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/SignUp.css" />
+  </head>
+  <body>
+    <div class="signup-container">
+      <h1>Sign Up</h1>
+
+      <form>
+        <input type="text" name="ID" placeholder="ID" required />
+        <input type="text" name="Username" placeholder="Full Name" required />
+        <input
+          type="password"
+          name="Password"
+          placeholder="Password"
+          required
+        />
+        <input type="radio" name="Option" value="Student" />
+        <label for="Option1"> Student </label>
+        <input type="radio" name="Option" value="Teacher" />
+        <label for="Option2"> Teacher </label><br />
+        <button type="submit">Sign Up</button>
+      </form>
+      <div class="button-container">
+        <div class="wrapper">
+          <button class="btn" onclick="window.location.href='/Login'">
+            Already Have An Account? Log In Here
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.querySelector("form").onsubmit = (event) => {
+        event.preventDefault();
+
+        const formData = {
+          ID: document.querySelector("input[name=ID]").value,
+          Username: document.querySelector("input[name=Username]").value,
+          Password: document.querySelector("input[name=Password]").value,
+          Option: document.querySelector("input[type=radio]:checked").value,
+        };
+
+        console.log("formData:", formData);
+
+        fetch("/Register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let { registered } = data;
+            console.log(registered);
+            if (!registered) {
+              alert(
+                "Student not found. " +
+                  "Please check you entered the correct name and ID or contact your instructor to add you to the system."
+              );
+              window.location.href = "/";
+            } else {
+              alert("Registration successful.");
+              window.location.href = "/Login";
+            }
+          });
+      };
+    </script>
+  </body>
+</HTML>

@@ -30,24 +30,35 @@
       <% } %>
       </section>
 
-      <% if (Username  && Role === "Student") { %>
-          <div class="button-container"></div>
-              <div class="wrapper">
-          <button class="btn" onclick="window.location.href='/TeamVis'"> View Teammates </button>
-          <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
-              </div>
-          </div>
-      <% } %>
-      <% if (Username && Role === "Teacher" ) { %>
-          <div class="button-container"></div>
-              <div class="wrapper">
-          <button class="btn" onclick="window.location.href='/Upload'"> Form Teams </button>
-          <button class="btn" onclick="window.location.href='/AllTeamVis'"> View Teams </button>
-          <button class="btn" onclick="window.location.href='/Logout'">Log Out</button>
-              </div>
-          </div>
-      <% } %>
-      <% if (!Username) { %>
+      <% if (Username && Role==="Student" ) { %>
+      <div class="button-container">
+        <div class="wrapper">
+          <button class="btn" onclick="window.location.href='/Login'">
+            View Teammates
+          </button>
+          <button class="btn" onclick="window.location.href='/Logout'">
+            Log Out
+          </button>
+        </div>
+      </div>
+      <% } %> <% if (Username && Role==="Teacher" ) { %>
+      <div class="button-container">
+        <div class="wrapper">
+          <button class="btn" onclick="window.location.href='/Upload'">
+            Upload Course Roster
+          </button>
+          <button class="btn" onclick="window.location.href='/assign-teams'">
+            Assign Teams
+          </button>
+          <button class="btn" onclick="window.location.href='/Login'">
+            View Teams
+          </button>
+          <button class="btn" onclick="window.location.href='/Logout'">
+            Log Out
+          </button>
+        </div>
+      </div>
+      <% } %> <% if (!Username) { %>
       <section id="auth-options">
           <h3>Please choose an option:</h3>
           <div class="button-container">

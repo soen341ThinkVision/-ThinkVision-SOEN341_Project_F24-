@@ -173,12 +173,12 @@ app.get("/AllTeamVis", (req, res) => {
   db.query(TryQuery, (err, result) => {
     let teams = {};
     result.forEach((student) => {
-      const {Team, Username, ID} = student;
+      const { Team, Username, ID } = student;
       if (!teams[Team]) {
-          teams[Team] = [];
+        teams[Team] = [];
       }
-      teams[Team].push(student);  // Add the student to the corresponding team
-  });
+      teams[Team].push(student); // Add the student to the corresponding team
+    });
 
     res.render("AllTeams.ejs", { teams });
   });

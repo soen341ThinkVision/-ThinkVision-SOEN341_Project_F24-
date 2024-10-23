@@ -67,7 +67,7 @@ db.connect((err) => {
 // Sets up file storage and naming
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads");
+    cb(null, "./");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();
@@ -314,9 +314,9 @@ app.post("/LogUser", (req, res) => {
 // Adds students in the course through an uploaded csv file
 app.post("/upload-students", upload.single("file"), (req, res) => {
   csvtojson()
-    .fromFile("uploads/students.csv")
+    .fromFile("./students.csv")
     .then((source) => {
-      unlinkSync("uploads/students.csv");
+      unlinkSync("./students.csv");
 
       for (let i = 0; i < source.length; i++) {
         let values = [];

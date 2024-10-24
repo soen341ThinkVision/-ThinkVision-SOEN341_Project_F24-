@@ -37,6 +37,7 @@ app.listen(5002, () => {
 });
 
 // Database connection notification
+// Database connection notification
 db.connect((err) => {
   if (err) {
     console.log("Error connecting to database");
@@ -69,7 +70,7 @@ db.connect((err) => {
     db.query("DROP TABLE IF EXISTS evaluations", (err) => {
       var createEvaluations =
         "CREATE TABLE evaluations (ID int AUTO_INCREMENT PRIMARY KEY, " +
-        "teammateID int, cooperation int, comments text);";
+        "teammateID int, cooperation int, comments text, reviewerID int);";
 
       db.query(createEvaluations, (err) => {
         if (err) console.log("ERROR: ", err);
@@ -344,23 +345,38 @@ function isAuthenticated(req, res, next) {
 }
 
 // Route to render the evaluation page
+// Route to render the evaluation page or view existing review
 app.get("/evaluate/:id", (req, res) => {
   const teammateID = req.params.id;
-  const query = "SELECT ID, Username FROM students WHERE ID = ?";
-  db.query(query, [teammateID], (err, result) => {
+  const reviewerID = req.session.user.id;
+
+  const checkReviewQuery = "SELECT * FROM evaluations WHERE teammateID = ? AND reviewerID = ?";
+  db.query(checkReviewQuery, [teammateID, reviewerID], (err, reviewResult) => {
     if (err) {
       throw err;
+    } else if (reviewResult.length > 0) {
+      // Review already exists, render the view review page
+      res.render("ViewEvaluation.ejs", { review: reviewResult[0] });
     } else {
-      res.render("Evaluation.ejs", { teammate: result[0] });
+      // No review exists, render the evaluation page
+      const query = "SELECT ID, Username FROM students WHERE ID = ?";
+      db.query(query, [teammateID], (err, result) => {
+        if (err) {
+          throw err;
+        } else {
+          res.render("Evaluation.ejs", { teammate: result[0] });
+        }
+      });
     }
   });
 });
 
 app.post("/submit-evaluation", (req, res) => {
   const { teammateID, cooperation, comments } = req.body;
+  const reviewerID = req.session.user.id;
   const insertQuery =
-    "INSERT INTO evaluations (teammateID, cooperation, comments) VALUES (?, ?, ?)";
-  db.query(insertQuery, [teammateID, cooperation, comments], (err) => {
+    "INSERT INTO evaluations (teammateID, cooperation, comments, reviewerID) VALUES (?, ?, ?, ?)";
+  db.query(insertQuery, [teammateID, cooperation, comments, reviewerID], (err) => {
     if (err) {
       throw err;
     } else {

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Evaluation</title>
+  <link rel="stylesheet" href="/MainPage.css" />
+</head>
+
+<body>
+  <div class="evaluation-container">
+    <h1>Review for <%= review.teammateID %>
+    </h1>
+    <table>
+      <tr>
+        <th>Dimension</th>
+        <th>Rating</th>
+      </tr>
+      <tr>
+        <td>Cooperation</td>
+        <td>
+          <%= review.cooperation %>
+        </td>
+      </tr>
+    </table>
+    <label for="commentBox">Comments:</label>
+    <p id="commentBox">
+      <%= review.comments %>
+    </p>
+  </div>
+</body>
+
+</html>

@@ -26,6 +26,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/antho/OneDrive/Documents/GitHub/-ThinkVision-SOEN341_Project_F24-",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -36,6 +37,15 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\antho\OneDrive\Documents\GitHub\-ThinkVision-SOEN341_Project_F24-" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\antho\OneDrive\Documents\GitHub\-ThinkVision-SOEN341_Project_F24-\Sprint-2\views" />
+      <recent name="C:\Users\antho\OneDrive\Documents\GitHub\-ThinkVision-SOEN341_Project_F24-\Sprint-2" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -54,7 +64,7 @@
       <workItem from="1729729848074" duration="60000" />
       <workItem from="1729730050733" duration="43000" />
       <workItem from="1729730117895" duration="56000" />
-      <workItem from="1729730179700" duration="7327000" />
+      <workItem from="1729730179700" duration="8577000" />
     </task>
     <servers />
   </component>

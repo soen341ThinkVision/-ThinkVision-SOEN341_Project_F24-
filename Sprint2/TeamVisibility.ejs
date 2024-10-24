@@ -7,17 +7,28 @@
     <link rel="stylesheet" href="/TeamVisibility.css">
 </head>
 <body>
-    <div class="team-container">
-        <h1> <%= teamName %>  </h1>
-        <% teamMembers.forEach(function(member) { %>
+<div class="team-container">
+    <h1> <%= teamName %>  </h1>
+    <% teamMembers.forEach(function(member) { %>
         <div class="team-member">
+<<<<<<< Updated upstream:Sprint2/TeamVisibility.ejs
             <img id="profile-pic" src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg" alt="Profile Picture">
             <div class="info">
                 <h2 id="profile-name"> <%= member %> </h2>
                 <p id="profile-id">ID: 40404040</p>
             </div>
+=======
+            <a href="/evaluate/<%= member.ID %>">
+                <img id="profile-pic" src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg"
+                     alt="Profile Picture">
+                <div class="info">
+                    <h2 id="profile-name"> <%= member.Username %> </h2>
+                    <p id="profile-id"> <%= member.ID %></p>
+                </div>
+            </a>
+>>>>>>> Stashed changes:Sprint-2/views/TeamVisibility.ejs
         </div>
-        <% }) %>
-    </div>
+    <% }) %>
+</div>
 </body>
 </html>

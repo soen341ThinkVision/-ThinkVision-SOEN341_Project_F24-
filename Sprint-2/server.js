@@ -181,7 +181,9 @@ app.get("/TeamVis", (req, res) => {
     if (result && result.length > 0) {
       let teamMembers = [];
       result.forEach((student) => {
-        teamMembers.push(student);
+        if(req.session.user.username != student.Username) {
+          teamMembers.push(student);
+        }
       });
 
       res.render("TeamVisibility.ejs", {

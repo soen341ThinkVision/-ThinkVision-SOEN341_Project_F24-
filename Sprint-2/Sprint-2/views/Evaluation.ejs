@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evaluate Teammate</title>
+    <link rel="stylesheet" href="/MainPage.css" />
+  </head>
+  <body>
+    <div class="evaluation-container">
+      <h1>Evaluate <%= teammate.Username %></h1>
+      <form action="/submit-evaluation" method="POST">
+        <input type="hidden" name="teammateID" value="<%= teammate.ID %>" />
+        <table>
+          <tr>
+            <th>Dimension</th>
+            <th>Rating</th>
+          </tr>
+          <tr>
+            <td>Cooperation</td>
+            <td>
+              <input type="radio" name="cooperation" value="1" required /> 1
+              <input type="radio" name="cooperation" value="2" /> 2
+              <input type="radio" name="cooperation" value="3" /> 3
+              <input type="radio" name="cooperation" value="4" /> 4
+              <input type="radio" name="cooperation" value="5" /> 5
+            </td>
+          </tr>
+          <!-- Add more dimensions as needed -->
+        </table>
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" required></textarea>
+        <button type="submit">Submit Evaluation</button>
+      </form>
+    </div>
+  </body>
+</html>

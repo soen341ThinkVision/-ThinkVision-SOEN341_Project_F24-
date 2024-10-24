@@ -1,0 +1,62 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="/AllTeams.css">
+    <link rel="stylesheet" href="/TeamVisibility.css">
+  
+</head>
+<body>
+    <div class="AllTeams-container">
+        <%Object.keys(teams).forEach(function(Team) { %>
+        <div class="team-block">
+            <div class="team-container">
+            <% if(Team == "null") { %>
+                <h1> No Team Assigned</h1>
+            <% } else { %>
+                <h1> Team <%= Team %>  </h1>
+            <% } %>
+                <% teams[Team].forEach(function(member) { %>
+                <div class="team-member">
+                    <img id="profile-pic" src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg" alt="Profile Picture">
+                    <div class="info">
+                        <h2 id="profile-name"> <%= member.Username %> </h2>
+                        <p id="profile-id"> <%= member.ID %></p>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+        </div>
+        <% }) %>
+    
+        <!-- Next Button -->
+        <button id="next-btn">Next</button>
+    </div>
+<script>
+  // Get all team blocks and the next button
+  const teams = document.querySelectorAll('.team-block');
+  const nextBtn = document.getElementById('next-btn');
+  let currentIndex = 0;
+
+  // Initially show the first team
+  teams[currentIndex].classList.add('active');
+
+  // Add event listener to the "Next" button
+  nextBtn.addEventListener('click', function() {
+    // Hide the current team
+    teams[currentIndex].classList.remove('active');
+    teams[currentIndex].classList.add('fade-out');
+
+    const nextIndex = (currentIndex + 1) % teams.length;
+
+    teams[currentIndex].addEventListener('transitionend', function onFadeOut() {
+        teams[currentIndex].classList.remove('fade-out');
+        teams[nextIndex].classList.add('active');
+
+        currentIndex = nextIndex;
+
+        teams[currentIndex].removeEventListener('transitionend', onFadeOut);
+    }, { once: true });
+});
+</script>
+</body>

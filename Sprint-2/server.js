@@ -182,7 +182,7 @@ app.get("/TeamVis", (req, res) => {
     if (result && result.length > 0) {
       let teamMembers = [];
       result.forEach((student) => {
-        if(req.session.user.username != student.Username) {
+        if (req.session.user.username != student.Username) {
           teamMembers.push(student);
         }
       });
@@ -350,7 +350,8 @@ app.get("/evaluate/:id", (req, res) => {
   const teammateID = req.params.id;
   const reviewerID = req.session.user.id;
 
-  const checkReviewQuery = "SELECT * FROM evaluations WHERE teammateID = ? AND reviewerID = ?";
+  const checkReviewQuery =
+    "SELECT * FROM evaluations WHERE teammateID = ? AND reviewerID = ?";
   db.query(checkReviewQuery, [teammateID, reviewerID], (err, reviewResult) => {
     if (err) {
       throw err;
@@ -376,11 +377,15 @@ app.post("/submit-evaluation", (req, res) => {
   const reviewerID = req.session.user.id;
   const insertQuery =
     "INSERT INTO evaluations (teammateID, cooperation, comments, reviewerID) VALUES (?, ?, ?, ?)";
-  db.query(insertQuery, [teammateID, cooperation, comments, reviewerID], (err) => {
-    if (err) {
-      throw err;
-    } else {
-      res.redirect("/TeamVis");
+  db.query(
+    insertQuery,
+    [teammateID, cooperation, comments, reviewerID],
+    (err) => {
+      if (err) {
+        throw err;
+      } else {
+        res.redirect("/TeamVis");
+      }
     }
-  });
+  );
 });

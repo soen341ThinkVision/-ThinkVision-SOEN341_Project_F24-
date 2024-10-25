@@ -1,37 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Evaluate Teammate</title>
-    <link rel="stylesheet" href="/MainPage.css" />
-  </head>
-  <body>
-    <div class="evaluation-container">
-      <h1>Evaluate <%= teammate.Username %></h1>
-      <form action="/submit-evaluation" method="POST">
-        <input type="hidden" name="teammateID" value="<%= teammate.ID %>" />
-        <table>
-          <tr>
-            <th>Dimension</th>
-            <th>Rating</th>
-          </tr>
-          <tr>
-            <td>Cooperation</td>
-            <td>
-              <input type="radio" name="cooperation" value="1" required /> 1
-              <input type="radio" name="cooperation" value="2" /> 2
-              <input type="radio" name="cooperation" value="3" /> 3
-              <input type="radio" name="cooperation" value="4" /> 4
-              <input type="radio" name="cooperation" value="5" /> 5
-            </td>
-          </tr>
-          <!-- Add more dimensions as needed -->
-        </table>
-        <label for="comments">Comments:</label>
-        <textarea id="comments" name="comments" required></textarea>
-        <button type="submit">Submit Evaluation</button>
-      </form>
-    </div>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluate Teammate</title>
+  <link rel="stylesheet" href="/MainPage.css" />
+  <link rel="stylesheet" href="/Evaluation.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <div class="evaluation-container">
+    <h1>Evaluate <%= teammate.Username %>
+    </h1>
+    <form action="/submit-evaluation" method="POST">
+      <input type="hidden" name="teammateID" value="<%= teammate.ID %>" />
+      <style>
+
+      </style>
+      <div class="container">
+        <i class="material-icons" id="emoji">sentiment_satisfied</i>
+        <span id="number">2</span>
+        <input type="range" min="0" max="5" value="2" id="slider" class="slider" name="cooperation">
+        <label for="commentBox" id="cooperation">Cooperation:</label>
+        <textarea id="commentBox" placeholder="Enter your comment here..." rows="4" name="comments"></textarea>
+        <button id="submitButton">Submit</button>
+      </div>
+      <script>
+        var slider = document.getElementById("slider");
+        var emoji = document.getElementById("emoji");
+        var number = document.getElementById("number");
+        var emoticons = ["mood_bad", "sentiment_very_dissatisfied", "sentiment_dissatisfied", "sentiment_satisfied", "sentiment_satisfied_alt", "sentiment_very_satisfied"];
+
+        // Function to update slider color gradient based on value
+        function updateSliderColor(value) {
+          var color;
+          if (value == 0) {
+            color = 'black';
+          } else if (value == 1) {
+            color = 'red';
+          } else if (value == 2) {
+            color = 'orange';
+          } else if (value == 3) {
+            color = 'yellow';
+          } else if (value == 4) {
+            color = '#9ACD32';
+          } else if (value == 5) {
+            color = 'green';
+          }
+
+          // Calculate percentage for the gradient based on slider value
+          var percentage = (value / 5) * 100;
+
+          // Set background with gradient to color up to the current value and white for the rest
+          slider.style.background = `linear-gradient(to right, ${color} ${percentage}%, black ${percentage}%)`;
+        }
+
+
+        slider.oninput = function () {
+          emoji.innerHTML = emoticons[slider.value];
+          number.innerHTML = slider.value;
+          updateSliderColor(slider.value);
+        }
+
+
+        updateSliderColor(slider.value);
+      </script>
+
+    </form>
+  </div>
+</body>
+
 </html>

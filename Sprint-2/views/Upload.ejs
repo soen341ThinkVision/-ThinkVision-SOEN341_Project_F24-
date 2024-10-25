@@ -32,7 +32,6 @@
         const form = document.querySelector("form");
         form.addEventListener("submit", (event) => {
           event.preventDefault();
-
           const files = document.getElementById("csv");
           const formData = new FormData();
           formData.append("file", files.files[0]);
@@ -40,9 +39,7 @@
           fetch("/upload-students", {
             method: "POST",
             body: formData,
-          });
-
-          window.location.href = "/upload-complete";
+          }).then((window.location.href = "/upload-complete"));
         });
       </script>
     </main>

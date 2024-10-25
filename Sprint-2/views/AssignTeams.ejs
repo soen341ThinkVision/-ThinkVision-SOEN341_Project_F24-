@@ -1,147 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assign Teams</title>
     <link rel="stylesheet" href="/MainPage.css" />
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>Peer Assessment Tool</h1>
+      <h1>Peer Assessment Tool</h1>
     </header>
 
     <main>
-        <section id="intro">
-            <h2>Assign Teams</h2>
-        </section>
-        <h3>Enter team name or number under column "Team".</h3>
-        <p>
-            Note, after assigning a student to a team, enter "-" to unassign them.
-        </p>
-        <br />
-        <table style="width: 35%">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Name</th>
-                    <th>Team</th>
-                </tr>
-            </thead>
-            <tbody id="results"></tbody>
-        </table>
-        <br /><br />
-        <button class="btn" onclick="window.location.href='/'">
-            Back to Homepage
-        </button>
+      <section id="intro">
+        <h2>Assign Teams</h2>
+      </section>
+      <h3>
+        To individually assign a student to a team, enter team name or number
+        under column "Team".
+      </h3>
+      <p>
+        Note, after assigning a student to a team, enter "-" to unassign them.
+      </p>
+      <br />
+      <form>
+        <label for="teamSize">Max students per team:</label>
+        <select name="teamSize" id="teamSize" type="number">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option></select
+        ><br />
+        <button id="teamSizeButton" type="submit">Create Teams</button>
+      </form>
+      <br />
+      <table style="width: 35%">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody id="results"></tbody>
+      </table>
+      <br /><br />
+      <button class="btn" onclick="window.location.href='/'">
+        Back to Homepage
+      </button>
 
-        <script>
-            const results_body = document.querySelector("#results");
+      <script>
+        const results_body = document.querySelector("#results");
 
-            document
-                .getElementById("results")
-                .addEventListener("keydown", (evt) => {
-                    if (evt.keyCode === 13) {
-                        evt.preventDefault();
-                        results_body.blur();
-                    }
-                });
+        document.querySelector("form").onsubmit = (event) => {
+          event.preventDefault();
 
-            load_data();
+          fetch("/auto-assign-teams", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              size: Number(
+                document.querySelector("select[name=teamSize]").value
+              ),
+            }),
+          }).then(() => {
+            window.location.href = "/assign-teams";
+            document.getElementById("teamSize").reset();
+          });
+        };
 
-            function load_data() {
-                const request = new XMLHttpRequest();
+        document
+          .getElementById("results")
+          .addEventListener("keydown", (evt) => {
+            if (evt.keyCode === 13) {
+              evt.preventDefault();
+              results_body.blur();
+            }
+          });
 
-                request.open(`GET`, `/get_students`);
+        load_data();
 
-                let html = "";
+        function load_data() {
+          const request = new XMLHttpRequest();
 
-                request.onreadystatechange = () => {
-                    if (
-                        request.readyState === XMLHttpRequest.DONE &&
-                        request.status === 200
-                    ) {
-                        const results = JSON.parse(request.responseText);
-                        if (results.length > 0) {
-                            results.forEach((result) => {
-                                if (typeof result.Team === "object") {
-                                    var team = "-";
-                                } else {
-                                    var team = result.Team;
-                                }
-                                html +=
-                                    `<tr>
-                                    <td>`+ result.ID + `</td>
-                                    <td style="text-align:left">`+ result.Username + `</td>
-                                    <td contenteditable 
-                                        onclick="this.innerHTML=''" 
-                                        onblur="update_data(this, 
-                                                            '`+ result.Username + `', 
-                                                            `+ result.ID + `, 
-                                                            '`+ team + `')">`
-                                    + team + `</td>
+          request.open(`GET`, `/get_students`);
+
+          let html = "";
+
+          request.onreadystatechange = () => {
+            if (
+              request.readyState === XMLHttpRequest.DONE &&
+              request.status === 200
+            ) {
+              const results = JSON.parse(request.responseText);
+              if (results.length > 0) {
+                results.forEach((result) => {
+                  if (typeof result.Team === "object") {
+                    var team = "-";
+                  } else {
+                    var team = result.Team;
+                  }
+                  html +=
+                    `<tr>
+                                    <td>` +
+                    result.ID +
+                    `</td>
+                                    <td style="text-align:left">` +
+                    result.Username +
+                    `</td>
+                                    <td contenteditable
+                                        onclick="this.innerHTML=''"
+                                        onblur="update_data(this,
+                                                            '` +
+                    result.Username +
+                    `',
+                                                            ` +
+                    result.ID +
+                    `,
+                                                            '` +
+                    team +
+                    `')">` +
+                    team +
+                    `</td>
                             </tr>`;
-                            });
-                        } else {
-                            html += `<tr>
-                                        <td colspan="3">
-                                            <br>
-                                            <b>No students in the system. Please upload the course roster first.</b>
-                                            </td>
-                                    </tr?>`
-                        }
+                });
+              } else {
+                html += `<tr><td colspan="3">
+                                <br>
+                                <h2>No students in the system. Please upload the course roster first.</h2>
+                            </td>
+                        </tr?>`;
+              }
 
-                        results_body.innerHTML = html;
-                    }
-                };
-
-                request.send();
+              results_body.innerHTML = html;
             }
+          };
 
-            function update_data(element, name, id, currentTeam) {
-                var input = element.innerHTML;
-                if (input.length > 0 && input != currentTeam) {
-                    const param = `&team=` + input + `&id=` + id + ``;
+          request.send();
+        }
 
-                    const request = new XMLHttpRequest();
+        function update_data(element, name, id, currentTeam) {
+          var input = element.innerHTML;
+          if (input.length > 0 && input != currentTeam) {
+            const param = `&team=` + input + `&id=` + id + ``;
 
-                    request.open(`POST`, `/update_team`, true);
+            const request = new XMLHttpRequest();
 
-                    request.setRequestHeader(
-                        "Content-Type",
-                        "application/x-www-form-urlencoded"
-                    );
+            request.open(`POST`, `/update_team`, true);
 
-                    request.onreadystatechange = () => {
-                        if (
-                            request.readyState === XMLHttpRequest.DONE &&
-                            request.status === 200
-                        ) {
-                            if (input != "-") {
-                                alert(`${name}, ID#${id}, was assigned to team ${input} `);
-                            } else {
-                                alert(`${name}, ID#${id}, has been removed from any teams.`);
-                            }
-                            window.location.href = "/assign-teams";
-                        }
-                    };
+            request.setRequestHeader(
+              "Content-Type",
+              "application/x-www-form-urlencoded"
+            );
 
-                    request.send(param);
-                } else if (input.length === 0) {
-                    alert(`Assignment failed. Please enter a team name and try again.`);
+            request.onreadystatechange = () => {
+              if (
+                request.readyState === XMLHttpRequest.DONE &&
+                request.status === 200
+              ) {
+                if (input != "-") {
+                  alert(`${name}, ID#${id}, was assigned to team ${input} `);
+                } else {
+                  alert(`${name}, ID#${id}, has been removed from any teams.`);
                 }
-            }
-        </script>
+                window.location.href = "/assign-teams";
+              }
+            };
+
+            request.send(param);
+          } else if (input.length === 0) {
+            alert(`Assignment failed. Please enter a team name and try again.`);
+          }
+        }
+      </script>
     </main>
 
     <footer>
-        <p>
-            &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
-            ThinkVision
-        </p>
+      <p>
+        &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
+        ThinkVision
+      </p>
     </footer>
-</body>
-
+  </body>
 </html>

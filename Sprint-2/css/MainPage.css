@@ -85,3 +85,7 @@ footer {
     padding: 10px;
     background-color: #ccc; 
 }
+
+#teamSizeButton {
+    margin-left: 1em;
+}

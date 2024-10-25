@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
+    "test": "cd Sprint-2 && npm test",
     "start": "nodemon server.js"
   },
   "author": "",

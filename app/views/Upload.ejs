@@ -32,9 +32,9 @@
         const form = document.querySelector("form");
         form.addEventListener("submit", (event) => {
           event.preventDefault();
-          const files = document.getElementById("csv");
+          const toUpload = document.getElementById("csv");
           const formData = new FormData();
-          formData.append("file", files.files[0]);
+          formData.append("file", toUpload.files[0]);
 
           fetch("/upload-students", {
             method: "POST",

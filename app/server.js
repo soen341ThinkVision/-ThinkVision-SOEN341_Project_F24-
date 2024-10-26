@@ -1,6 +1,7 @@
 // Importing Libraries (npm)
+require("dotenv").config();
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const { createReadStream, unlinkSync } = require("fs");
@@ -25,18 +26,16 @@ app.use(
 
 // Database connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "pas",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 // Terminal listen notification
-app.listen(5002, () => {
-  console.log("Server running on port 5002");
-});
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
 
-// Database connection notification
 // Database connection notification
 db.connect((err) => {
   if (err) {
@@ -172,8 +171,6 @@ app.get("/Logout", (req, res) => {
 });
 
 app.get("/TeamVis", (req, res) => {
-  console.log("Session object:", req.session);
-
   const teamName = req.session.user.team;
 
   const teamQuery = "SELECT * FROM students WHERE Team = ?";
@@ -196,8 +193,6 @@ app.get("/TeamVis", (req, res) => {
 });
 
 app.get("/AllTeamVis", (req, res) => {
-  console.log("Session object:", req.session);
-
   const TryQuery = "SELECT Team, Username, ID FROM students ORDER BY Team ASC";
 
   db.query(TryQuery, (err, result) => {

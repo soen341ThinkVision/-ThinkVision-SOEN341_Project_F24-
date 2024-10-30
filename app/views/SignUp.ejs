@@ -50,8 +50,8 @@
 
         console.log("formData:", formData);
 
-        fetch("/Register", {
-          method: "POST",
+        fetch("/sign-up", {
+          method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         })
@@ -61,13 +61,12 @@
             console.log(registered);
             if (!registered) {
               alert(
-                "Student not found. " +
-                  "Please check you entered the correct name and ID or contact your instructor to add you to the system."
+                "Student not found. Please verify you entered the correct name" +
+                  " and ID or contact your instructor to add you to the system."
               );
-              window.location.href = "/";
             } else {
               alert("Registration successful.");
-              window.location.href = "/Login";
+              window.location.href = "/login";
             }
           });
       };

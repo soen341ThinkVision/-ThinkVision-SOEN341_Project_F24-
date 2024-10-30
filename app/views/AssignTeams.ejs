@@ -59,7 +59,7 @@
         document.querySelector("form").onsubmit = (event) => {
           event.preventDefault();
 
-          fetch("/auto-assign-teams", {
+          fetch("/assign-teams", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -87,7 +87,7 @@
         function load_data() {
           const request = new XMLHttpRequest();
 
-          request.open(`GET`, `/get_students`);
+          request.open(`GET`, `/get-students`);
 
           let html = "";
 
@@ -150,7 +150,7 @@
 
             const request = new XMLHttpRequest();
 
-            request.open(`POST`, `/update_team`, true);
+            request.open(`PUT`, `/assign-teams`, true);
 
             request.setRequestHeader(
               "Content-Type",

@@ -36,7 +36,7 @@
           const formData = new FormData();
           formData.append("file", toUpload.files[0]);
 
-          fetch("/upload-students", {
+          fetch("/upload/0", {
             method: "POST",
             body: formData,
           }).then((window.location.href = "/upload/1"));

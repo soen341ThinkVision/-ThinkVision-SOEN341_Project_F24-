@@ -2,7 +2,6 @@
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-const router = require("./routes/routes.js");
 
 const app = express();
 
@@ -25,4 +24,4 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
 
 // Routes
-app.use("/", router);
+app.use("/", require("./routes/routes.js"));

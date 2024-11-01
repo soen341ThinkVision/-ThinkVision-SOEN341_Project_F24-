@@ -80,17 +80,18 @@ exports.signIn = (req, res) => {
 
 // Adds students in the course through an uploaded csv file
 exports.uploadFile = (req, res) => {
+  //console.log(req.body);
   csvtojson()
     .fromFile("./students.csv")
     .then((source) => {
       unlinkSync("./students.csv");
 
       for (let i = 0; i < source.length; i++) {
-        let insertsql =
+        let sql =
           "INSERT INTO students (ID, Username) VALUES " +
           `(${source[i].ID}, '${source[i].Name}')`;
 
-        db.query(insertsql).catch((err) => {
+        db.query(sql).catch((err) => {
           console.log("Unable to insert student #", values[0]);
           return console.log(err);
         });

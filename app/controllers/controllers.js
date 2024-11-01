@@ -72,7 +72,10 @@ exports.signIn = (req, res) => {
         res.redirect("/login");
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      res.redirect("/login");
+    });
 };
 
 // Adds students in the course through an uploaded csv file

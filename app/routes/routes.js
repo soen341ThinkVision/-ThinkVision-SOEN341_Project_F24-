@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const db = require("../config/db.js");
 const multer = require("multer");
 const controllers = require("../controllers/controllers.js");
 

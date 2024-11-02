@@ -22,6 +22,12 @@ router
   .get((req, res) => res.render("SignUp.ejs"))
   .put(controllers.register);
 
+router.get("/Summary", controllers.allEval)
+  
+router
+  .route("/Dashboard")
+  .get((req,res) => res.render("Dashboard.ejs"))
+
 // Handles user login
 router
   .route("/login")

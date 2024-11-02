@@ -80,18 +80,17 @@ exports.signIn = (req, res) => {
 
 // Adds students in the course through an uploaded csv file
 exports.uploadFile = (req, res) => {
-  //console.log(req.body);
   csvtojson()
     .fromFile("./students.csv")
     .then((source) => {
       unlinkSync("./students.csv");
 
       for (let i = 0; i < source.length; i++) {
-        let sql =
+        let insertsql =
           "INSERT INTO students (ID, Username) VALUES " +
           `(${source[i].ID}, '${source[i].Name}')`;
 
-        db.query(sql).catch((err) => {
+        db.query(insertsql).catch((err) => {
           console.log("Unable to insert student #", values[0]);
           return console.log(err);
         });
@@ -212,14 +211,46 @@ exports.evaluateTeammate = async (req, res) => {
 };
 
 exports.submitEvaluation = (req, res) => {
-  const { teammateID, cooperation, comments } = req.body;
+  const { teammateID,TypeOfEval, score, comments, } = req.body;
   const reviewerID = req.session.user.id;
 
   const sql =
-    "INSERT INTO evaluations (teammateID, cooperation, comments, reviewerID) " +
-    "VALUES (?, ?, ?, ?)";
+    "INSERT INTO evaluations (teammateID, TypeOfEval, score, comments, reviewerID) " +
+    "VALUES (?, ?, ?, ?, ?)";
 
-  db.query(sql, [teammateID, cooperation, comments, reviewerID])
+  db.query(sql, [teammateID, TypeOfEval, score, comments, reviewerID])
     .then(() => res.redirect("/teammates"))
     .catch((err) => console.log(err));
+};
+
+exports.allEval = (req,res) => {
+  const sql = `
+    SELECT 
+      s.ID,
+      s.Username,
+      s.Team,
+      COUNT(e.ID) AS EvaluationCount,
+      AVG(IF(e.TypeOfEval = 'Coop', e.score, NULL)) AS AvgCoop,
+      AVG(IF(e.TypeOfEval = 'Ethics', e.score, NULL)) AS AvgEthics,
+      AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
+      AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
+      AVG(e.score) AS TotalAvg
+    FROM 
+      Students s
+    LEFT JOIN 
+      Evaluations e ON s.ID = e.teammateID
+    GROUP BY 
+      s.ID, s.Username
+    ORDER BY 
+      s.ID ASC;
+  `;
+  
+  db.query(sql).then(
+    ([result]) => {
+      res.render("Summary.ejs", { evals: result });
+    }
+  ).catch((error) => {
+    console.error("Error fetching evaluations:", error);
+    res.status(500).send("Error retrieving evaluations");
+  });
 };

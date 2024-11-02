@@ -19,6 +19,15 @@
         <input type="hidden" name="teammateID" value="<%= teammate.ID %>" />
         <style></style>
         <div class="container">
+          <h1> Criteria Of Evaluation </h1>
+            <input type="radio" name="TypeOfEval" id="Cooperation" value="Cooperation"/>
+            <label for="Cooperaton"> Cooperation </label>
+
+            <input type="radio" name="TypeOfEval" id="Ethics" value="Ethics"/>
+            <label for="Ethics"> Ethics </label>
+
+            <input type="radio" name="TypeOfEval" id="Tardniess" value="Tardiness"/>
+            <label for="Tardiness"> Tardiness </label>
           <i class="material-icons" id="emoji">sentiment_satisfied</i>
           <span id="number">3</span>
           <input
@@ -28,9 +37,9 @@
             value="3"
             id="slider"
             class="slider"
-            name="cooperation"
+            name="score"
           />
-          <label for="commentBox" id="cooperation">Cooperation:</label>
+          <label for="commentBox" id="cooperation">Comments:</label>
           <textarea
             id="commentBox"
             placeholder="Enter your comment here..."

@@ -34,7 +34,7 @@ pool.query("DROP TABLE IF EXISTS teachers", (err) => {
 pool.query("DROP TABLE IF EXISTS evaluations", (err) => {
   var createEvaluations =
     "CREATE TABLE evaluations (ID int AUTO_INCREMENT PRIMARY KEY, " +
-    "teammateID int, cooperation int, comments text, reviewerID int);";
+    "teammateID int, TypeOfEval varchar(255), score int, comments text, reviewerID int);";
 
   pool.query(createEvaluations, (err) => {
     if (err) console.log("ERROR: ", err);

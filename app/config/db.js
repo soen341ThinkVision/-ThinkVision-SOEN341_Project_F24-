@@ -14,9 +14,7 @@ pool.query("DROP TABLE IF EXISTS students", (err) => {
     "CREATE TABLE students (ID int, Username varchar(255), " +
     "Password varchar(255), Team varchar(255));";
 
-  pool.query(createStudents, (err) => {
-    if (err) console.log("ERROR: ", err);
-  });
+  pool.query(createStudents, (error) => {});
 });
 
 // Sets up teachers table
@@ -25,9 +23,7 @@ pool.query("DROP TABLE IF EXISTS teachers", (err) => {
     "CREATE TABLE teachers (ID int, Username varchar(255), " +
     "Password varchar(255));";
 
-  pool.query(createTeachers, (err) => {
-    if (err) console.log("ERROR: ", err);
-  });
+  pool.query(createTeachers, (error) => {});
 });
 
 // Sets up evaluations table
@@ -36,9 +32,7 @@ pool.query("DROP TABLE IF EXISTS evaluations", (err) => {
     "CREATE TABLE evaluations (ID int AUTO_INCREMENT PRIMARY KEY, " +
     "teammateID int, TypeOfEval varchar(255), score int, comments text, reviewerID int);";
 
-  pool.query(createEvaluations, (err) => {
-    if (err) console.log("ERROR: ", err);
-  });
+  pool.query(createEvaluations, (error) => {});
 });
 
 module.exports = pool.promise();

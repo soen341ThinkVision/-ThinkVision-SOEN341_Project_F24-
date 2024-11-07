@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Peer Assessment Tool</title>
+
+    <link rel="stylesheet" href="/MainPage.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Offer bribe &#128520;</h1>
+    </header>
+
+    <main>
+        <div class="button-container">
+            <div class="form-container">
+            <form action="/Bribe" method="POST">   
+                <select name="amount" id="amount">
+                    <option value="">Select Amount</option>
+                    <option value="50">$50</option>
+                    <option value="100">$100</option>
+                    <option value="200">$200</option>
+                    <option value="500">$500</option>
+                    <option value="1000">$1000</option>
+                </select>
+        
+                
+                <select name="grade" id="grade">
+                    <option value="">Select Grade</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+        
+                <input type="text" name="message" id="message" placeholder="Enter your message">
+                <button id="submitButton">Submit</button>
+              </form>
+            </div>
+          </div>
+    </main>

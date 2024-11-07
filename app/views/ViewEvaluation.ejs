@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>View Evaluation</title>
-    <link rel="stylesheet" href="/MainPage.css" />
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluation</title>
+  <link rel="stylesheet" href="/ViewEvaluation.css">
+</head>
+<body>
+  <div class="evaluation-container">
+    <h2 class="evaluation-title">Evaluation for <%= review.Username %></h2>
 
-  <body>
-    <div class="evaluation-container">
-      <h1>Review for <%= review.teammateID %></h1>
-      <table>
-        <tr>
-          <th>Dimension</th>
-          <th>Rating</th>
-        </tr>
-        <tr>
-          <td>Cooperation</td>
-          <td><%= review.cooperation %></td>
-        </tr>
-      </table>
-      <label for="commentBox">Comments:</label>
-      <p id="commentBox"><%= review.comments %></p>
+    <div class="evaluation-category">
+      <h3 class="category-title">Cooperation</h3>
+      <p><strong>Score:</strong> <%= review.Cooperation && review.Cooperation.score ? review.Cooperation.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> <%= review.Cooperation && review.Cooperation.comments ? review.Cooperation.comments : 'No Comments' %></p>
     </div>
-  </body>
+
+    <div class="evaluation-category">
+      <h3 class="category-title">Work Ethic</h3>
+      <p><strong>Score:</strong> <%= review.WorkEthic && review.WorkEthic.score ? review.WorkEthic.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> <%= review.WorkEthic && review.WorkEthic.comments ? review.WorkEthic.comments : 'No Comments' %></p>
+    </div>
+
+    <div class="evaluation-category">
+      <h3 class="category-title">Practical Contribution</h3>
+      <p><strong>Score:</strong> <%= review.PracticalContribution && review.PracticalContribution.score ? review.PracticalContribution.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> <%= review.PracticalContribution && review.PracticalContribution.comments ? review.PracticalContribution.comments : 'No Comments' %></p>
+    </div>
+
+    <div class="evaluation-category">
+      <h3 class="category-title">Conceptual Contribution</h3>
+      <p><strong>Score:</strong> <%= review.ConceptualContribution && review.ConceptualContribution.score ? review.ConceptualContribution.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> <%= review.ConceptualContribution && review.ConceptualContribution.comments ? review.ConceptualContribution.comments : 'No Comments' %></p>
+    </div>
+  </div>
+</body>
 </html>

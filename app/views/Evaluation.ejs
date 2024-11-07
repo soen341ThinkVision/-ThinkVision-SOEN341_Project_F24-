@@ -1,58 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Evaluate Teammate</title>
-    <link rel="stylesheet" href="/MainPage.css" />
-    <link rel="stylesheet" href="/Evaluation.css" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluate Teammate</title>
+  <link rel="stylesheet" href="/MainPage.css" />
+  <link rel="stylesheet" href="/Evaluation.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Hide all slider containers initially */
+    .slider-container {
+      display: none;
+    }
 
-  <body>
-    <div class="evaluation-container">
-      <h1>Evaluate <%= teammate.Username %></h1>
-      <form action="/evaluate/<%= teammate.ID %>" method="POST">
-        <input type="hidden" name="teammateID" value="<%= teammate.ID %>" />
-        <style></style>
-        <div class="container">
-          <h1> Criteria Of Evaluation </h1>
-            <input type="radio" name="TypeOfEval" id="Cooperation" value="Cooperation"/>
-            <label for="Cooperaton"> Cooperation </label>
+    /* Show the active slider container */
+    .slider-container.active {
+      display: block;
+    }
+  </style>
+</head>
 
-            <input type="radio" name="TypeOfEval" id="Ethics" value="Ethics"/>
-            <label for="Ethics"> Ethics </label>
+<body>
+  <div class="evaluation-container">
+    <h1>Evaluate <%= teammate.Username %></h1>
+  <form action="/evaluate/<%= teammate.ID %>" method="POST">
+    <input type="hidden" name="teammateID" value="<%= teammate.ID %>" />
+      <div class="container">
+        <h1>Criteria of Evaluation</h1>
+        
+        <!-- Radio Buttons for Selecting Criteria -->
+        <input type="radio" name="TypeOfEval" id="Cooperation" value="Cooperation" onclick="showSlider('Cooperation')" />
+        <label for="Cooperation">Cooperation</label><br>
 
-            <input type="radio" name="TypeOfEval" id="Tardniess" value="Tardiness"/>
-            <label for="Tardiness"> Tardiness </label>
-          <i class="material-icons" id="emoji">sentiment_satisfied</i>
-          <span id="number">3</span>
-          <input
-            type="range"
-            min="0"
-            max="5"
-            value="3"
-            id="slider"
-            class="slider"
-            name="score"
-          />
-          <label for="commentBox" id="cooperation">Comments:</label>
-          <textarea
-            id="commentBox"
-            placeholder="Enter your comment here..."
-            rows="4"
-            name="comments"
-          ></textarea>
-          <button id="submitButton">Submit</button>
+        <input type="radio" name="TypeOfEval" id="Ethics" value="Ethics" onclick="showSlider('Ethics')" />
+        <label for="Ethics">Work Ethic</label><br>
+
+        <input type="radio" name="TypeOfEval" id="PracticalContribution" value="PracticalContribution" onclick="showSlider('PracticalContribution')" />
+        <label for="PracticalContribution">Practical Contribution</label><br>
+
+        <input type="radio" name="TypeOfEval" id="ConceptualContribution" value="ConceptualContribution" onclick="showSlider('ConceptualContribution')" />
+        <label for="ConceptualContribution">Conceptual Contribution</label><br>
+
+        <!-- Sliders and Comments for each evaluation criterion with unique IDs -->
+        <div id="CooperationSlider" class="slider-container">
+          <label for="cooperationSlider">Cooperation Score:</label>
+          <input type="range" min="0" max="5" value="3" id="cooperationSlider" class="slider" name="score_cooperation" />
         </div>
-        <script>
-          var slider = document.getElementById("slider");
-          var emoji = document.getElementById("emoji");
-          var number = document.getElementById("number");
-          var emoticons = [
+
+        <div id="EthicsSlider" class="slider-container">
+          <label for="ethicsSlider">Work Ethic Score:</label>
+          <input type="range" min="0" max="5" value="3" id="ethicsSlider" class="slider" name="score_ethics" />
+        </div>
+
+        <div id="PracticalContributionSlider" class="slider-container">
+          <label for="practicalContributionSlider">Practical Contribution Score:</label>
+          <input type="range" min="0" max="5" value="3" id="practicalContributionSlider" class="slider" name="score_pcontribution" />
+        </div>
+
+        <div id="ConceptualContributionSlider" class="slider-container">
+          <label for="conceptualContributionSlider">Conceptual Contribution Score:</label>
+          <input type="range" min="0" max="5" value="3" id="conceptualContributionSlider" class="slider" name="score_contribution" />
+        </div>
+
+        <!-- Emoji and Number Display -->
+        <i class="material-icons" id="emoji">sentiment_satisfied</i>
+        <span id="number">3</span>
+
+        <!-- Comment Boxes for each slider, displayed below the emoji and score -->
+        <div id="CooperationComment" class="slider-container">
+          <label for="cooperationComment">Comment for Cooperation:</label>
+          <textarea id="cooperationCommentBox" name="comment_cooperation" rows="3" placeholder="Enter your comment for Cooperation..."></textarea>
+        </div>
+
+        <div id="EthicsComment" class="slider-container">
+          <label for="ethicsComment">Comment for Work Ethic:</label>
+          <textarea id="ethicsCommentBox" name="comment_ethics" rows="3" placeholder="Enter your comment for Work Ethic..."></textarea>
+        </div>
+        
+        <div id="PracticalContributionComment" class="slider-container">
+          <label for="practicalContributionComment">Comment for Practical Contribution:</label>
+          <textarea id="practicalContributionComment" name="comment_pcontribution" rows="3" placeholder="Enter your comment for Practical Contribution..."></textarea>
+        </div>
+
+        <div id="ConceptualContributionComment" class="slider-container">
+          <label for="conceptualContributionComment">Comment for Conceptual Contribution:</label>
+          <textarea id="conceptualContributionCommentBox" name="comment_ccontribution" rows="3" placeholder="Enter your comment for Conceptual Contribution..."></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submitButton">Submit</button>
+      </div>
+
+      <!-- JavaScript to Handle Slider and Comment Visibility and Updates -->
+      <script>
+        function showSlider(type) {
+          const sliders = document.querySelectorAll('.slider-container');
+          sliders.forEach(slider => slider.classList.remove('active'));
+
+          document.getElementById(type + 'Slider').classList.add('active');
+          document.getElementById(type + 'Comment').classList.add('active');
+
+          const activeSlider = document.getElementById(type + 'Slider').querySelector(".slider");
+          updateSliderDisplay(activeSlider);
+        }
+
+        function updateSliderDisplay(slider) {
+          const emoji = document.getElementById("emoji");
+          const number = document.getElementById("number");
+          const emoticons = [
             "mood_bad",
             "sentiment_very_dissatisfied",
             "sentiment_dissatisfied",
@@ -61,39 +116,31 @@
             "sentiment_very_satisfied",
           ];
 
-          // Function to update slider color gradient based on value
           function updateSliderColor(value) {
-            var color;
-            if (value == 0) {
-              color = "black";
-            } else if (value == 1) {
-              color = "red";
-            } else if (value == 2) {
-              color = "orange";
-            } else if (value == 3) {
-              color = "yellow";
-            } else if (value == 4) {
-              color = "#9ACD32";
-            } else if (value == 5) {
-              color = "green";
-            }
-
-            // Calculate percentage for the gradient based on slider value
-            var percentage = (value / 5) * 100;
-
-            // Set background with gradient to color up to the current value and white for the rest
+            const colorMap = ["black", "red", "orange", "yellow", "#9ACD32", "green"];
+            const color = colorMap[value];
+            const percentage = (value / 5) * 100;
             slider.style.background = `linear-gradient(to right, ${color} ${percentage}%, black ${percentage}%)`;
           }
+
+          number.innerHTML = slider.value;
+          emoji.innerHTML = emoticons[slider.value];
+          updateSliderColor(slider.value);
 
           slider.oninput = function () {
             emoji.innerHTML = emoticons[slider.value];
             number.innerHTML = slider.value;
             updateSliderColor(slider.value);
           };
+        }
 
-          updateSliderColor(slider.value);
-        </script>
-      </form>
-    </div>
-  </body>
+        document.addEventListener('DOMContentLoaded', () => {
+          const initialRadio = document.querySelector('input[name="TypeOfEval"]:checked');
+          if (initialRadio) showSlider(initialRadio.id);
+        });
+      </script>
+    </form>
+  </div>
+</body>
 </html>
+

@@ -56,6 +56,17 @@ router.get("/teammates", controllers.showTeammates);
 // Shows all teams
 router.get("/teams", controllers.showAllTeams);
 
+// Bribing Option
+router
+  .route("/Bribe")
+  .get((req,res) => res.render("Bribing.ejs"))
+  .post(controllers.Bribe);
+
+router
+  .route("/BribeCenter")
+  .get(controllers.AllBribes);
+  //.post(controllers.BribeDecision);
+
 router.get("/detailed-results", controllers.detailedResults);
 
 // Handles teammate evaluation

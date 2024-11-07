@@ -1,15 +1,6 @@
 const request = require("supertest");
-const mysql = require("mysql2");
 const app = require("../app");
 const pool = require("../config/db");
-
-jest.mock("mysql2", () => {
-  return {
-    createConnection: jest.fn().mockReturnValue({
-      query: jest.fn(),
-    }),
-  };
-});
 
 describe("login system", () => {
   test("returns status code 200 when an instructor logs in", async () => {

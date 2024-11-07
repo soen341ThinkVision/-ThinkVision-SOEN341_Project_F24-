@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detailed View</title>
+</head>
+<body>
+<h1>Detailed View</h1>
+
+<% Object.keys(teams).forEach(function(teamName) { %>
+    <h2>Team Name: <%= teamName %></h2>
+    <% teams[teamName].forEach(function(student) { %>
+        <h3>Student Name: <%= student.name %></h3>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Member</th>
+                <th>Cooperation</th>
+                <th>Conceptual</th>
+                <th>Practical</th>
+                <th>Work Ethic</th>
+                <th>Average Across All</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><%= student.name %></td>
+                <td><%= student.avgCoop !== null ? student.avgCoop.toFixed(2) : 'N/A' %></td>
+                <td><%= student.avgConceptualContribution !== null ? student.avgConceptualContribution.toFixed(2) : 'N/A' %></td>
+                <td><%= student.avgPracticalContribution !== null ? student.avgPracticalContribution.toFixed(2) : 'N/A' %></td>
+                <td><%= student.avgEthics !== null ? student.avgEthics.toFixed(2) : 'N/A' %></td>
+                <td><%= typeof student.totalAvg === 'number' ? student.totalAvg.toFixed(2) : 'N/A' %></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>Comments:</h3>
+        <ul>
+            <% if (student.comments) { %>
+                <% student.comments.split('; ').forEach(function(comment) { %>
+                    <li><strong>Comment:</strong> <%= comment %></li>
+                <% }) %>
+            <% } else { %>
+                <li><strong>Comment:</strong> No comment</li>
+            <% } %>
+        </ul>
+    <% }) %>
+<% }) %>
+
+</body>
+</html>

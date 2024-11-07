@@ -206,12 +206,13 @@ exports.evaluateTeammate = async (req, res) => {
     return res.redirect("/login"); // Redirect to login page if user is not logged in
   }
 
+
   const teammateID = req.params.id;
   const reviewerID = req.session.user.id;
 
   console.log("Teammate ID:", teammateID);
   console.log("Reviewer ID:", reviewerID);
-
+  
   if (!teammateID || !reviewerID) {
     return res.status(400).send("Invalid IDs provided.");
   }
@@ -267,6 +268,7 @@ exports.allEval = (req,res) => {
       s.Username,
       s.Team,
       COUNT(e.ID) AS EvaluationCount,
+
       AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
       AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
       AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,

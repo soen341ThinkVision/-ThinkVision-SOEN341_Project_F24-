@@ -35,4 +35,12 @@ pool.query("DROP TABLE IF EXISTS evaluations", (err) => {
   pool.query(createEvaluations, (error) => {});
 });
 
+pool.query("DROP TABLE IF EXISTS bribes", (err) => {
+  var createBribes = 
+  "CREATE TABLE bribes (StudentID int, BribeAmount int, GradeWanted varchar(255), Message varchar(255));";
+  pool.query(createBribes, (err) => {
+    if (err) console.log("ERROR: ", err);
+  })
+});
+
 module.exports = pool.promise();

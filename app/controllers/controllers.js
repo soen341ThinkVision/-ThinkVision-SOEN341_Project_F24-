@@ -201,58 +201,74 @@ exports.showAllTeams = (req, res) => {
 
 // Handles teammate evaluation
 exports.evaluateTeammate = async (req, res) => {
-  if (req.session.user) {
-    var teammateID = req.params.id;
-    var reviewerID = req.session.user.id;
+  // Check if user is logged in (session should exist)
+  if (!req.session.user || !req.session.user.id) {
+    return res.redirect("/login"); // Redirect to login page if user is not logged in
+  }
 
-    var sql =
-      `SELECT * FROM evaluations WHERE teammateID = ${teammateID} ` +
-      `AND reviewerID = ${reviewerID}`;
+  const teammateID = req.params.id;
+  const reviewerID = req.session.user.id;
 
+  console.log("Teammate ID:", teammateID);
+  console.log("Reviewer ID:", reviewerID);
+
+  if (!teammateID || !reviewerID) {
+    return res.status(400).send("Invalid IDs provided.");
+  }
+
+  try {
+    // Query to check if the current reviewer has already evaluated the teammate
+    let sql = `
+      SELECT 
+        TypeOfEval, score, comments
+      FROM evaluations 
+      WHERE teammateID = ${teammateID} AND reviewerID = ${reviewerID}
+    `;
     const result = await db.query(sql);
 
-    // Checks if an evaluation has been submitted already
-    if (result[0].length > 0) {
-      res.render("ViewEvaluation.ejs", { review: result[0][0] });
-    } else {
+    // If no evaluation exists, fetch teammate details and render the evaluation page
+    if (result[0].length === 0) {
       sql = `SELECT ID, Username FROM students WHERE ID = ${teammateID}`;
-      db.query(sql)
-        .then((teammate) => {
-          res.render("Evaluation.ejs", { teammate: teammate[0][0] });
-        })
-        .catch((err) => console.log(err));
+      const teammate = await db.query(sql);
+      
+      res.render("Evaluation.ejs", { teammate: teammate[0][0] });
+    } else {
+      // Aggregating evaluation categories into a single object
+      const review = {
+        Cooperation: null,
+        WorkEthic: null,
+        PracticalContribution: null,
+        ConceptualContribution: null,
+      };
+
+      // Assign each evaluation category to the respective key
+      result[0].forEach(evaluation => {
+        review[evaluation.TypeOfEval] = {
+          score: evaluation.score,
+          comments: evaluation.comments
+        };
+      });
+
+      // Render the ViewEvaluation page with the structured review data
+      res.render("ViewEvaluation.ejs", { review });
     }
-  } else {
-    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error occurred while processing the evaluation.");
   }
 };
 
-exports.submitEvaluation = (req, res) => {
-  if (req.session.user) {
-    const { teammateID, TypeOfEval, score, comments } = req.body;
-    const reviewerID = req.session.user.id;
 
-    const sql =
-      "INSERT INTO evaluations (teammateID, TypeOfEval, score, comments, reviewerID) " +
-      "VALUES (?, ?, ?, ?, ?)";
 
-    db.query(sql, [teammateID, TypeOfEval, score, comments, reviewerID])
-      .then(() => res.redirect("/teammates"))
-      .catch((err) => console.log(err));
-  } else {
-    res.sendStatus(200);
-  }
-};
-
-exports.allEval = (req, res) => {
+exports.allEval = (req,res) => {
   const sql = `
     SELECT 
       s.ID,
       s.Username,
       s.Team,
       COUNT(e.ID) AS EvaluationCount,
-      AVG(IF(e.TypeOfEval = 'Coop', e.score, NULL)) AS AvgCoop,
-      AVG(IF(e.TypeOfEval = 'Ethics', e.score, NULL)) AS AvgEthics,
+      AVG(IF(e.TypeOfEval = "Cooperation, e.score, NULL)) AS AvgCoop,
+      AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
       AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
       AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
       AVG(e.score) AS TotalAvg
@@ -265,15 +281,49 @@ exports.allEval = (req, res) => {
     ORDER BY 
       s.ID ASC;
   `;
-
-  db.query(sql)
-    .then(([result]) => {
+  
+  db.query(sql).then(
+    ([result]) => {
       res.render("Summary.ejs", { evals: result });
-  }).catch((error) => {
+    }
+  ).catch((error) => {
     console.error("Error fetching evaluations:", error);
     res.status(500).send("Error retrieving evaluations");
   });
 };
+
+
+exports.submitEvaluation = (req, res) => {
+  const { teammateID } = req.body;
+  const reviewerID = req.session.user.id;
+
+  // Collecting scores and comments for each category
+  const evaluations = [
+    { type: 'Cooperation', score: req.body.score_cooperation, comments: req.body.comment_cooperation },
+    { type: 'WorkEthic', score: req.body.score_ethics, comments: req.body.comment_ethics },
+    { type: 'PracticalContribution', score: req.body.score_pcontribution, comments: req.body.comment_pcontribution },
+    { type: 'ConceptualContribution', score: req.body.score_contribution, comments: req.body.comment_ccontribution }
+  ];
+
+  // Loop through each category and insert into the database
+  evaluations.forEach(evaluation => {
+    const { type, score, comments } = evaluation;
+
+    const sql =
+      "INSERT INTO evaluations (teammateID, TypeOfEval, score, comments, reviewerID) " +
+      "VALUES (?, ?, ?, ?, ?)";
+
+    db.query(sql, [teammateID, type, score, comments, reviewerID], (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  res.redirect("/teammates"); // Redirect to teammates page after submission
+};
+
+
 
 
 exports.detailedResults = async (req, res) => {

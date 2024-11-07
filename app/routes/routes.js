@@ -56,6 +56,8 @@ router.get("/teammates", controllers.showTeammates);
 // Shows all teams
 router.get("/teams", controllers.showAllTeams);
 
+router.get("/detailed-results", controllers.detailedResults);
+
 // Handles teammate evaluation
 router
   .route("/evaluate/:id")

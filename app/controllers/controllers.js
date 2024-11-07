@@ -254,3 +254,56 @@ exports.allEval = (req,res) => {
     res.status(500).send("Error retrieving evaluations");
   });
 };
+
+
+exports.detailedResults = async (req, res) => {
+  const sql = `
+    SELECT 
+      s.ID,
+      s.Username,
+      s.Team,
+      AVG(IF(e.TypeOfEval = 'Coop', e.score, NULL)) AS AvgCoop,
+      AVG(IF(e.TypeOfEval = 'Ethics', e.score, NULL)) AS AvgEthics,
+      AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
+      AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
+      AVG(e.score) AS TotalAvg,
+      GROUP_CONCAT(CONCAT(r.Username, ': ', e.comments) SEPARATOR '; ') AS comments
+    FROM 
+      Students s
+    LEFT JOIN 
+      Evaluations e ON s.ID = e.teammateID
+    LEFT JOIN 
+      Students r ON e.reviewerID = r.ID
+    GROUP BY 
+      s.ID, s.Username, s.Team
+    ORDER BY 
+      s.Team ASC, s.ID ASC;
+  `;
+
+  try {
+    const [result] = await db.query(sql);
+    const teams = {};
+
+    result.forEach((row) => {
+      if (!teams[row.Team]) {
+        teams[row.Team] = [];
+      }
+      teams[row.Team].push({
+        id: row.ID,
+        name: row.Username,
+        team: row.Team,
+        avgCoop: row.AvgCoop,
+        avgEthics: row.AvgEthics,
+        avgConceptualContribution: row.AvgConceptualContribution,
+        avgPracticalContribution: row.AvgPracticalContribution,
+        totalAvg: row.TotalAvg,
+        comments: row.comments,
+      });
+    });
+
+    res.render('DetailedView.ejs', { teams });
+  } catch (error) {
+    console.error('Error fetching detailed results:', error);
+    res.status(500).send('Error retrieving detailed results');
+  }
+};

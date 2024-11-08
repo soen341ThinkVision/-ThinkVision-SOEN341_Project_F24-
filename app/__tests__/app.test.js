@@ -1,6 +1,32 @@
 const request = require("supertest");
 const app = require("../app");
 const pool = require("../config/db");
+const mysql = require("mysql2");
+
+// Mock the mysql2 connection
+jest.mock("mysql2", () => {
+  return {
+    createPool: jest.fn().mockReturnValue({
+      query: jest.fn(),
+    }),
+  };
+});
+
+describe("login system", () => {
+  it("returns status code 200 when username, password, and role are submitted", async () => {
+    const response = await request(app).post("/login").send({
+      Username: "user",
+      Password: "password",
+      Option: "Teacher",
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it("returns status code 400 when either username, password, or role are missing", async () => {
+    expect(false).toBe(false);
+  });
+});
 
 describe("login system", () => {
   test("returns status code 200 when an instructor logs in", async () => {

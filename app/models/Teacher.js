@@ -21,14 +21,16 @@ class Teacher {
     return db.execute(sql);
   }
 
-  static find(username, password) {
+  static async find(username, password) {
     let sql = `SELECT * 
                 FROM teachers 
                 WHERE 
-                    Username ='${username}' AND 
+                    Username='${username}' AND 
                     Password='${password}'`;
 
-    return db.execute(sql);
+    const [teacher, _] = await db.execute(sql);
+
+    return teacher;
   }
 }
 

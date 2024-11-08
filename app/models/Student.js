@@ -1,18 +1,13 @@
 const db = require("../config/db");
 
 class Student {
-  constructor(id, name) {
-    this.id = id;
-    this.username = name;
-  }
-
-  save() {
+  static save(id, name) {
     let sql = `INSERT INTO students (
-                    ID,
-                    Username
+                    id,
+                    username
                   ) VALUES(
-                    ${this.id},
-                    '${this.username}'
+                    ${id},
+                    '${name}'
                   )`;
 
     return db.execute(sql);
@@ -20,32 +15,32 @@ class Student {
 
   static updatePassword(id, password) {
     let sql = `UPDATE students 
-                SET Password="${password}" 
-                WHERE ID=${id}`;
+                SET password="${password}" 
+                WHERE id=${id}`;
 
     return db.execute(sql);
   }
 
   static updateTeam(id, team) {
     let sql = `UPDATE students 
-                SET Team="${team}" 
-                WHERE ID=${id}`;
+                SET team="${team}" 
+                WHERE id=${id}`;
 
     return db.execute(sql);
   }
 
   static deleteTeam(id) {
     let sql = `UPDATE students 
-                SET Team=NULL 
-                WHERE ID=${id}`;
+                SET team=NULL 
+                WHERE id=${id}`;
 
     return db.execute(sql);
   }
 
   static async findAll() {
-    let sql = `SELECT ID, Username, Team
+    let sql = `SELECT id, username, team
                 FROM students 
-                ORDER BY Team ASC`;
+                ORDER BY team ASC`;
 
     const [students, _] = await db.execute(sql);
 
@@ -56,8 +51,8 @@ class Student {
     let sql = `SELECT * 
                 FROM students 
                 WHERE 
-                    Username='${username}' AND 
-                    Password='${password}'`;
+                    username='${username}' AND 
+                    password='${password}'`;
 
     const [student, _] = await db.execute(sql);
 
@@ -67,7 +62,7 @@ class Student {
   static async findById(id) {
     let sql = `SELECT * 
                 FROM students 
-                WHERE ID=${id}`;
+                WHERE id=${id}`;
 
     const [student, _] = await db.execute(sql);
 
@@ -77,13 +72,12 @@ class Student {
   static async findByTeam(team) {
     let sql = `SELECT * 
                 FROM students 
-                WHERE Team=${team}`;
+                WHERE team=${team}`;
 
     const [students, _] = await db.execute(sql);
 
     return students;
   }
-  
 }
 
 module.exports = Student;

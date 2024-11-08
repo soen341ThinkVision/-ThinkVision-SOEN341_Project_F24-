@@ -10,37 +10,57 @@ const pool = mysql.createPool({
 
 // Sets up students table
 pool.query("DROP TABLE IF EXISTS students", (err) => {
-  var createStudents =
-    "CREATE TABLE students (ID int, Username varchar(255), " +
-    "Password varchar(255), Team varchar(255));";
+  const sql = `CREATE TABLE students (
+        id int, 
+        username varchar(255),
+        password varchar(255), 
+        team varchar(255))`;
 
-  pool.query(createStudents, (error) => {});
+  pool.query(sql, (err) => {
+    if (err) console.log("ERROR: ", err);
+  });
 });
 
 // Sets up teachers table
 pool.query("DROP TABLE IF EXISTS teachers", (err) => {
-  var createTeachers =
-    "CREATE TABLE teachers (ID int, Username varchar(255), " +
-    "Password varchar(255));";
+  const sql = `
+    CREATE TABLE teachers (
+        id int, 
+        username varchar(255),
+        password varchar(255))`;
 
-  pool.query(createTeachers, (error) => {});
+  pool.query(sql, (err) => {
+    if (err) console.log("ERROR: ", err);
+  });
 });
 
 // Sets up evaluations table
 pool.query("DROP TABLE IF EXISTS evaluations", (err) => {
-  var createEvaluations =
-    "CREATE TABLE evaluations (ID int AUTO_INCREMENT PRIMARY KEY, " +
-    "teammateID int, TypeOfEval varchar(255), score int, comments text, reviewerID int);";
+  const sql = `
+    CREATE TABLE evaluations (
+        id int AUTO_INCREMENT PRIMARY KEY,
+        reviewee_id int, 
+        category varchar(255), 
+        score int, 
+        comment text, 
+        reviewer_id int)`;
 
-  pool.query(createEvaluations, (error) => {});
+  pool.query(sql, (err) => {
+    if (err) console.log("ERROR: ", err);
+  });
 });
 
 pool.query("DROP TABLE IF EXISTS bribes", (err) => {
-  var createBribes = 
-  "CREATE TABLE bribes (StudentID int, BribeAmount int, GradeWanted varchar(255), Message varchar(255));";
-  pool.query(createBribes, (err) => {
+  const sql = `
+    CREATE TABLE bribes (
+        student_id int, 
+        amount int, 
+        grade varchar(255), 
+        message text)`;
+
+  pool.query(sql, (err) => {
     if (err) console.log("ERROR: ", err);
-  })
+  });
 });
 
 module.exports = pool.promise();

@@ -1,21 +1,15 @@
 const db = require("../config/db");
 
 class Teacher {
-  constructor(id, name, password) {
-    this.id = id;
-    this.username = name;
-    this.password = password;
-  }
-
-  save() {
+  static save(id, name, password) {
     let sql = `INSERT INTO teachers (
-                  ID,
-                  Username,
-                  Password
+                  id,
+                  username,
+                  password
                 ) VALUES(
-                  ${this.id},
-                  '${this.username}', 
-                  '${this.password}'
+                  ${id},
+                  '${name}', 
+                  '${password}'
                 )`;
 
     return db.execute(sql);
@@ -25,8 +19,8 @@ class Teacher {
     let sql = `SELECT * 
                 FROM teachers 
                 WHERE 
-                    Username='${username}' AND 
-                    Password='${password}'`;
+                    username='${username}' AND 
+                    password='${password}'`;
 
     const [teacher, _] = await db.execute(sql);
 

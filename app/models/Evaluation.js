@@ -1,49 +1,41 @@
 const db = require("../config/db");
 
 class Evaluation {
-  constructor(reviewerID, revieweeID, TypeOfEval, score, comments) {
-    this.reviewerID = reviewerID;
-    this.revieweeID = revieweeID;
-    this.TypeOfEval = TypeOfEval;
-    this.score = score;
-    this.comments = comments;
-  }
-
-  save() {
+  static save(reviewer, reviewee, category, score, comment) {
     let sql = `INSERT INTO evaluations (
-                    teammateID, 
-                    TypeOfEval, 
+                    reviewer_id,
+                    reviewee_id, 
+                    category, 
                     score, 
-                    comments, 
-                    reviewerID
+                    comment     
                 ) VALUES(
-                    ${this.revieweeID},
-                    '${this.TypeOfEval}',
-                    ${this.score},
-                    '${this.comments}',
-                    ${this.reviewerID}
+                    ${reviewer},
+                    ${reviewee},
+                    '${category}',
+                    ${score},
+                    '${comment}'
                 )`;
     return db.execute(sql);
   }
 
   static async getSummary() {
     let sql = `SELECT 
-                    s.ID,
-                    s.Username,
-                    s.Team,
-                    COUNT(e.ID) AS EvalCount,
-                    AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
-                    AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
-                    AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptual,
-                    AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPractical,
+                    s.id,
+                    s.username,
+                    s.team,
+                    COUNT(e.id) AS EvalCount,
+                    AVG(IF(e.category = 'Cooperation', e.score, NULL)) AS AvgCoop,
+                    AVG(IF(e.category = 'WorkEthic', e.score, NULL)) AS AvgEthics,
+                    AVG(IF(e.category = 'ConceptualContribution', e.score, NULL)) AS AvgConceptual,
+                    AVG(IF(e.category = 'PracticalContribution', e.score, NULL)) AS AvgPractical,
                     AVG(e.score) AS TotalAvg
-                FROM Students s LEFT JOIN 
-                    Evaluations e 
-                    ON s.ID = e.teammateID
+                FROM students s LEFT JOIN 
+                    evaluations e 
+                    ON s.id = e.reviewee_id
                 GROUP BY 
-                    s.ID, s.Username
+                    s.id, s.username
                 ORDER BY 
-                    s.ID ASC`;
+                    s.id ASC`;
 
     const [evaluations, _] = await db.execute(sql);
     return evaluations;
@@ -51,39 +43,40 @@ class Evaluation {
 
   static async getDetailed() {
     let sql = `SELECT 
-                    s.ID,
-                    s.Username,
-                    s.Team,
-                    AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
-                    AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
-                    AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
-                    AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
+                    s.id,
+                    s.username,
+                    s.team,
+                    r.id AS Reviewer,
+                    AVG(IF(e.category = 'Cooperation', e.score, NULL)) AS AvgCoop,
+                    AVG(IF(e.category = 'WorkEthic', e.score, NULL)) AS AvgEthics,
+                    AVG(IF(e.category = 'ConceptualContribution', e.score, NULL)) AS AvgConceptual,
+                    AVG(IF(e.category = 'PracticalContribution', e.score, NULL)) AS AvgPractical,
                     AVG(e.score) AS TotalAvg,
-                    GROUP_CONCAT(CONCAT(r.Username, ': ', e.comments) SEPARATOR '; ') AS comments
+                    GROUP_CONCAT(CONCAT(r.username, ': ', e.comment) SEPARATOR '; ') AS Comments
                 FROM 
-                    Students s 
-                    LEFT JOIN Evaluations e 
-                        ON s.ID = e.teammateID
-                    LEFT JOIN Students r 
-                        ON e.reviewerID = r.ID
+                    students s 
+                    LEFT JOIN evaluations e 
+                        ON s.ID = e.reviewee_id
+                    LEFT JOIN students r 
+                        ON e.reviewer_id = r.id
                 GROUP BY 
-                    s.ID, 
-                    s.Username, 
-                    s.Team
+                    s.id, 
+                    s.username, 
+                    s.team
                 ORDER BY 
-                    s.Team ASC, 
-                    s.ID ASC`;
+                    s.team ASC, 
+                    s.id ASC`;
 
     const [evaluations, _] = await db.execute(sql);
     return evaluations;
   }
 
-  static async find(reviewerID, revieweeID) {
-    let sql = `SELECT TypeOfEval, score, comments
+  static async find(reviewer, reviewee) {
+    let sql = `SELECT category, score, comment
                 FROM evaluations
                 WHERE 
-                    teammateID=${revieweeID} AND 
-                    reviewerID=${reviewerID}`;
+                    reviewee_id=${reviewee} AND 
+                    reviewer_id=${reviewer}`;
 
     const [evaluations, _] = await db.execute(sql);
     return evaluations;

@@ -1,99 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Table</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <style>
-        body {
-            background-color: burlywood;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+      body {
+        background-color: burlywood;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 20px;
-            background-color: burlywood;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: burlywood;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: burlywood;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: burlywood;
+      }
 
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-        }
+      th,
+      td {
+        padding: 12px 15px;
+        text-align: left;
+      }
 
-        thead {
-            background-color: #f5deb3;
-        }
+      thead {
+        background-color: #f5deb3;
+      }
 
-        th {
-            color: #4b2e2e;
-            font-weight: bold;
-        }
+      th {
+        color: #4b2e2e;
+        font-weight: bold;
+      }
 
-        tbody tr {
-            transition: background-color 0.3s;
-        }
+      tbody tr {
+        transition: background-color 0.3s;
+      }
 
-        tbody tr:hover {
-            background-color: #e0c09a;
-        }
+      tbody tr:hover {
+        background-color: #e0c09a;
+      }
 
-        tbody tr:nth-child(even) {
-            background-color: #f5e7d6;
-        }
-
+      tbody tr:nth-child(even) {
+        background-color: #f5e7d6;
+      }
     </style>
-</head>
-<body>
-<div class="container">
-    <table>
+  </head>
+  <body>
+    <div class="container">
+      <table>
         <thead>
-        <tr>
+          <tr>
             <th>Student ID</th>
             <th>Name</th>
             <th>Team</th>
             <th>Cooperation</th>
             <th>Conceptual Contribution</th>
             <th>Practical Contribution</th>
-            <th> Work Ethic </th>
-            <th> Average </th>
-            <th> Peers who responded </th>
-        </tr>
+            <th>Work Ethic</th>
+            <th>Average</th>
+            <th>Peers who responded</th>
+          </tr>
         </thead>
         <tbody>
-            <% evals.forEach(evaluation => { %>
-                <tr>
-                  <td><%= evaluation.ID %></td>
-                  <td><%= evaluation.Username %></td>
-                  <td><%= evaluation.Team %></td>
-                  <td><%= evaluation.AvgCoop ? evaluation.AvgCoop : 'N/A' %></td>
-                  <td><%= evaluation.AvgConceptualContribution ? evaluation.AvgConceptual : 'N/A' %></td>
-                  <td><%= evaluation.AvgPracticalContribution ? evaluation.AvgPractical : 'N/A' %></td>
-                  <td><%= evaluation.AvgEthics ? evaluation.AvgEthics : 'N/A' %></td>
-                  <td><%= evaluation.TotalAvg ? evaluation.TotalAvg : 'N/A' %></td>
-                  <td><%= (evaluation.EvalCount/4) %></td>
-                </tr>
-              <% }) %>
+          <% evals.forEach(evaluation => { %>
+          <tr>
+            <td><%= evaluation.id %></td>
+            <td><%= evaluation.username %></td>
+            <td><%= evaluation.team %></td>
+            <td><%= evaluation.AvgCoop ? evaluation.AvgCoop : 'N/A' %></td>
+            <td>
+              <%= evaluation.AvgConceptual ? evaluation.AvgConceptual : 'N/A' %>
+            </td>
+            <td>
+              <%= evaluation.AvgPractical ? evaluation.AvgPractical : 'N/A' %>
+            </td>
+            <td><%= evaluation.AvgEthics ? evaluation.AvgEthics : 'N/A' %></td>
+            <td><%= evaluation.TotalAvg ? evaluation.TotalAvg : 'N/A' %></td>
+            <td><%= (evaluation.EvalCount/4) %></td>
+          </tr>
+          <% }) %>
         </tbody>
-    </table>
-</div>
-</body>
+      </table>
+    </div>
+  </body>
 </html>

@@ -47,10 +47,10 @@
             <% bribes.forEach(bribe => { %>
               <div class="bribe-row">
                 <div class="bribe-details">
-                  <p><strong>STUDENT ID:</strong> <%= bribe.StudentID%></p>
-                  <p><strong>AMOUNT:</strong> <%= bribe.BribeAmount %>$</p>
-                  <p><strong>GRADE WANTED:</strong> <%= bribe.GradeWanted%></p>
-                  <p><strong>COMMENTS:</strong> <%= bribe.Message %></p>
+                  <p><strong>STUDENT ID:</strong> <%= bribe.student_id%></p>
+                  <p><strong>AMOUNT:</strong> <%= bribe.amount %>$</p>
+                  <p><strong>GRADE WANTED:</strong> <%= bribe.grade%></p>
+                  <p><strong>COMMENTS:</strong> <%= bribe.message %></p>
                 </div>
                 <div class="actions">
                   <button class="accept-btn" onclick="handleDecision('<%= bribe.id %>', 'accept')">Accept</button>

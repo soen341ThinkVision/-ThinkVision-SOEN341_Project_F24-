@@ -1,4 +1,4 @@
-const { Teacher, Student, Evaluation, Bribe } = require("../models/allModels");
+const { Teacher, Student, Evaluation, Bribe } = require("../models");
 const csvtojson = require("csvtojson");
 const { createReadStream, unlinkSync } = require("fs");
 const _ = require("lodash");
@@ -38,7 +38,7 @@ exports.register = async (req, res) => {
   }
 
   if (Option === "Teacher") {
-    const teacher = await new Teacher(ID, Username, Password).save();
+    const teacher = await Teacher.save(ID, Username, Password);
     console.log("Teacher sucessfully registered.");
     res.send({ registered: true });
   }
@@ -58,10 +58,10 @@ exports.signIn = async (req, res) => {
 
   if (user.length > 0) {
     req.session.user = {
-      id: user[0].ID,
-      username: user[0].Username,
+      id: user[0].id,
+      username: user[0].username,
       role: Option,
-      team: user[0].Team,
+      team: user[0].team,
     };
 
     console.log("Login successful:", req.session.user);
@@ -82,7 +82,7 @@ exports.uploadFile = (req, res) => {
 
       // saves students in the database
       for (let i = 0; i < students.length; i++) {
-        await new Student(students[i].ID, students[i].Name).save();
+        await Student.save(students[i].ID, students[i].Name);
       }
     })
     .then(() => {
@@ -122,7 +122,7 @@ exports.assignAllStudents = async (req, res) => {
 
   for (let i = 0; i < students.length; i++) {
     let team = (i % numOfTeams) + 1;
-    await Student.updateTeam(students[i].ID, team);
+    await Student.updateTeam(students[i].id, team);
   }
 
   return res.send("Teams auto-assigned.");
@@ -134,7 +134,7 @@ exports.showTeammates = async (req, res) => {
 
   let teammates = [];
   teamMembers.forEach((student) => {
-    if (req.session.user.username != student.Username) {
+    if (req.session.user.username != student.username) {
       teammates.push(student);
     }
   });
@@ -151,11 +151,11 @@ exports.showAllTeams = async (req, res) => {
 
   let teams = [];
   students.forEach((student) => {
-    const { Team, Username, ID } = student;
-    if (!teams[Team]) {
-      teams[Team] = [];
+    const { team, username, id } = student;
+    if (!teams[team]) {
+      teams[team] = [];
     }
-    teams[Team].push(student); // Add the student to the corresponding team
+    teams[team].push(student); // Add the student to the corresponding team
   });
 
   res.render("AllTeams.ejs", { teams });
@@ -182,14 +182,15 @@ exports.evaluateTeammate = async (req, res) => {
     // Query to check if the current reviewer has already evaluated the teammate
     const result = await Evaluation.find(reviewerID, teammateID);
 
+    const teammate = await Student.findById(teammateID);
+
     // If no evaluation exists, fetch teammate details and render the evaluation page
     if (result.length === 0) {
-      const teammate = await Student.findById(teammateID);
-
       res.render("Evaluation.ejs", { teammate: teammate[0] });
     } else {
       // Aggregating evaluation categories into a single object
       const review = {
+        Teammate: teammate[0],
         Cooperation: null,
         WorkEthic: null,
         PracticalContribution: null,
@@ -198,9 +199,9 @@ exports.evaluateTeammate = async (req, res) => {
 
       // Assign each evaluation category to the respective key
       result.forEach((evaluation) => {
-        review[evaluation.TypeOfEval] = {
+        review[evaluation.category] = {
           score: evaluation.score,
-          comments: evaluation.comments,
+          comments: evaluation.comment,
         };
       });
 
@@ -210,16 +211,6 @@ exports.evaluateTeammate = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send("Error occurred while processing the evaluation.");
-  }
-};
-
-exports.allEval = async (req, res) => {
-  try {
-    const result = await Evaluation.getSummary();
-    res.render("Summary.ejs", { evals: result });
-  } catch (error) {
-    console.error("Error fetching evaluations:", error);
-    res.status(500).send("Error retrieving evaluations");
   }
 };
 
@@ -255,10 +246,20 @@ exports.submitEvaluation = (req, res) => {
   evaluations.forEach(async (evaluation) => {
     const { type, score, comments } = evaluation;
 
-    await new Evaluation(reviewerID, teammateID, type, score, comments).save();
+    await Evaluation.save(reviewerID, teammateID, type, score, comments);
   });
 
   res.redirect("/teammates"); // Redirect to teammates page after submission
+};
+
+exports.summary = async (req, res) => {
+  try {
+    const result = await Evaluation.getSummary();
+    res.render("Summary.ejs", { evals: result });
+  } catch (error) {
+    console.error("Error fetching evaluations:", error);
+    res.status(500).send("Error retrieving evaluations");
+  }
 };
 
 exports.detailedResults = async (req, res) => {
@@ -267,22 +268,22 @@ exports.detailedResults = async (req, res) => {
     const teams = {};
 
     result.forEach((row) => {
-      if (!teams[row.Team]) {
-        teams[row.Team] = [];
+      if (!teams[row.team]) {
+        teams[row.team] = [];
       }
-      teams[row.Team].push({
-        id: row.ID,
-        name: row.Username,
-        team: row.Team,
+      teams[row.team].push({
+        id: row.id,
+        name: row.username,
+        reviewer: row.Reviewer,
+        team: row.team,
         avgCoop: row.AvgCoop,
         avgEthics: row.AvgEthics,
-        avgConceptualContribution: row.AvgConceptualContribution,
-        avgPracticalContribution: row.AvgPracticalContribution,
+        avgConceptual: row.AvgConceptual,
+        avgPractical: row.AvgPractical,
         totalAvg: row.TotalAvg,
-        comments: row.comments,
+        comments: row.Comments,
       });
     });
-
     res.render("DetailedView.ejs", { teams });
   } catch (error) {
     console.error("Error fetching detailed results:", error);
@@ -293,8 +294,9 @@ exports.detailedResults = async (req, res) => {
 exports.Bribe = async (req, res) => {
   const studentID = req.session.user.id;
   const { amount, grade, message } = req.body;
+
   try {
-    await new Bribe(studentID, amount, grade, message).save();
+    await Bribe.save(studentID, amount, grade, message);
     console.log("Bribe sucessfully added.");
     res.redirect("/");
   } catch (err) {

@@ -8,30 +8,38 @@
 </head>
 <body>
   <div class="evaluation-container">
-    <h2 class="evaluation-title">Evaluation for <%= review.Username %></h2>
+    <h2 class="evaluation-title">Evaluation for <%= review.Teammate.username %></h2>
 
     <div class="evaluation-category">
       <h3 class="category-title">Cooperation</h3>
-      <p><strong>Score:</strong> <%= review.Cooperation && review.Cooperation.score ? review.Cooperation.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> <%= review.Cooperation && review.Cooperation.comments ? review.Cooperation.comments : 'No Comments' %></p>
+      <p><strong>Score:</strong> 
+        <%= review.Cooperation.score ? review.Cooperation.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> 
+        <%= review.Cooperation.comments ? review.Cooperation.comments : 'No Comments' %></p>
     </div>
 
     <div class="evaluation-category">
       <h3 class="category-title">Work Ethic</h3>
-      <p><strong>Score:</strong> <%= review.WorkEthic && review.WorkEthic.score ? review.WorkEthic.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> <%= review.WorkEthic && review.WorkEthic.comments ? review.WorkEthic.comments : 'No Comments' %></p>
+      <p><strong>Score:</strong>
+        <%= review.WorkEthic.score ? review.WorkEthic.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> 
+        <%= review.WorkEthic.comments ? review.WorkEthic.comments : 'No Comments' %></p>
     </div>
 
     <div class="evaluation-category">
       <h3 class="category-title">Practical Contribution</h3>
-      <p><strong>Score:</strong> <%= review.PracticalContribution && review.PracticalContribution.score ? review.PracticalContribution.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> <%= review.PracticalContribution && review.PracticalContribution.comments ? review.PracticalContribution.comments : 'No Comments' %></p>
+      <p><strong>Score:</strong> 
+        <%= review.PracticalContribution.score ? review.PracticalContribution.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> 
+        <%= review.PracticalContribution.comments ? review.PracticalContribution.comments : 'No Comments' %></p>
     </div>
 
     <div class="evaluation-category">
       <h3 class="category-title">Conceptual Contribution</h3>
-      <p><strong>Score:</strong> <%= review.ConceptualContribution && review.ConceptualContribution.score ? review.ConceptualContribution.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> <%= review.ConceptualContribution && review.ConceptualContribution.comments ? review.ConceptualContribution.comments : 'No Comments' %></p>
+      <p><strong>Score:</strong> 
+        <%= review.ConceptualContribution.score ? review.ConceptualContribution.score : 'Not Evaluated' %></p>
+      <p><strong>Comments:</strong> 
+        <%= review.ConceptualContribution.comments ? review.ConceptualContribution.comments : 'No Comments' %></p>
     </div>
   </div>
 </body>

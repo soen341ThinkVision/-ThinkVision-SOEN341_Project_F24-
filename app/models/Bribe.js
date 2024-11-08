@@ -1,24 +1,17 @@
 const db = require("../config/db");
 
 class Bribe {
-  constructor(id, amount, grade, message) {
-    this.id = id;
-    this.amount = amount;
-    this.grade = grade;
-    this.message = message;
-  }
-
-  save() {
+  static save(id, amount, grade, message) {
     let sql = `INSERT INTO bribes (
-                    StudentID, 
-                    BribeAmount, 
-                    GradeWanted, 
-                    Message
+                    student_id, 
+                    amount, 
+                    grade, 
+                    message
                 ) VALUES(
-                    ${this.id},
-                    ${this.amount},
-                    '${this.grade}',
-                    '${this.message}'
+                    ${id},
+                    ${amount},
+                    '${grade}',
+                    '${message}'
                 )`;
     return db.execute(sql);
   }

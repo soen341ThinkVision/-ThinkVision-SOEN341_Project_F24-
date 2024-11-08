@@ -85,11 +85,11 @@
                   <td><%= evaluation.Username %></td>
                   <td><%= evaluation.Team %></td>
                   <td><%= evaluation.AvgCoop ? evaluation.AvgCoop : 'N/A' %></td>
-                  <td><%= evaluation.AvgConceptualContribution ? evaluation.AvgConceptualContribution : 'N/A' %></td>
-                  <td><%= evaluation.AvgPracticalContribution ? evaluation.AvgPracticalContribution : 'N/A' %></td>
+                  <td><%= evaluation.AvgConceptualContribution ? evaluation.AvgConceptual : 'N/A' %></td>
+                  <td><%= evaluation.AvgPracticalContribution ? evaluation.AvgPractical : 'N/A' %></td>
                   <td><%= evaluation.AvgEthics ? evaluation.AvgEthics : 'N/A' %></td>
                   <td><%= evaluation.TotalAvg ? evaluation.TotalAvg : 'N/A' %></td>
-                  <td><%= (evaluation.EvaluationCount/4) %></td>
+                  <td><%= (evaluation.EvalCount/4) %></td>
                 </tr>
               <% }) %>
         </tbody>

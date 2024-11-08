@@ -1,7 +1,7 @@
-const db = require("../config/db.js");
-const { Teacher, Student } = require("../models/allModels");
+const { Teacher, Student, Evaluation, Bribe } = require("../models/allModels");
 const csvtojson = require("csvtojson");
 const { createReadStream, unlinkSync } = require("fs");
+const _ = require("lodash");
 
 // Home page
 exports.homePage = (req, res) => {
@@ -114,9 +114,11 @@ exports.assignOneStudent = async (req, res) => {
 
 // Updates all students' teams
 exports.assignAllStudents = async (req, res) => {
-  const students = await Student.findAll();
+  var students = await Student.findAll();
 
   var numOfTeams = Math.ceil(students.length / req.body.size);
+
+  students = _.shuffle(students);
 
   for (let i = 0; i < students.length; i++) {
     let team = (i % numOfTeams) + 1;
@@ -130,37 +132,33 @@ exports.assignAllStudents = async (req, res) => {
 exports.showTeammates = async (req, res) => {
   const teamMembers = await Student.findByTeam(req.session.user.team);
 
-  if (teamMembers.length > 0) {
-    let teammates = [];
-    teamMembers.forEach((student) => {
-      if (req.session.user.username != student.Username) {
-        teammates.push(student);
-      }
-    });
+  let teammates = [];
+  teamMembers.forEach((student) => {
+    if (req.session.user.username != student.Username) {
+      teammates.push(student);
+    }
+  });
 
-    res.render("TeamVisibility.ejs", {
-      teamMembers: teammates,
-      teamName: req.session.user.team,
-    });
-  }
+  res.render("TeamVisibility.ejs", {
+    teamMembers: teammates,
+    teamName: req.session.user.team,
+  });
 };
 
 // Shows all teams and their members
-exports.showAllTeams = (req, res) => {
-  db.query("SELECT Team, Username, ID FROM students ORDER BY Team ASC").then(
-    (result) => {
-      let teams = {};
-      result[0].forEach((student) => {
-        const { Team, Username, ID } = student;
-        if (!teams[Team]) {
-          teams[Team] = [];
-        }
-        teams[Team].push(student); // Add the student to the corresponding team
-      });
+exports.showAllTeams = async (req, res) => {
+  const students = await Student.findAll();
 
-      res.render("AllTeams.ejs", { teams });
+  let teams = [];
+  students.forEach((student) => {
+    const { Team, Username, ID } = student;
+    if (!teams[Team]) {
+      teams[Team] = [];
     }
-  );
+    teams[Team].push(student); // Add the student to the corresponding team
+  });
+
+  res.render("AllTeams.ejs", { teams });
 };
 
 // Handles teammate evaluation
@@ -182,20 +180,13 @@ exports.evaluateTeammate = async (req, res) => {
 
   try {
     // Query to check if the current reviewer has already evaluated the teammate
-    let sql = `
-      SELECT 
-        TypeOfEval, score, comments
-      FROM evaluations 
-      WHERE teammateID = ${teammateID} AND reviewerID = ${reviewerID}
-    `;
-    const result = await db.query(sql);
+    const result = await Evaluation.find(reviewerID, teammateID);
 
     // If no evaluation exists, fetch teammate details and render the evaluation page
-    if (result[0].length === 0) {
-      sql = `SELECT ID, Username FROM students WHERE ID = ${teammateID}`;
-      const teammate = await db.query(sql);
+    if (result.length === 0) {
+      const teammate = await Student.findById(teammateID);
 
-      res.render("Evaluation.ejs", { teammate: teammate[0][0] });
+      res.render("Evaluation.ejs", { teammate: teammate[0] });
     } else {
       // Aggregating evaluation categories into a single object
       const review = {
@@ -206,7 +197,7 @@ exports.evaluateTeammate = async (req, res) => {
       };
 
       // Assign each evaluation category to the respective key
-      result[0].forEach((evaluation) => {
+      result.forEach((evaluation) => {
         review[evaluation.TypeOfEval] = {
           score: evaluation.score,
           comments: evaluation.comments,
@@ -222,37 +213,14 @@ exports.evaluateTeammate = async (req, res) => {
   }
 };
 
-exports.allEval = (req, res) => {
-  const sql = `
-    SELECT 
-      s.ID,
-      s.Username,
-      s.Team,
-      COUNT(e.ID) AS EvaluationCount,
-
-      AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
-      AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
-      AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
-      AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
-      AVG(e.score) AS TotalAvg
-    FROM 
-      Students s
-    LEFT JOIN 
-      Evaluations e ON s.ID = e.teammateID
-    GROUP BY 
-      s.ID, s.Username
-    ORDER BY 
-      s.ID ASC;
-  `;
-
-  db.query(sql)
-    .then(([result]) => {
-      res.render("Summary.ejs", { evals: result });
-    })
-    .catch((error) => {
-      console.error("Error fetching evaluations:", error);
-      res.status(500).send("Error retrieving evaluations");
-    });
+exports.allEval = async (req, res) => {
+  try {
+    const result = await Evaluation.getSummary();
+    res.render("Summary.ejs", { evals: result });
+  } catch (error) {
+    console.error("Error fetching evaluations:", error);
+    res.status(500).send("Error retrieving evaluations");
+  }
 };
 
 exports.submitEvaluation = (req, res) => {
@@ -284,53 +252,18 @@ exports.submitEvaluation = (req, res) => {
   ];
 
   // Loop through each category and insert into the database
-  evaluations.forEach((evaluation) => {
+  evaluations.forEach(async (evaluation) => {
     const { type, score, comments } = evaluation;
 
-    const sql =
-      "INSERT INTO evaluations (teammateID, TypeOfEval, score, comments, reviewerID) " +
-      "VALUES (?, ?, ?, ?, ?)";
-
-    db.query(
-      sql,
-      [teammateID, type, score, comments, reviewerID],
-      (err, result) => {
-        if (err) {
-          console.log(err);
-        }
-      }
-    );
+    await new Evaluation(reviewerID, teammateID, type, score, comments).save();
   });
 
   res.redirect("/teammates"); // Redirect to teammates page after submission
 };
 
 exports.detailedResults = async (req, res) => {
-  const sql = `
-    SELECT 
-      s.ID,
-      s.Username,
-      s.Team,
-      AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
-      AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
-      AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
-      AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
-      AVG(e.score) AS TotalAvg,
-      GROUP_CONCAT(CONCAT(r.Username, ': ', e.comments) SEPARATOR '; ') AS comments
-    FROM 
-      Students s
-    LEFT JOIN 
-      Evaluations e ON s.ID = e.teammateID
-    LEFT JOIN 
-      Students r ON e.reviewerID = r.ID
-    GROUP BY 
-      s.ID, s.Username, s.Team
-    ORDER BY 
-      s.Team ASC, s.ID ASC;
-  `;
-
   try {
-    const [result] = await db.query(sql);
+    const result = await Evaluation.getDetailed();
     const teams = {};
 
     result.forEach((row) => {
@@ -358,32 +291,25 @@ exports.detailedResults = async (req, res) => {
 };
 
 exports.Bribe = async (req, res) => {
-  const StudentID = req.session.user.id;
+  const studentID = req.session.user.id;
   const { amount, grade, message } = req.body;
-
-  const Values = [StudentID, amount, grade, message];
-
-  const sql =
-    "INSERT INTO bribes (StudentID, BribeAmount, GradeWanted, Message) VALUES (?,?,?,?)";
-
-  db.query(sql, Values)
-    .then(() => {
-      console.log("Bribe sucessfully added.");
-      res.redirect("/");
-    })
-    .catch((err) => console.log(err));
+  try {
+    await new Bribe(studentID, amount, grade, message).save();
+    console.log("Bribe sucessfully added.");
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.AllBribes = (req, res) => {
-  const sql = "SELECT * FROM bribes";
+exports.AllBribes = async (req, res) => {
+  const result = await Bribe.findAll();
 
-  db.query(sql).then((result) => {
-    let bribes = [];
-    if (result[0].length > 0) {
-      result[0].forEach((bribe) => {
-        bribes.push(bribe);
-      });
-      res.render("OfferedBribes.ejs", { bribes });
-    }
-  });
+  let bribes = [];
+  if (result.length > 0) {
+    result.forEach((bribe) => {
+      bribes.push(bribe);
+    });
+    res.render("OfferedBribes.ejs", { bribes });
+  }
 };

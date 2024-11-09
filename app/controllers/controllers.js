@@ -5,14 +5,6 @@ const _ = require("lodash");
 
 // Home page
 exports.homePage = (req, res) => {
-  if (Object.keys(req.body).length != 0) {
-    req.session.user = {
-      id: req.body.id,
-      username: req.body.username,
-      role: req.body.role,
-      team: req.body.team,
-    };
-  }
   const { username: Username, role: Role } = req.session.user || {};
   res.render("MainPage.ejs", { Username, Role });
 };
@@ -65,7 +57,11 @@ exports.signIn = async (req, res) => {
     };
 
     console.log("Login successful:", req.session.user);
-    res.redirect("/");
+
+    res.render("MainPage.ejs", {
+      Username: `${req.session.user.username}`,
+      Role: `${req.session.user.role}`,
+    });
   } else {
     console.log("User not found.");
     res.redirect("/login");
@@ -87,10 +83,10 @@ exports.uploadFile = (req, res) => {
     })
     .then(() => {
       console.log("File processed successfully.");
-      res.end("File processed");
+      res.status(201).end("File processed");
     })
     .catch((err) => {
-      console.log("ERROR: ", err);
+      console.log(err);
     });
 };
 

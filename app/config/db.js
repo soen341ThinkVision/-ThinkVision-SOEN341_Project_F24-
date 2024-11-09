@@ -9,7 +9,7 @@ const pool = mysql.createPool({
 });
 
 // Sets up students table
-pool.query("DROP TABLE IF EXISTS students", (err) => {
+pool.query("DROP TABLE IF EXISTS students", (error) => {
   const sql = `CREATE TABLE students (
         id int, 
         username varchar(255),
@@ -17,12 +17,12 @@ pool.query("DROP TABLE IF EXISTS students", (err) => {
         team varchar(255))`;
 
   pool.query(sql, (err) => {
-    if (err) console.log("ERROR: ", err);
+    if (err) console.log(err);
   });
 });
 
 // Sets up teachers table
-pool.query("DROP TABLE IF EXISTS teachers", (err) => {
+pool.query("DROP TABLE IF EXISTS teachers", (error) => {
   const sql = `
     CREATE TABLE teachers (
         id int, 
@@ -30,12 +30,12 @@ pool.query("DROP TABLE IF EXISTS teachers", (err) => {
         password varchar(255))`;
 
   pool.query(sql, (err) => {
-    if (err) console.log("ERROR: ", err);
+    if (err) console.log(err);
   });
 });
 
 // Sets up evaluations table
-pool.query("DROP TABLE IF EXISTS evaluations", (err) => {
+pool.query("DROP TABLE IF EXISTS evaluations", (error) => {
   const sql = `
     CREATE TABLE evaluations (
         id int AUTO_INCREMENT PRIMARY KEY,
@@ -46,11 +46,11 @@ pool.query("DROP TABLE IF EXISTS evaluations", (err) => {
         reviewer_id int)`;
 
   pool.query(sql, (err) => {
-    if (err) console.log("ERROR: ", err);
+    if (err) console.log(err);
   });
 });
 
-pool.query("DROP TABLE IF EXISTS bribes", (err) => {
+pool.query("DROP TABLE IF EXISTS bribes", (error) => {
   const sql = `
     CREATE TABLE bribes (
         student_id int, 
@@ -59,7 +59,7 @@ pool.query("DROP TABLE IF EXISTS bribes", (err) => {
         message text)`;
 
   pool.query(sql, (err) => {
-    if (err) console.log("ERROR: ", err);
+    if (err) console.log(err);
   });
 });
 

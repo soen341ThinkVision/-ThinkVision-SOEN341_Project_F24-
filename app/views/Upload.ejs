@@ -16,10 +16,15 @@
       <section id="intro">
         <h2>Upload Course Roster</h2>
       </section>
-      <% if (uploaded == 0) { %>
+      <% if (uploaded == 0 || uploaded == 2) { %> <% if (uploaded == 2) { %>
+      <h4>File not processed. Please verify file format and try again.</h4>
+      <% } %>
       <form>
         <input type="file" accept=".csv" name="file" id="csv" /><br /><br />
         <button type="submit">Submit</button>
+        <button class="btn" onclick="window.location.href='/'">
+          Back to Homepage
+        </button>
       </form>
       <% } %> <% if (uploaded == 1) { %>
       <h4>File uploaded successfully.</h4>
@@ -39,7 +44,16 @@
           fetch("/upload/0", {
             method: "POST",
             body: formData,
-          }).then((res) => (window.location.href = "/upload/1"));
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              let { processed } = data;
+              if (processed) {
+                window.location.href = "/upload/1";
+              } else {
+                window.location.href = "/upload/2";
+              }
+            });
         });
       </script>
     </main>

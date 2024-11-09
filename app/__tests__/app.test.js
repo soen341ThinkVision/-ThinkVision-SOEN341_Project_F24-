@@ -4,21 +4,6 @@ const Teacher = require("../models/Teacher.js");
 const Student = require("../models/Student.js");
 const { writeFile } = require("fs").promises;
 
-// const db = require("../config/db");
-// const mysql = require("mysql2");
-//const controllers = require("../controllers/controllers.js");
-
-// jest.mock("../models/Teacher.js", () => {
-//   return {
-//     find: jest.fn(),
-//   };
-// });
-// jest.mock("../models/Student.js", () => {
-//   return {
-//     find: jest.fn(),
-//   };
-// });
-
 jest.mock("mysql2", () => {
   return {
     createPool: jest.fn(() => ({
@@ -27,10 +12,8 @@ jest.mock("mysql2", () => {
     })),
   };
 });
-
-Teacher.find = jest.fn();
-Student.find = jest.fn();
-Student.save = jest.fn();
+jest.mock("../models/Teacher.js");
+jest.mock("../models/Student.js");
 
 describe("login system", () => {
   const roles = ["Teacher", "Student"];
@@ -149,17 +132,7 @@ describe("file upload", () => {
 
   it("returns status code 201 after processing csv file", async () => {
     await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
-    const response = await request(app)
-      .post("/upload/0")
-      .attach("file", "./__tests__/test_roster.csv");
-
-    expect(response.statusCode).toBe(201);
-  });
-
-  it("given course roster of x students, registers x students in the database", async () => {
-    await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
-    const numOfStudents = 50;
-    for (let i = 1; i <= numOfStudents; i++) {
+    for (let i = 1; i <= 10; i++) {
       await writeFile("./__tests__/test_roster.csv", `${i},student_${i}\n`, {
         flag: "a",
       });
@@ -169,7 +142,118 @@ describe("file upload", () => {
       .post("/upload/0")
       .attach("file", "./__tests__/test_roster.csv");
 
-    expect(Student.save).toHaveBeenCalledTimes(numOfStudents);
+    expect(response.statusCode).toBe(201);
+  });
+
+  it("given course roster of x students, registers x students in the database", async () => {
+    for (let students = 1; students < 50; students++) {
+      Student.save.mockReset();
+      await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
+
+      for (let j = 1; j <= students; j++) {
+        await writeFile("./__tests__/test_roster.csv", `${j},student_${j}\n`, {
+          flag: "a",
+        });
+      }
+
+      const response = await request(app)
+        .post("/upload/0")
+        .attach("file", "./__tests__/test_roster.csv");
+
+      expect(Student.save).toHaveBeenCalledTimes(students);
+      expect(response.statusCode).toBe(201);
+    }
+  });
+
+  it("returns code 400 if file is empty or invalid", async () => {
+    await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
+
+    const response = await request(app)
+      .post("/upload/0")
+      .attach("file", "./__tests__/test_roster.csv");
+
+    expect(Student.save).not.toHaveBeenCalled();
+    expect(response.statusCode).toBe(400);
+  });
+});
+
+describe("team assignment", () => {
+  beforeEach(() => {
+    Student.findAll.mockReset();
+    Student.deleteTeam.mockReset();
+    Student.updateTeam.mockReset();
+  });
+
+  it("every student is assigned a team when auto-assignment is selected", async () => {
+    const teamSize = 10;
+    const numOfStudents = 50;
+    var students = [];
+    for (let i = 0; i < numOfStudents; i++) {
+      students.push(i);
+    }
+    Student.findAll.mockResolvedValue(students);
+
+    const response = await request(app)
+      .post("/assign-teams")
+      .send({ size: teamSize });
+
+    expect(Student.findAll).toHaveBeenCalled();
+    expect(Student.updateTeam).toHaveBeenCalledTimes(numOfStudents);
+    expect(response.statusCode).toBe(201);
+  });
+
+  test("calls to assign student teams in the database have valid arguments", async () => {
+    const teamSize = 10;
+    const numOfStudents = 50;
+    const numOfTeams = Math.ceil(numOfStudents / teamSize);
+    var students = [];
+    for (let i = 0; i < numOfStudents; i++) {
+      students.push({ id: i, username: `student_${i}` });
+    }
+    Student.findAll.mockResolvedValue(students);
+
+    const response = await request(app)
+      .post("/assign-teams")
+      .send({ size: teamSize });
+
+    for (let team = 1; team <= numOfTeams; team++) {
+      expect(Student.updateTeam).toHaveBeenCalledWith(expect.any(Number), team);
+    }
+    expect(Student.findAll).toHaveBeenCalled();
+    expect(Student.updateTeam).toHaveBeenCalledTimes(numOfStudents);
+    expect(response.statusCode).toBe(201);
+  });
+
+  it("return code 400 if invalid team size of 0 or 1 is given", async () => {
+    for (let teamSize = 0; teamSize < 2; teamSize++) {
+      const response = await request(app)
+        .post("/assign-teams")
+        .send({ size: teamSize });
+
+      expect(Student.findAll).not.toHaveBeenCalled();
+      expect(Student.updateTeam).not.toHaveBeenCalled();
+      expect(response.statusCode).toBe(400);
+    }
+    expect.assertions(6);
+  });
+
+  it("return code 201 after assigning an individual student to a team", async () => {
+    const reqBody = { id: 0, team: 1 };
+    const response = await request(app).put("/assign-teams").send(reqBody);
+
+    expect(Student.updateTeam.mock.calls[0][0]).toBe(reqBody.id);
+    expect(Student.updateTeam.mock.calls[0][1]).toBe(reqBody.team);
+    expect(Student.deleteTeam).not.toHaveBeenCalled();
+    expect(response.statusCode).toBe(201);
+  });
+
+  it("individual students are removed from a team when requested", async () => {
+    const reqBody = { id: 0, team: "-" };
+    const response = await request(app).put("/assign-teams").send(reqBody);
+
+    expect(Student.deleteTeam.mock.calls[0][0]).toBe(reqBody.id);
+    expect(Student.updateTeam).not.toHaveBeenCalled();
     expect(response.statusCode).toBe(201);
   });
 });
+

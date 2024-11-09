@@ -69,21 +69,24 @@ exports.signIn = async (req, res) => {
 };
 
 // Adds students in the course through an uploaded csv file
-exports.uploadFile = (req, res) => {
-  csvtojson()
+exports.uploadFile = async (req, res) => {
+  await csvtojson()
     .fromFile("./students.csv")
     .then(async (students) => {
       // deletes file once data has been extracted
       unlinkSync("./students.csv");
 
-      // saves students in the database
-      for (let i = 0; i < students.length; i++) {
-        await Student.save(students[i].ID, students[i].Name);
+      if (students.length < 1) {
+        console.log("Empty file, not processed.");
+        res.status(400).send({ processed: false });
+      } else {
+        // saves students in the database
+        for (let i = 0; i < students.length; i++) {
+          await Student.save(students[i].ID, students[i].Name);
+        }
+        console.log("File processed successfully.");
+        res.status(201).send({ processed: true });
       }
-    })
-    .then(() => {
-      console.log("File processed successfully.");
-      res.status(201).end("File processed");
     })
     .catch((err) => {
       console.log(err);
@@ -105,23 +108,27 @@ exports.assignOneStudent = async (req, res) => {
     await Student.updateTeam(req.body.id, req.body.team);
   }
 
-  res.json({ message: "Data Updated" });
+  res.status(201).json({ message: "Data Updated" });
 };
 
 // Updates all students' teams
 exports.assignAllStudents = async (req, res) => {
-  var students = await Student.findAll();
+  if (req.body.size < 2) {
+    res.status(400).send("Invalid team size");
+  } else {
+    var students = await Student.findAll();
 
-  var numOfTeams = Math.ceil(students.length / req.body.size);
+    const numOfTeams = Math.ceil(students.length / req.body.size);
 
-  students = _.shuffle(students);
+    students = _.shuffle(students);
 
-  for (let i = 0; i < students.length; i++) {
-    let team = (i % numOfTeams) + 1;
-    await Student.updateTeam(students[i].id, team);
+    for (let i = 0; i < students.length; i++) {
+      let team = (i % numOfTeams) + 1;
+      await Student.updateTeam(students[i].id, team);
+    }
+
+    return res.status(201).send("Teams auto-assigned.");
   }
-
-  return res.send("Teams auto-assigned.");
 };
 
 // Shows a student's teammates

@@ -1,7 +1,6 @@
 const request = require("supertest");
 const app = require("../app");
-const Teacher = require("../models/Teacher.js");
-const Student = require("../models/Student.js");
+const { Teacher, Student, Evaluation } = require("../models");
 const controllers = require("../controllers/controllers.js");
 const { writeFile } = require("fs").promises;
 
@@ -13,8 +12,7 @@ jest.mock("mysql2", () => {
     })),
   };
 });
-jest.mock("../models/Teacher.js");
-jest.mock("../models/Student.js");
+jest.mock("../models");
 
 describe("login system", () => {
   const roles = ["Teacher", "Student"];
@@ -261,7 +259,7 @@ describe("team visibility", () => {
     students.push({
       id: i,
       username: `student_${i}`,
-      team: 0,
+      team: 1,
     });
   }
 
@@ -291,7 +289,7 @@ describe("team visibility", () => {
   });
 
   test("gets a student's teammates from the database for viewing", async () => {
-    const req = { session: { user: { team: "0", username: "student_1" } } };
+    const req = { session: { user: { team: 1, username: "student_1" } } };
     const res = { render: jest.fn() };
 
     await controllers.showTeammates(req, res);
@@ -304,5 +302,155 @@ describe("team visibility", () => {
         teamName: req.session.user.team,
       })
     );
+  });
+});
+
+describe("peer assessment", () => {
+  beforeEach(() => {
+    Student.findById.mockReset();
+    Evaluation.find.mockReset();
+    Evaluation.save.mockReset();
+  });
+
+  test("select teammate for evaluation", async () => {
+    const teammate = { id: 2 };
+    const req = { session: { user: { id: 1 } }, params: { id: teammate.id } };
+    const res = { render: jest.fn() };
+    Evaluation.find.mockResolvedValue([]);
+    Student.findById.mockResolvedValue([teammate]);
+
+    await controllers.evaluateTeammate(req, res);
+
+    expect(Evaluation.find).toHaveBeenCalledWith(
+      req.session.user.id,
+      teammate.id
+    );
+    expect(Student.findById).toHaveBeenCalledWith(teammate.id);
+    expect(res.render).toHaveBeenCalledWith("Evaluation.ejs", {
+      teammate: teammate,
+    });
+  });
+
+  test("return code 400 if teammate ID is not provided", async () => {
+    const req = { session: { user: { id: 1 } }, params: {} };
+    const res = { status: jest.fn().mockReturnThis(), send: jest.fn() };
+
+    await controllers.evaluateTeammate(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  test("retrieve peer evaluation if one has been already submitted", async () => {
+    const teammate = { id: 2 };
+    const req = { session: { user: { id: 1 } }, params: { id: teammate.id } };
+    const res = { render: jest.fn() };
+    const review = {
+      Teammate: teammate,
+      Cooperation: { score: 1, comments: "" },
+      WorkEthic: { score: 1, comments: "" },
+      PracticalContribution: null,
+      ConceptualContribution: null,
+    };
+    Student.findById.mockResolvedValue([teammate]);
+    Evaluation.find.mockResolvedValue([
+      {
+        category: "Cooperation",
+        score: review.Cooperation.score,
+        comment: review.Cooperation.comments,
+      },
+      {
+        category: "WorkEthic",
+        score: review.WorkEthic.score,
+        comment: review.WorkEthic.comments,
+      },
+    ]);
+
+    await controllers.evaluateTeammate(req, res);
+
+    expect(res.render).toHaveBeenCalledWith("ViewEvaluation.ejs", { review });
+  });
+
+  test("save peer assessment on cooperation to the database", async () => {
+    const teammate = { id: 2 };
+    const req = {
+      session: { user: { id: 1 } },
+      body: {
+        teammateID: teammate.id,
+        score_cooperation: 1,
+        comment_cooperation: "",
+      },
+    };
+    const res = { redirect: jest.fn() };
+
+    await controllers.submitEvaluation(req, res);
+
+    expect(Evaluation.save).toHaveBeenCalledWith(1, 2, "Cooperation", 1, "");
+    expect(res.redirect).toHaveBeenCalledWith("/teammates");
+  });
+
+  test("save peer assessment on work ethic to the database", async () => {
+    const teammate = { id: 2 };
+    const req = {
+      session: { user: { id: 1 } },
+      body: {
+        teammateID: teammate.id,
+        score_ethics: 1,
+        comment_ethics: "",
+      },
+    };
+    const res = { redirect: jest.fn() };
+
+    await controllers.submitEvaluation(req, res);
+
+    expect(Evaluation.save).toHaveBeenCalledWith(1, 2, "WorkEthic", 1, "");
+    expect(res.redirect).toHaveBeenCalledWith("/teammates");
+  });
+
+  test("save peer assessment on practical contribution to the database", async () => {
+    const teammate = { id: 2 };
+    const req = {
+      session: { user: { id: 1 } },
+      body: {
+        teammateID: teammate.id,
+        score_pcontribution: 1,
+        comment_pcontribution: "",
+      },
+    };
+    const res = { redirect: jest.fn() };
+
+    await controllers.submitEvaluation(req, res);
+
+    expect(Evaluation.save).toHaveBeenCalledWith(
+      1,
+      2,
+      "PracticalContribution",
+      1,
+      ""
+    );
+    expect(res.redirect).toHaveBeenCalledWith("/teammates");
+  });
+
+  test("save peer assessment on conceptual cooperation to the database", async () => {
+    const teammate = { id: 2 };
+    const req = {
+      session: { user: { id: 1 } },
+      body: {
+        teammateID: teammate.id,
+        score_contribution: 1,
+        comment_ccontribution: "",
+      },
+    };
+    const res = { redirect: jest.fn() };
+
+    await controllers.submitEvaluation(req, res);
+
+    expect(Evaluation.save).toHaveBeenCalledWith(
+      1,
+      2,
+      "ConceptualContribution",
+      1,
+      ""
+    );
+    expect(res.redirect).toHaveBeenCalledWith("/teammates");
   });
 });

@@ -61,11 +61,25 @@ body {
   text-align: center;
 }
 
+.btn-container {
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+
+.btn {
+  background-color: hwb(35 26% 18%);
+}
 
 #next-btn {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: hwb(35 26% 18%);
   color: white;
   border: none;
   cursor: pointer;

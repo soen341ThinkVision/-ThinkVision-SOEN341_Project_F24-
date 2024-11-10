@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome Page</title>
-    <link rel="stylesheet" href="/TeamVisibility.css">
-</head>
-<body>
-<div class="team-container">
-    <h1> <%= teamName %>  </h1>
-    <% teamMembers.forEach(function(member) { %>
+    <link rel="stylesheet" href="/TeamVisibility.css" />
+  </head>
+  <body>
+    <div>
+      <div class="team-container">
+        <h1><%= teamName %></h1>
+        <% teamMembers.forEach(function(member) { %>
         <div class="team-member">
-            <a href="/evaluate/<%= member.id %>">
-            <img id="profile-pic" src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg" alt="Profile Picture">
+          <a href="/evaluate/<%= member.id %>">
+            <img
+              id="profile-pic"
+              src="https://i.pinimg.com/originals/66/ee/36/66ee36f406ac9ab599e653d0450a90a4.jpg"
+              alt="Profile Picture"
+            />
             <div class="info">
-                <h2 id="profile-name"> <%= member.username %> </h2>
-                <p id="profile-id"> <%= member.id %></p>
+              <h2 id="profile-name"><%= member.username %></h2>
+              <p id="profile-id"><%= member.id %></p>
             </div>
-            </a>
+          </a>
         </div>
-    <% }) %>
-</div>
-</body>
+        <% }) %>
+      </div>
+      <div class="btn-container">
+        <button class="btn" onclick="window.location.href='/'">
+          Back to Homepage
+        </button>
+      </div>
+    </div>
+  </body>
 </html>

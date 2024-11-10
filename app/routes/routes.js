@@ -50,18 +50,16 @@ router.get("/teammates", controllers.showTeammates);
 // Shows all teams
 router.get("/teams", controllers.showAllTeams);
 
-// Instructor dashboard and evaluation view options
-router.route("/dashboard").get((req, res) => res.render("Dashboard.ejs"));
-router.get("/summary", controllers.summary);
-router.get("/detailed-results", controllers.detailedResults);
-
 // Handles teammate evaluation
 router
   .route("/evaluate/:id")
   .get(controllers.evaluateTeammate)
   .post(controllers.submitEvaluation);
 
-module.exports = router;
+// Instructor dashboard and evaluation view options
+router.route("/dashboard").get((req, res) => res.render("Dashboard.ejs"));
+router.get("/summary", controllers.summary);
+router.get("/detailed-results", controllers.detailedResults);
 
 // Bribing Option
 router
@@ -71,3 +69,5 @@ router
 
 router.route("/bribe-center").get(controllers.AllBribes);
 //.post(controllers.BribeDecision);
+
+module.exports = router;

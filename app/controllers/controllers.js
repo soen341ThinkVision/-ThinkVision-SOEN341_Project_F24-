@@ -167,7 +167,7 @@ exports.showAllTeams = async (req, res) => {
 // Handles teammate evaluation
 exports.evaluateTeammate = async (req, res) => {
   // Check if user is logged in (session should exist)
-  if (!req.session.user || !req.session.user.id) {
+  if (!req.session.user.id) {
     return res.redirect("/login"); // Redirect to login page if user is not logged in
   }
 
@@ -177,8 +177,8 @@ exports.evaluateTeammate = async (req, res) => {
   console.log("Teammate ID:", teammateID);
   console.log("Reviewer ID:", reviewerID);
 
-  if (!teammateID || !reviewerID) {
-    return res.status(400).send("Invalid IDs provided.");
+  if (!teammateID) {
+    return res.status(400).send("Invalid teammate ID provided.");
   }
 
   try {

@@ -3,6 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <title>Detailed View</title>
+    <style>
+      .btn {
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <h1>Detailed View</h1>
@@ -41,7 +53,11 @@
       <li><strong>Comment:</strong> <%= comment %></li>
       <% })} else { %>
       <li><strong>Comment:</strong> No comment</li>
+      <% } %>
     </ul>
-    <% }})}) %>
+    <% })}) %>
+    <button class="btn" onclick="window.location.href='/'">
+      Back to Homepage
+    </button>
   </body>
 </html>

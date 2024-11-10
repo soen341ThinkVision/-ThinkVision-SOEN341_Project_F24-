@@ -2,6 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const Teacher = require("../models/Teacher.js");
 const Student = require("../models/Student.js");
+const controllers = require("../controllers/controllers.js");
 const { writeFile } = require("fs").promises;
 
 jest.mock("mysql2", () => {
@@ -26,7 +27,7 @@ describe("login system", () => {
     Student.find.mockResolvedValue([{ id: 0, username: "S" }]);
   });
 
-  it("calls database to verify user is registered", async () => {
+  test("call database to verify user is registered", async () => {
     for (const role of roles) {
       const response = await request(app)
         .post("/login")
@@ -39,7 +40,7 @@ describe("login system", () => {
     expect(Teacher.find).toHaveBeenCalledTimes(1);
   });
 
-  it("does not log in if user is not found", async () => {
+  test("does not log in if user is not found", async () => {
     Teacher.find.mockResolvedValue([]);
     Student.find.mockResolvedValue([]);
 
@@ -55,7 +56,7 @@ describe("login system", () => {
     }
   });
 
-  it("does not login if either username, password, or role are missing", async () => {
+  test("does not login if any of username, password, or role are missing", async () => {
     var requestBody = [
       { Username: "", Password: "", Option: "Teacher" },
       { Username: "", Password: "", Option: "Student" },
@@ -89,7 +90,7 @@ describe("login system", () => {
     }
   });
 
-  it("returns status code 200 when valid username and password are submitted", async () => {
+  test("return code 200 when valid username and password are submitted", async () => {
     for (const role of roles) {
       const response = await request(app)
         .post("/login")
@@ -102,7 +103,7 @@ describe("login system", () => {
     }
   });
 
-  it("registers session to current user upon successful login", async () => {
+  test("register session to current user upon successful login", async () => {
     for (const role of roles) {
       Teacher.find.mockResolvedValue([
         { username: "*** SESSION-USER-TEST ***" },
@@ -130,7 +131,7 @@ describe("file upload", () => {
     Student.save.mockReset();
   });
 
-  it("returns status code 201 after processing csv file", async () => {
+  test("return code 201 after processing csv file", async () => {
     await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
     for (let i = 1; i <= 10; i++) {
       await writeFile("./__tests__/test_roster.csv", `${i},student_${i}\n`, {
@@ -145,7 +146,7 @@ describe("file upload", () => {
     expect(response.statusCode).toBe(201);
   });
 
-  it("given course roster of x students, registers x students in the database", async () => {
+  test("given course roster of x students, register x students in the system", async () => {
     for (let students = 1; students < 50; students++) {
       Student.save.mockReset();
       await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
@@ -165,7 +166,7 @@ describe("file upload", () => {
     }
   });
 
-  it("returns code 400 if file is empty or invalid", async () => {
+  test("return code 400 if file is empty", async () => {
     await writeFile("./__tests__/test_roster.csv", "ID,Name\n");
 
     const response = await request(app)
@@ -184,13 +185,14 @@ describe("team assignment", () => {
     Student.updateTeam.mockReset();
   });
 
-  it("every student is assigned a team when auto-assignment is selected", async () => {
-    const teamSize = 10;
-    const numOfStudents = 50;
-    var students = [];
-    for (let i = 0; i < numOfStudents; i++) {
-      students.push(i);
-    }
+  var teamSize = 10;
+  var numOfStudents = 50;
+  var students = [];
+  for (let i = 1; i <= numOfStudents; i++) {
+    students.push({ id: i, username: `student_${i}` });
+  }
+
+  test("every student is assigned a team when auto-assignment is selected", async () => {
     Student.findAll.mockResolvedValue(students);
 
     const response = await request(app)
@@ -203,13 +205,8 @@ describe("team assignment", () => {
   });
 
   test("calls to assign student teams in the database have valid arguments", async () => {
-    const teamSize = 10;
-    const numOfStudents = 50;
     const numOfTeams = Math.ceil(numOfStudents / teamSize);
-    var students = [];
-    for (let i = 0; i < numOfStudents; i++) {
-      students.push({ id: i, username: `student_${i}` });
-    }
+
     Student.findAll.mockResolvedValue(students);
 
     const response = await request(app)
@@ -224,11 +221,11 @@ describe("team assignment", () => {
     expect(response.statusCode).toBe(201);
   });
 
-  it("return code 400 if invalid team size of 0 or 1 is given", async () => {
-    for (let teamSize = 0; teamSize < 2; teamSize++) {
+  test("return code 400 if invalid team size of 0 or 1 is given", async () => {
+    for (let i = 0; i < 2; i++) {
       const response = await request(app)
         .post("/assign-teams")
-        .send({ size: teamSize });
+        .send({ size: i });
 
       expect(Student.findAll).not.toHaveBeenCalled();
       expect(Student.updateTeam).not.toHaveBeenCalled();
@@ -237,7 +234,7 @@ describe("team assignment", () => {
     expect.assertions(6);
   });
 
-  it("return code 201 after assigning an individual student to a team", async () => {
+  test("return code 201 after assigning an individual student to a team", async () => {
     const reqBody = { id: 0, team: 1 };
     const response = await request(app).put("/assign-teams").send(reqBody);
 
@@ -247,7 +244,7 @@ describe("team assignment", () => {
     expect(response.statusCode).toBe(201);
   });
 
-  it("individual students are removed from a team when requested", async () => {
+  test("individual students are removed from a team when requested", async () => {
     const reqBody = { id: 0, team: "-" };
     const response = await request(app).put("/assign-teams").send(reqBody);
 
@@ -257,3 +254,55 @@ describe("team assignment", () => {
   });
 });
 
+describe("team visibility", () => {
+  var numOfStudents = 5;
+  var students = [];
+  for (let i = 1; i <= numOfStudents; i++) {
+    students.push({
+      id: i,
+      username: `student_${i}`,
+      team: 0,
+    });
+  }
+
+  beforeEach(() => {
+    Student.findAll.mockReset();
+    Student.findByTeam.mockReset();
+
+    Student.findAll.mockResolvedValue(students);
+    Student.findByTeam.mockResolvedValue(students);
+  });
+
+  test("return code 200 when instructor requests to view teams", async () => {
+    const response = await request(app).get("/teams");
+
+    expect(Student.findAll).toHaveBeenCalled();
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("group every student in the database by their team for display", async () => {
+    const response = await request(app).get("/teams");
+
+    for (let i = 1; i <= numOfStudents; i++) {
+      expect(response.text).toContain(`student_${i}`);
+    }
+    expect(Student.findAll).toHaveBeenCalled();
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("gets a student's teammates from the database for viewing", async () => {
+    const req = { session: { user: { team: "0", username: "student_1" } } };
+    const res = { render: jest.fn() };
+
+    await controllers.showTeammates(req, res);
+
+    expect(Student.findByTeam).toHaveBeenCalledWith(req.session.user.team);
+    expect(res.render).toHaveBeenCalledWith(
+      "TeamVisibility.ejs",
+      expect.objectContaining({
+        teamMembers: expect.anything(),
+        teamName: req.session.user.team,
+      })
+    );
+  });
+});

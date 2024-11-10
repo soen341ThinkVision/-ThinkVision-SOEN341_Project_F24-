@@ -13,6 +13,7 @@ jest.mock("mysql2", () => {
   };
 });
 jest.mock("../models");
+global.console.log = jest.fn();
 
 describe("login system", () => {
   const roles = ["Teacher", "Student"];
@@ -38,7 +39,7 @@ describe("login system", () => {
     expect(Teacher.find).toHaveBeenCalledTimes(1);
   });
 
-  test("does not log in if user is not found", async () => {
+  test("do not log in if user is not found", async () => {
     Teacher.find.mockResolvedValue([]);
     Student.find.mockResolvedValue([]);
 
@@ -54,7 +55,7 @@ describe("login system", () => {
     }
   });
 
-  test("does not login if any of username, password, or role are missing", async () => {
+  test("do not login if any of username, password, or role are missing", async () => {
     var requestBody = [
       { Username: "", Password: "", Option: "Teacher" },
       { Username: "", Password: "", Option: "Student" },
@@ -190,7 +191,7 @@ describe("team assignment", () => {
     students.push({ id: i, username: `student_${i}` });
   }
 
-  test("every student is assigned a team when auto-assignment is selected", async () => {
+  test("assign a team to every student when auto-assignment is selected", async () => {
     Student.findAll.mockResolvedValue(students);
 
     const response = await request(app)
@@ -202,7 +203,7 @@ describe("team assignment", () => {
     expect(response.statusCode).toBe(201);
   });
 
-  test("calls to assign student teams in the database have valid arguments", async () => {
+  test("verify calls to assign teams in the database have valid arguments", async () => {
     const numOfTeams = Math.ceil(numOfStudents / teamSize);
 
     Student.findAll.mockResolvedValue(students);
@@ -242,7 +243,7 @@ describe("team assignment", () => {
     expect(response.statusCode).toBe(201);
   });
 
-  test("individual students are removed from a team when requested", async () => {
+  test("remove individual students from a team when requested", async () => {
     const reqBody = { id: 0, team: "-" };
     const response = await request(app).put("/assign-teams").send(reqBody);
 
@@ -278,7 +279,7 @@ describe("team visibility", () => {
     expect(response.statusCode).toBe(200);
   });
 
-  test("group every student in the database by their team for display", async () => {
+  test("group students in the database by their team for instructor display", async () => {
     const response = await request(app).get("/teams");
 
     for (let i = 1; i <= numOfStudents; i++) {
@@ -288,7 +289,7 @@ describe("team visibility", () => {
     expect(response.statusCode).toBe(200);
   });
 
-  test("gets a student's teammates from the database for viewing", async () => {
+  test("get a student's teammates from the database for viewing", async () => {
     const req = { session: { user: { team: 1, username: "student_1" } } };
     const res = { render: jest.fn() };
 

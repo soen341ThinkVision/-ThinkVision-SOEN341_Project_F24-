@@ -1,0 +1,5 @@
+Links to meeting minutes for Sprint 3 (found in the Wiki):
+
+Oct 30 : https://github.com/soen341ThinkVision/-ThinkVision-SOEN341_Project_F24-/wiki/Meeting-30-October
+
+Nov 6 : https://github.com/soen341ThinkVision/-ThinkVision-SOEN341_Project_F24-/wiki/Meeting-November-6

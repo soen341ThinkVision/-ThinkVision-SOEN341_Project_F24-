@@ -22,12 +22,6 @@ router
   .get((req, res) => res.render("SignUp.ejs"))
   .put(controllers.register);
 
-router.get("/Summary", controllers.allEval)
-  
-router
-  .route("/Dashboard")
-  .get((req,res) => res.render("Dashboard.ejs"))
-
 // Handles user login
 router
   .route("/login")
@@ -56,23 +50,24 @@ router.get("/teammates", controllers.showTeammates);
 // Shows all teams
 router.get("/teams", controllers.showAllTeams);
 
-// Bribing Option
-router
-  .route("/Bribe")
-  .get((req,res) => res.render("Bribing.ejs"))
-  .post(controllers.Bribe);
-
-router
-  .route("/BribeCenter")
-  .get(controllers.AllBribes);
-  //.post(controllers.BribeDecision);
-
-router.get("/detailed-results", controllers.detailedResults);
-
 // Handles teammate evaluation
 router
   .route("/evaluate/:id")
   .get(controllers.evaluateTeammate)
   .post(controllers.submitEvaluation);
+
+// Instructor dashboard and evaluation view options
+router.route("/dashboard").get((req, res) => res.render("Dashboard.ejs"));
+router.get("/summary", controllers.summary);
+router.get("/detailed-results", controllers.detailedResults);
+
+// Bribing Option
+router
+  .route("/bribe")
+  .get((req, res) => res.render("Bribing.ejs"))
+  .post(controllers.Bribe);
+
+router.route("/bribe-center").get(controllers.AllBribes);
+//.post(controllers.BribeDecision);
 
 module.exports = router;

@@ -41,6 +41,21 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
+.btn-container {
+    justify-content: center;
+    align-items: center;
+    display: block;
+}
+.btn {
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
 h1 {
     color: #b86a38;
     margin-bottom: 2rem;

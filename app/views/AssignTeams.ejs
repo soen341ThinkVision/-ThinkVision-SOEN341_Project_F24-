@@ -55,24 +55,24 @@
 
       <script>
         let html = "";
-        const students =  <%- JSON.stringify(result[0]) %>;
+        const students =  <%- JSON.stringify(result) %>;
 
         if (students.length > 0) {
           students.forEach((student) => {
-            if (typeof student.Team === "object") {
+            if (typeof student.team === "object") {
               var team = "-";
             } else {
-              var team = student.Team;
+              var team = student.team;
             }
             html += `
               <tr>
-                <td>`+student.ID+`</td>
-                <td style="text-align:left">`+student.Username+`</td>
+                <td>`+student.id+`</td>
+                <td style="text-align:left">`+student.username+`</td>
                 <td contenteditable
                     onclick="this.innerHTML=''"
                     onblur="update_data(this,
-                                        '`+student.Username+`',
-                                        `+student.ID+`,
+                                        '`+student.username+`',
+                                        `+student.id+`,
                                         '`+team+`')">`
                     +team+`</td>
               </tr>`;

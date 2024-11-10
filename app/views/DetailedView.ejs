@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Detailed View</title>
-</head>
-<body>
-<h1>Detailed View</h1>
+    <style>
+      .btn {
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Detailed View</h1>
 
-<% Object.keys(teams).forEach(function(teamName) { %>
+    <% Object.keys(teams).forEach(function(teamName) { %>
     <h2>Team Name: <%= teamName %></h2>
     <% teams[teamName].forEach(function(student) { %>
-        <h3>Student Name: <%= student.name %></h3>
-        <table border="1">
-            <thead>
-            <tr>
-                <th>Member</th>
-                <th>Cooperation</th>
-                <th>Conceptual</th>
-                <th>Practical</th>
-                <th>Work Ethic</th>
-                <th>Average Across All</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td><%= student.name %></td>
-                <td><%= student.avgCoop !== null ? student.avgCoop : 'N/A' %></td>
-                <td><%= student.avgConceptualContribution !== null ? student.avgConceptualContribution : 'N/A' %></td>
-                <td><%= student.avgPracticalContribution !== null ? student.avgPracticalContribution : 'N/A' %></td>
-                <td><%= student.avgEthics !== null ? student.avgEthics : 'N/A' %></td>
-                <td><%= student.totalAvg !== null ? student.totalAvg : 'N/A' %></td>
-            </tr>
-            </tbody>
-        </table>
+    <h3>Student Name: <%= student.name %></h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Cooperation</th>
+          <th>Conceptual</th>
+          <th>Practical</th>
+          <th>Work Ethic</th>
+          <th>Average Across All</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= student.reviewer ? student.reviewer : 'N/A' %></td>
+          <td><%= student.avgCoop ? student.avgCoop : 'N/A' %></td>
+          <td><%= student.avgConceptual ? student.avgConceptual : 'N/A' %></td>
+          <td><%= student.avgPractical ? student.avgPractical: 'N/A' %></td>
+          <td><%= student.avgEthics ? student.avgEthics : 'N/A' %></td>
+          <td><%= student.totalAvg ? student.totalAvg : 'N/A' %></td>
+        </tr>
+      </tbody>
+    </table>
 
-        <h3>Comments:</h3>
-        <ul>
-            <% if (student.comments) { %>
-                <% student.comments.split('; ').forEach(function(comment) { %>
-                    <li><strong>Comment:</strong> <%= comment %></li>
-                <% }) %>
-            <% } else { %>
-                <li><strong>Comment:</strong> No comment</li>
-            <% } %>
-        </ul>
-    <% }) %>
-<% }) %>
-
-</body>
+    <h3>Comments:</h3>
+    <ul>
+      <% if (student.comments) { %>
+      <%student.comments.split(';').forEach(function(comment) { %>
+      <li><strong>Comment:</strong> <%= comment %></li>
+      <% })} else { %>
+      <li><strong>Comment:</strong> No comment</li>
+      <% } %>
+    </ul>
+    <% })}) %>
+    <button class="btn" onclick="window.location.href='/'">
+      Back to Homepage
+    </button>
+  </body>
 </html>

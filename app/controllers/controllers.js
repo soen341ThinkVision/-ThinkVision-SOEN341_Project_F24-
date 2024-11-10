@@ -1,40 +1,28 @@
-const db = require("../config/db.js");
-const Teacher = require("../models/Teacher");
-const Student = require("../models/Student");
+const { Teacher, Student, Evaluation, Bribe } = require("../models");
 const csvtojson = require("csvtojson");
 const { createReadStream, unlinkSync } = require("fs");
+const _ = require("lodash");
 
 // Home page
 exports.homePage = (req, res) => {
-  if (Object.keys(req.body).length != 0) {
-    req.session.user = {
-      id: req.body.id,
-      username: req.body.username,
-      role: req.body.role,
-      team: req.body.team,
-    };
-  }
   const { username: Username, role: Role } = req.session.user || {};
   res.render("MainPage.ejs", { Username, Role });
 };
 
 // Registers user into the system
 exports.register = async (req, res) => {
-  console.log("Request for registration: ", req.body);
+  console.log("Registration request:", req.body);
   const { ID, Username, Password, Option } = req.body;
-  const Values = [ID, Username, Password];
 
   if (Option === "Student") {
-    // Check if student is in the system first
-    let sql = `SELECT * FROM students WHERE ID=${Values[0]}`;
-    const students = await db.query(sql);
+    // First check if student is in the system
+    const student = await Student.findById(ID);
 
-    if (students[0].length < 1) {
+    if (student.length === 0) {
       console.log("Student not in database.");
       res.send({ registered: false });
     } else {
-      sql = `UPDATE students SET Password="${Password}" WHERE ID="${ID}"`;
-      db.query(sql).then(() => {
+      Student.updatePassword(ID, Password).then(() => {
         console.log("Student sucessfully registered.");
         res.send({ registered: true });
       });
@@ -42,39 +30,38 @@ exports.register = async (req, res) => {
   }
 
   if (Option === "Teacher") {
-    try {
-      const teacher = await new Teacher(ID, Username, Password).save();
-      console.log("Teacher sucessfully registered.");
-      res.send({ registered: true });
-    } catch (error) {
-      console.log(error);
-    }
+    const teacher = await Teacher.save(ID, Username, Password);
+    console.log("Teacher sucessfully registered.");
+    res.send({ registered: true });
   }
 };
 
 // Logs user into the system and directs them to their dashboard if successful
 exports.signIn = async (req, res) => {
-  console.log("Received request for login", req.body);
-
+  console.log("Login request:", req.body);
   const { Username, Password, Option } = req.body;
-  let user = {};
 
+  let user = [];
   if (Option === "Student") {
     user = await Student.find(Username, Password);
   } else if (Option === "Teacher") {
     user = await Teacher.find(Username, Password);
   }
 
-  if (user[0].length > 0) {
+  if (user.length > 0) {
     req.session.user = {
-      id: user[0][0].ID,
-      username: user[0][0].Username,
+      id: user[0].id,
+      username: user[0].username,
       role: Option,
-      team: user[0][0].Team,
+      team: user[0].team,
     };
 
     console.log("Login successful:", req.session.user);
-    res.redirect("/");
+
+    res.render("MainPage.ejs", {
+      Username: `${req.session.user.username}`,
+      Role: `${req.session.user.role}`,
+    });
   } else {
     console.log("User not found.");
     res.redirect("/login");
@@ -82,26 +69,24 @@ exports.signIn = async (req, res) => {
 };
 
 // Adds students in the course through an uploaded csv file
-exports.uploadFile = (req, res) => {
-  csvtojson()
+exports.uploadFile = async (req, res) => {
+  await csvtojson()
     .fromFile("./students.csv")
-    .then((source) => {
+    .then(async (students) => {
+      // deletes file once data has been extracted
       unlinkSync("./students.csv");
 
-      for (let i = 0; i < source.length; i++) {
-        let insertsql =
-          "INSERT INTO students (ID, Username) VALUES " +
-          `(${source[i].ID}, '${source[i].Name}')`;
-
-        db.query(insertsql).catch((err) => {
-          console.log("Unable to insert student #", values[0]);
-          return console.log(err);
-        });
+      if (students.length < 1) {
+        console.log("Empty file, not processed.");
+        res.status(400).send({ processed: false });
+      } else {
+        // saves students in the database
+        for (let i = 0; i < students.length; i++) {
+          await Student.save(students[i].ID, students[i].Name);
+        }
+        console.log("File processed successfully.");
+        res.status(201).send({ processed: true });
       }
-    })
-    .then(() => {
-      console.log("File processed successfully.");
-      res.end("File processed");
     })
     .catch((err) => {
       console.log(err);
@@ -110,132 +95,105 @@ exports.uploadFile = (req, res) => {
 
 // Team assignment page
 exports.teamAssignment = async (req, res) => {
-  const sql = "SELECT ID, Username, Team FROM students ORDER BY Team ASC";
-  const result = await db.query(sql); // const sql = "INSERT INTO teachers (ID, Username, Password) VALUES (?,?,?)";
-  // db.query(sql, Values)
-  //   .then(() => {
-  //     console.log("Teacher sucessfully registered.");
-  //     res.send({ registered: true });
-  //   })
-  //   .catch((err) => console.log(err));
+  const result = await Student.findAll();
 
   res.render("AssignTeams.ejs", { result });
 };
 
 // Changes a single student's team
-exports.assignOneStudent = (req, res) => {
-  const id = req.body.id;
-
-  let sql;
+exports.assignOneStudent = async (req, res) => {
   if (req.body.team === "-") {
-    sql = `UPDATE students SET Team= NULL WHERE ID = ${id}`;
+    await Student.deleteTeam(req.body.id);
   } else {
-    sql = `UPDATE students SET Team= "${req.body.team}" WHERE ID = ${id}`;
+    await Student.updateTeam(req.body.id, req.body.team);
   }
 
-  db.query(sql)
-    .then(() => res.json({ message: "Data Updated" }))
-    .catch((err) => console.log(err));
+  res.status(201).json({ message: "Data Updated" });
 };
 
 // Updates all students' teams
-exports.assignAllStudents = (req, res) => {
-  const sql = "SELECT * FROM students";
-  db.query(sql).then((result) => {
-    var numOfStudents = result[0].length;
-    var numOfTeams = Math.ceil(numOfStudents / req.body.size);
-    for (let i = 0; i < numOfStudents; i++) {
-      let team = (i % numOfTeams) + 1;
-      db.query(
-        `UPDATE students SET Team ='${team}' WHERE ID=${result[0][i].ID}`
-      );
-    }
-    return res.send("Teams auto-assigned.");
-  });
-};
-
-// Shows a student's teammates
-exports.showTeammates = (req, res) => {
-  if (req.session.user) {
-    var teamName = req.session.user.team;
-
-    const teamQuery = `SELECT * FROM students WHERE Team ='${teamName}'`;
-
-    db.query(teamQuery).then((result) => {
-      if (result[0].length > 0) {
-        let teammates = [];
-        result[0].forEach((student) => {
-          if (req.session.user.username != student.Username) {
-            teammates.push(student);
-          }
-        });
-
-        res.render("TeamVisibility.ejs", {
-          teamMembers: teammates,
-          teamName: teamName,
-        });
-      }
-    });
+exports.assignAllStudents = async (req, res) => {
+  if (req.body.size < 2) {
+    res.status(400).send("Invalid team size");
   } else {
-    res.sendStatus(200);
+    var students = await Student.findAll();
+
+    const numOfTeams = Math.ceil(students.length / req.body.size);
+
+    students = _.shuffle(students);
+
+    for (let i = 0; i < students.length; i++) {
+      let team = (i % numOfTeams) + 1;
+      await Student.updateTeam(students[i].id, team);
+    }
+
+    return res.status(201).send("Teams auto-assigned.");
   }
 };
 
-// Shows all teams and their members
-exports.showAllTeams = (req, res) => {
-  db.query("SELECT Team, Username, ID FROM students ORDER BY Team ASC").then(
-    (result) => {
-      let teams = {};
-      result[0].forEach((student) => {
-        const { Team, Username, ID } = student;
-        if (!teams[Team]) {
-          teams[Team] = [];
-        }
-        teams[Team].push(student); // Add the student to the corresponding team
-      });
+// Shows a student's teammates
+exports.showTeammates = async (req, res) => {
+  const teamMembers = await Student.findByTeam(req.session.user.team);
 
-      res.render("AllTeams.ejs", { teams });
+  let teammates = [];
+  teamMembers.forEach((student) => {
+    if (req.session.user.username != student.username) {
+      teammates.push(student);
     }
-  );
+  });
+
+  res.render("TeamVisibility.ejs", {
+    teamMembers: teammates,
+    teamName: req.session.user.team,
+  });
+};
+
+// Shows all teams and their members
+exports.showAllTeams = async (req, res) => {
+  const students = await Student.findAll();
+
+  let teams = [];
+  students.forEach((student) => {
+    const { team, username, id } = student;
+    if (!teams[team]) {
+      teams[team] = [];
+    }
+    teams[team].push(student); // Add the student to the corresponding team
+  });
+
+  res.render("AllTeams.ejs", { teams });
 };
 
 // Handles teammate evaluation
 exports.evaluateTeammate = async (req, res) => {
   // Check if user is logged in (session should exist)
-  if (!req.session.user || !req.session.user.id) {
+  if (!req.session.user.id) {
     return res.redirect("/login"); // Redirect to login page if user is not logged in
   }
-
 
   const teammateID = req.params.id;
   const reviewerID = req.session.user.id;
 
   console.log("Teammate ID:", teammateID);
   console.log("Reviewer ID:", reviewerID);
-  
-  if (!teammateID || !reviewerID) {
-    return res.status(400).send("Invalid IDs provided.");
+
+  if (!teammateID) {
+    return res.status(400).send("Invalid teammate ID provided.");
   }
 
   try {
     // Query to check if the current reviewer has already evaluated the teammate
-    let sql = `
-      SELECT 
-        TypeOfEval, score, comments
-      FROM evaluations 
-      WHERE teammateID = ${teammateID} AND reviewerID = ${reviewerID}
-    `;
-    const result = await db.query(sql);
+    const result = await Evaluation.find(reviewerID, teammateID);
+
+    const teammate = await Student.findById(teammateID);
 
     // If no evaluation exists, fetch teammate details and render the evaluation page
-    if (result[0].length === 0) {
-      sql = `SELECT ID, Username FROM students WHERE ID = ${teammateID}`;
-      const teammate = await db.query(sql);
-      
-      res.render("Evaluation.ejs", { teammate: teammate[0][0] });
+    if (result.length === 0) {
+      res.render("Evaluation.ejs", { teammate: teammate[0] });
     } else {
       // Aggregating evaluation categories into a single object
       const review = {
+        Teammate: teammate[0],
         Cooperation: null,
         WorkEthic: null,
         PracticalContribution: null,
@@ -243,10 +201,10 @@ exports.evaluateTeammate = async (req, res) => {
       };
 
       // Assign each evaluation category to the respective key
-      result[0].forEach(evaluation => {
-        review[evaluation.TypeOfEval] = {
+      result.forEach((evaluation) => {
+        review[evaluation.category] = {
           score: evaluation.score,
-          comments: evaluation.comments
+          comments: evaluation.comment,
         };
       });
 
@@ -259,158 +217,104 @@ exports.evaluateTeammate = async (req, res) => {
   }
 };
 
-
-
-exports.allEval = (req,res) => {
-  const sql = `
-    SELECT 
-      s.ID,
-      s.Username,
-      s.Team,
-      COUNT(e.ID) AS EvaluationCount,
-
-      AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
-      AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
-      AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
-      AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
-      AVG(e.score) AS TotalAvg
-    FROM 
-      Students s
-    LEFT JOIN 
-      Evaluations e ON s.ID = e.teammateID
-    GROUP BY 
-      s.ID, s.Username
-    ORDER BY 
-      s.ID ASC;
-  `;
-  
-  db.query(sql).then(
-    ([result]) => {
-      res.render("Summary.ejs", { evals: result });
-    }
-  ).catch((error) => {
-    console.error("Error fetching evaluations:", error);
-    res.status(500).send("Error retrieving evaluations");
-  });
-};
-
-
 exports.submitEvaluation = (req, res) => {
   const { teammateID } = req.body;
   const reviewerID = req.session.user.id;
 
   // Collecting scores and comments for each category
   const evaluations = [
-    { type: 'Cooperation', score: req.body.score_cooperation, comments: req.body.comment_cooperation },
-    { type: 'WorkEthic', score: req.body.score_ethics, comments: req.body.comment_ethics },
-    { type: 'PracticalContribution', score: req.body.score_pcontribution, comments: req.body.comment_pcontribution },
-    { type: 'ConceptualContribution', score: req.body.score_contribution, comments: req.body.comment_ccontribution }
+    {
+      type: "Cooperation",
+      score: req.body.score_cooperation,
+      comments: req.body.comment_cooperation,
+    },
+    {
+      type: "WorkEthic",
+      score: req.body.score_ethics,
+      comments: req.body.comment_ethics,
+    },
+    {
+      type: "PracticalContribution",
+      score: req.body.score_pcontribution,
+      comments: req.body.comment_pcontribution,
+    },
+    {
+      type: "ConceptualContribution",
+      score: req.body.score_contribution,
+      comments: req.body.comment_ccontribution,
+    },
   ];
 
   // Loop through each category and insert into the database
-  evaluations.forEach(evaluation => {
+  evaluations.forEach(async (evaluation) => {
     const { type, score, comments } = evaluation;
 
-    const sql =
-      "INSERT INTO evaluations (teammateID, TypeOfEval, score, comments, reviewerID) " +
-      "VALUES (?, ?, ?, ?, ?)";
-
-    db.query(sql, [teammateID, type, score, comments, reviewerID], (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-    });
+    await Evaluation.save(reviewerID, teammateID, type, score, comments);
   });
 
   res.redirect("/teammates"); // Redirect to teammates page after submission
 };
 
-
-
-
-exports.detailedResults = async (req, res) => {
-  const sql = `
-    SELECT 
-      s.ID,
-      s.Username,
-      s.Team,
-      AVG(IF(e.TypeOfEval = 'Cooperation', e.score, NULL)) AS AvgCoop,
-      AVG(IF(e.TypeOfEval = 'WorkEthic', e.score, NULL)) AS AvgEthics,
-      AVG(IF(e.TypeOfEval = 'ConceptualContribution', e.score, NULL)) AS AvgConceptualContribution,
-      AVG(IF(e.TypeOfEval = 'PracticalContribution', e.score, NULL)) AS AvgPracticalContribution,
-      AVG(e.score) AS TotalAvg,
-      GROUP_CONCAT(CONCAT(r.Username, ': ', e.comments) SEPARATOR '; ') AS comments
-    FROM 
-      Students s
-    LEFT JOIN 
-      Evaluations e ON s.ID = e.teammateID
-    LEFT JOIN 
-      Students r ON e.reviewerID = r.ID
-    GROUP BY 
-      s.ID, s.Username, s.Team
-    ORDER BY 
-      s.Team ASC, s.ID ASC;
-  `;
-
+exports.summary = async (req, res) => {
   try {
-    const [result] = await db.query(sql);
-    const teams = {};
-
-    result.forEach((row) => {
-      if (!teams[row.Team]) {
-        teams[row.Team] = [];
-      }
-      teams[row.Team].push({
-        id: row.ID,
-        name: row.Username,
-        team: row.Team,
-        avgCoop: row.AvgCoop,
-        avgEthics: row.AvgEthics,
-        avgConceptualContribution: row.AvgConceptualContribution,
-        avgPracticalContribution: row.AvgPracticalContribution,
-        totalAvg: row.TotalAvg,
-        comments: row.comments,
-      });
-    });
-
-    res.render('DetailedView.ejs', { teams });
+    const result = await Evaluation.getSummary();
+    res.render("Summary.ejs", { evals: result });
   } catch (error) {
-    console.error('Error fetching detailed results:', error);
-    res.status(500).send('Error retrieving detailed results');
+    console.error("Error fetching evaluations:", error);
+    res.status(500).send("Error retrieving evaluations");
   }
 };
 
-exports.Bribe = async (req,res) => {
-  const StudentID = req.session.user.id;
-  const {amount, grade, message} = req.body;
-  
-  const Values = [StudentID, amount, grade, message];
-  
-  const sql =
-  "INSERT INTO bribes (StudentID, BribeAmount, GradeWanted, Message) VALUES (?,?,?,?)";
-  
-  db.query(sql, Values)
-        .then(() => {
-          console.log("Bribe sucessfully added.");
-          res.redirect("/");
-        })
-    .catch((err) => console.log(err));
-  }
-  
-  exports.AllBribes = (req,res) => {
-  
-  const sql =
-  "SELECT * FROM bribes";
-  
-  db.query(sql).then(
-    (result) => {
-      let bribes = []
-      if(result[0].length > 0) {
-        result[0].forEach((bribe) => {
-          bribes.push(bribe)
-        })
-        res.render("OfferedBribes.ejs", {bribes});
+exports.detailedResults = async (req, res) => {
+  try {
+    const result = await Evaluation.getDetailed();
+    const teams = {};
+
+    result.forEach((row) => {
+      if (!teams[row.team]) {
+        teams[row.team] = [];
       }
-    }
-  )
+      teams[row.team].push({
+        id: row.id,
+        name: row.username,
+        reviewer: row.Reviewer,
+        team: row.team,
+        avgCoop: row.AvgCoop,
+        avgEthics: row.AvgEthics,
+        avgConceptual: row.AvgConceptual,
+        avgPractical: row.AvgPractical,
+        totalAvg: row.TotalAvg,
+        comments: row.Comments,
+      });
+    });
+    res.render("DetailedView.ejs", { teams });
+  } catch (error) {
+    console.error("Error fetching detailed results:", error);
+    res.status(500).send("Error retrieving detailed results");
   }
+};
+
+exports.Bribe = async (req, res) => {
+  const studentID = req.session.user.id;
+  const { amount, grade, message } = req.body;
+
+  try {
+    await Bribe.save(studentID, amount, grade, message);
+    console.log("Bribe sucessfully added.");
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.AllBribes = async (req, res) => {
+  const result = await Bribe.findAll();
+
+  let bribes = [];
+  if (result.length > 0) {
+    result.forEach((bribe) => {
+      bribes.push(bribe);
+    });
+    res.render("OfferedBribes.ejs", { bribes });
+  }
+};

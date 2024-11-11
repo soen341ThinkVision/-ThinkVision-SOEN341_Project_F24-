@@ -1,0 +1,104 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: burlywood; /* Updated */
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #4b2e2e; /* Updated */
+}
+
+/* Detailed View Section */
+h1 {
+    margin-top: 20px;
+    font-size: 2rem;
+}
+
+h2 {
+    margin-top: 30px;
+    font-size: 1.5rem;
+    color:white ; 
+}
+
+h3 {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #e0c09a; /* Updated */
+}
+
+/* Tables and Data */
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    background-color: burlywood; /* Updated */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: #333;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 0.9em;
+}
+
+th {
+    background-color: #f5deb3; /* Updated */
+    color: #4b2e2e; /* Updated */
+}
+
+td {
+    background-color: #f5e7d6; /* Updated */
+}
+
+/* Alternating row colors for readability */
+tr:nth-child(even) td {
+    background-color: #f5e7d6; /* Updated */
+}
+
+/* Comment Section */
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    padding: 5px;
+}
+
+ul li strong {
+    color: #4b2e2e; /* Updated */
+}
+
+/* Comments from Students */
+ul li:before {
+    content: "• ";
+    color: #4b2e2e; /* Updated */
+    margin-right: 8px;
+}
+
+/* Styling for comments that are missing */
+ul li.no-comment {
+    color: white;
+}
+
+/* Responsiveness for smaller screens */
+@media (max-width: 768px) {
+    table, th, td {
+        font-size: 0.9rem;
+    }
+
+    h1, h2, h3 {
+        font-size: 1.2rem;
+    }
+
+    ul li {
+        font-size: 0.9rem;
+    }
+}

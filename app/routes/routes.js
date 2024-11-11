@@ -68,6 +68,11 @@ router
   .post(controllers.Bribe);
 
 router.route("/bribe-center").get(controllers.AllBribes);
-//.post(controllers.BribeDecision);
+
+// Chat routes
+router
+  .route("/chat")
+  .get(controllers.getMessages)
+  .post(controllers.sendMessage);
 
 module.exports = router;

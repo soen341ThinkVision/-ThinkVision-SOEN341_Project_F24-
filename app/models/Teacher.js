@@ -26,6 +26,14 @@ class Teacher {
 
     return teacher;
   }
+
+  static async findAll() {
+    let sql = `SELECT * FROM teachers`;
+
+    const [teachers, _] = await db.execute(sql);
+
+    return teachers;
+  }
 }
 
 module.exports = Teacher;

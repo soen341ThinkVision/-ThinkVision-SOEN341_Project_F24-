@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="chat-container">
+    <h1>Chat</h1>
+    <% if (session.user.role === "Teacher") { %>
+        <div class="students-list">
+            <h2>Students</h2>
+            <% for (let team in studentsByTeam) { %>
+                <h3>Team <%= team %></h3>
+                <ul>
+                    <% studentsByTeam[team].forEach(student => { %>
+                        <li>
+                            <a href="/chat?receiverId=<%= student.id %>"><%= student.username %></a>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </div>
+    <% } else if (session.user.role === "Student") { %>
+        <div class="teacher-list">
+            <h2>Teacher</h2>
+            <ul>
+                <% teacher.forEach(t => { %>
+                    <li>
+                        <a href="/chat?receiverId=<%= t.id %>"><%= t.username %></a>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+    <% if (receiverId) { %>
+        <div class="messages" id="messages">
+            <% messages.forEach(message => { %>
+                <div class="message <%= message.sender_id === session.user.id ? 'sent' : 'received' %>">
+                    <p><%= message.content %></p>
+                    <span><%= message.timestamp %></span>
+                </div>
+            <% }) %>
+        </div>
+        <form id="messageForm">
+            <input type="hidden" name="receiverId" value="<%= receiverId %>" />
+            <textarea name="content" id="content" placeholder="Type your message here..."></textarea>
+            <button type="submit">Send</button>
+        </form>
+    <% } %>
+    <button class="btn" onclick="window.location.href='/'">Back to Homepage</button>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#messageForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/chat',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#messages').append(
+                        '<div class="message sent">' +
+                        '<p>' + response.content + '</p>' +
+                        '<span>' + response.timestamp + '</span>' +
+                        '</div>'
+                    );
+                    $('#content').val('');
+                },
+                error: function() {
+                    alert('Error sending message');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

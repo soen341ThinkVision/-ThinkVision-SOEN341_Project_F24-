@@ -63,4 +63,19 @@ pool.query("DROP TABLE IF EXISTS bribes", (error) => {
   });
 });
 
+// Sets up messages table
+pool.query("DROP TABLE IF EXISTS messages", (error) => {
+  const sql = `CREATE TABLE messages (
+        id int AUTO_INCREMENT PRIMARY KEY,
+        sender_id int,
+        receiver_id int,
+        content text,
+        timestamp datetime
+    )`;
+
+  pool.query(sql, (err) => {
+    if (err) console.log(err);
+  });
+});
+
 module.exports = pool.promise();

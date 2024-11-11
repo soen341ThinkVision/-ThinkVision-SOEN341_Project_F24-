@@ -1,4 +1,4 @@
-const { Teacher, Student, Evaluation, Bribe } = require("../models");
+const { Teacher, Student, Evaluation, Bribe, Message } = require("../models");
 const csvtojson = require("csvtojson");
 const { createReadStream, unlinkSync } = require("fs");
 const _ = require("lodash");
@@ -18,12 +18,13 @@ exports.register = async (req, res) => {
     // First check if student is in the system
     const student = await Student.findById(ID);
 
+
     if (student.length === 0) {
       console.log("Student not in database.");
       res.send({ registered: false });
     } else {
       Student.updatePassword(ID, Password).then(() => {
-        console.log("Student sucessfully registered.");
+        console.log("Student successfully registered.");
         res.send({ registered: true });
       });
     }
@@ -31,7 +32,7 @@ exports.register = async (req, res) => {
 
   if (Option === "Teacher") {
     const teacher = await Teacher.save(ID, Username, Password);
-    console.log("Teacher sucessfully registered.");
+    console.log("Teacher successfully registered.");
     res.send({ registered: true });
   }
 };
@@ -300,7 +301,7 @@ exports.Bribe = async (req, res) => {
 
   try {
     await Bribe.save(studentID, amount, grade, message);
-    console.log("Bribe sucessfully added.");
+    console.log("Bribe successfully added.");
     res.redirect("/");
   } catch (err) {
     console.log(err);
@@ -316,5 +317,60 @@ exports.AllBribes = async (req, res) => {
       bribes.push(bribe);
     });
     res.render("OfferedBribes.ejs", { bribes });
+  }
+};
+
+// Send a message
+exports.sendMessage = async (req, res) => {
+  const { receiverId, content } = req.body;
+  const senderId = req.session.user.id;
+
+  try {
+    const result = await Message.save(senderId, receiverId, content);
+    const message = {
+      content: content,
+      timestamp: new Date().toISOString(),
+      sender_id: senderId
+    };
+    res.status(201).json(message);
+  } catch (error) {
+    console.error("Error sending message:", error);
+    res.status(500).send("Error sending message");
+  }
+};
+
+// Retrieve messages for a user
+exports.getMessages = async (req, res) => {
+  const userId = req.session.user.id;
+  const role = req.session.user.role;
+  const receiverId = req.query.receiverId || null;
+
+  try {
+    let messages = [];
+    let studentsByTeam = {};
+    let teacher = null;
+
+    if (role === "Teacher") {
+      const students = await Student.findAll(); // Retrieve all students
+      students.forEach(student => {
+        if (!studentsByTeam[student.team]) {
+          studentsByTeam[student.team] = [];
+        }
+        studentsByTeam[student.team].push(student);
+      });
+      if (receiverId) {
+        messages = await Message.findByUser(receiverId);
+      }
+    } else {
+      teacher = await Teacher.findAll(); // Retrieve the teacher
+      if (receiverId) {
+        messages = await Message.findByUser(receiverId);
+      }
+    }
+
+    res.render("Chat.ejs", { messages, studentsByTeam, teacher, receiverId, session: req.session });
+  } catch (error) {
+    console.error("Error retrieving messages:", error);
+    res.status(500).send("Error retrieving messages");
   }
 };

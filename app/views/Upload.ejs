@@ -1,69 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upload Course Roster</title>
-    <link rel="stylesheet" href="/MainPage.css" />
-  </head>
 
-  <body>
-    <header>
-      <h1>Peer Assessment Tool</h1>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Course Roster</title>
+  <link rel="stylesheet" href="/MainPage.css" />
+  <style>
+    /* Styling for the "Choose a file" button */
+    #csv {
+      padding: 10px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f5f5f5;
+      font-size: 16px;
+    }
 
-    <main>
-      <section id="intro">
-        <h2>Upload Course Roster</h2>
-      </section>
-      <% if (uploaded == 0 || uploaded == 2) { %> <% if (uploaded == 2) { %>
-      <h4>File not processed. Please verify file format and try again.</h4>
-      <% } %>
-      <form>
-        <input type="file" accept=".csv" name="file" id="csv" /><br /><br />
-        <button type="submit">Submit</button>
-        <br /><br />
-        <button class="btn" onclick="window.location.href='/'">
-          Back to Homepage
-        </button>
-      </form>
-      <% } %> <% if (uploaded == 1) { %>
-      <h4>File uploaded successfully.</h4>
-      <button class="btn" onclick="window.location.href='/'">
-        Back to Homepage
-      </button>
-      <% } %>
+    #csv:hover {
+      background-color: #e0e0e0;
+    }
 
-      <script>
-        const form = document.querySelector("form");
-        form.addEventListener("submit", (event) => {
-          event.preventDefault();
-          const toUpload = document.getElementById("csv");
-          const formData = new FormData();
-          formData.append("file", toUpload.files[0]);
+    /* Styling for the drag and drop area */
+    #drag-drop-area {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
 
-          fetch("/upload/0", {
-            method: "POST",
-            body: formData,
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              let { processed } = data;
-              if (processed) {
-                window.location.href = "/upload/1";
-              } else {
-                window.location.href = "/upload/2";
-              }
-            });
-        });
-      </script>
-    </main>
+    #drag-drop-area.hover {
+      background-color: #e0e0e0;
+    }
 
-    <footer>
-      <p>
-        &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
-        ThinkVision
-      </p>
-    </footer>
-  </body>
+    /* Styling for the "Submit" button */
+    button[type="submit"] {
+      background-color: rgb(160, 131, 84);
+      color: white;
+      padding: 10px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 60%;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: rgb(65, 42, 4);
+    }
+
+    /* Styling for the "Back to Homepage" button */
+    .btn {
+      background-color: rgb(160, 131, 84);
+      color: white;
+      padding: 10px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 60%;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    .btn:hover {
+      background-color: rgb(65, 42, 4);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Peer Assessment Tool</h1>
+  </header>
+
+  <main>
+    <section id="intro">
+      <h2>Upload Course Roster</h2>
+    </section>
+    <% if (uploaded==0 || uploaded==2) { %>
+      <% if (uploaded==2) { %>
+        <h4>File not processed. Please verify file format and try again.</h4>
+        <% } %>
+          <form>
+            <div id="drag-drop-area" ondrop="handleDrop(event)" ondragover="handleDragOver(event)"
+              ondragleave="handleDragLeave(event)" onclick="triggerFileInput()">
+              <p>Drag and drop a CSV file here or click to select</p>
+              <input type="file" accept=".csv" name="file" id="csv" style="display:none;" />
+            </div><br /><br />
+            <button type="submit">Submit</button>
+            <br /><br />
+            <button class="btn" onclick="window.location.href='/'">
+              Back to Homepage
+            </button>
+          </form>
+          <% } %>
+            <% if (uploaded==1) { %>
+              <h4>File uploaded successfully.</h4>
+              <button class="btn" onclick="window.location.href='/'">
+                Back to Homepage
+              </button>
+              <% } %>
+
+                <script>
+                  const form = document.querySelector("form");
+                  const fileInput = document.getElementById("csv");
+                  const dragDropArea = document.getElementById("drag-drop-area");
+
+                  // Handle drag over
+                  function handleDragOver(event) {
+                    event.preventDefault();
+                    dragDropArea.classList.add("hover");
+                  }
+
+                  // Handle drag leave
+                  function handleDragLeave() {
+                    dragDropArea.classList.remove("hover");
+                  }
+
+                  // Handle file drop
+                  function handleDrop(event) {
+                    event.preventDefault();
+                    dragDropArea.classList.remove("hover");
+                    const files = event.dataTransfer.files;
+                    if (files.length > 0) {
+                      fileInput.files = files;
+                      dragDropArea.innerHTML = `<p>${files[0].name}</p>`;
+                    }
+                  }
+
+                  // Handle file selection from input
+                  fileInput.addEventListener("change", (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                      dragDropArea.innerHTML = `<p>${file.name}</p>`;
+                    }
+                  });
+
+                  // Trigger file input when drag-drop area is clicked
+                  function triggerFileInput() {
+                    fileInput.click();
+                  }
+
+                  // Handle form submission
+                  form.addEventListener("submit", (event) => {
+                    event.preventDefault(); // Prevent the default form submission
+                    const file = fileInput.files[0];
+
+                    // Check if a file is selected
+                    if (!file) {
+                      alert("Please select a file to upload.");
+                      return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("file", file);
+
+                    // Send file to the server using fetch
+                    fetch("/upload/0", {
+                      method: "POST",
+                      body: formData,
+                    })
+                      .then((res) => res.json())
+                      .then((data) => {
+                        let { processed } = data;
+                        if (processed) {
+                          window.location.href = "/upload/1"; // Successful upload
+                        } else {
+                          window.location.href = "/upload/2"; // Failed upload
+                        }
+                      })
+                      .catch((error) => {
+                        console.error("Error uploading file:", error);
+                        alert("There was an error uploading the file. Please try again.");
+                      });
+                  });
+                </script>
+  </main>
+
+  <footer>
+    <p>
+      &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
+      ThinkVision
+    </p>
+  </footer>
+</body>
+
 </html>

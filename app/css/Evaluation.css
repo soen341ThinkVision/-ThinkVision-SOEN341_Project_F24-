@@ -37,6 +37,10 @@
      font-size: 18px;
   }
 
+  .btn:hover {
+    background-color: #b86a38;
+  }
+
  input[type="range"] {
      width: 30vw;
      height: 8px;

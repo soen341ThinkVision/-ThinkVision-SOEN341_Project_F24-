@@ -35,6 +35,8 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 
+
+
 .wrapper .input-box {
     width: 100%;
 }
@@ -79,6 +81,25 @@ main {
 .wrapper .btn:hover {
     background-color: rgb(140, 120, 70); 
 }
+
+.btn-upload {
+    margin-top: 10px;
+     padding: 10px 20px;
+     font-size: 16px;
+     color: white;
+     background-color: rgb(160, 131, 84);
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     transition: background-color 0.3s;
+     width: 30%;
+     border-radius: 10px;
+     font-size: 18px;
+  }
+
+  .btn-upload:hover {
+    background-color: #b86a38;
+  }
 
 footer {
     text-align: center;

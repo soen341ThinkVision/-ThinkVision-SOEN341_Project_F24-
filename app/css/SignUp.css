@@ -7,6 +7,7 @@ body {
     height: 100vh;
     margin: 0;
 }
+
 .signup-container {
     background-color: rgb(224, 189, 131);
     padding: 2rem;
@@ -14,10 +15,12 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
+
 h1 {
     color: #b86a38;
     margin-bottom: 1rem;
 }
+
 input[type="text"],
 input[type="email"],
 input[type="password"] {
@@ -28,6 +31,7 @@ input[type="password"] {
     border-radius: 5px;
     font-size: 1rem;
 }
+
 button {
     background-color: #d59b61;
     color: white;
@@ -42,17 +46,17 @@ button {
 .wrapper .btn {
     background-color: rgb(160, 131, 84);
     color: white;
-    padding: 15px 30px; 
-    margin: 10px 0; 
+    padding: 15px 30px;
+    margin: 10px 0;
     border: none;
     cursor: pointer;
-    width: 200px; 
+    width: 200px;
     border-radius: 10px;
-    font-size: 20px; 
-    transition: background-color 0.3s; 
-    white-space: normal; 
+    font-size: 20px;
+    transition: background-color 0.3s;
+    white-space: normal;
 }
 
 .wrapper .btn:hover {
-    background-color: rgb(140, 120, 70); 
+    background-color: rgb(140, 120, 70);
 }

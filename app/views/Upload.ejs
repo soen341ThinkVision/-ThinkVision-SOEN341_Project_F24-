@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Course Roster</title>
     <link rel="stylesheet" href="/MainPage.css" />
+    <style>
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+      }
+      .custom-file-upload {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #ffffff;
+        background-color: #4792e1;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+      }
+
+      .custom-file-upload:hover {
+        background-color: #0056b3;
+      }
+    </style>
   </head>
 
   <body>
@@ -19,22 +42,49 @@
       <% if (uploaded == 0 || uploaded == 2) { %> <% if (uploaded == 2) { %>
       <h4>File not processed. Please verify file format and try again.</h4>
       <% } %>
+      <br /><br />
       <form>
-        <input type="file" accept=".csv" name="file" id="csv" /><br /><br />
-        <button type="submit">Submit</button>
+        <input
+          type="file"
+          accept=".csv"
+          name="file"
+          id="csv"
+          style="display: none"
+          onchange="displayFileName(this)"
+        />
+        <label for="csv" class="custom-file-upload" id="file-name">
+          Choose File
+        </label>
+
         <br /><br />
-        <button class="btn" onclick="window.location.href='/'">
+        <button
+          class="btn-upload"
+          type="submit"
+          id="btn-submit"
+          style="display: none"
+        >
+          Submit
+        </button>
+        <br />
+        <button class="btn-upload" onclick="window.location.href='/'">
           Back to Homepage
         </button>
       </form>
+
       <% } %> <% if (uploaded == 1) { %>
       <h4>File uploaded successfully.</h4>
-      <button class="btn" onclick="window.location.href='/'">
+      <button class="btn-upload" onclick="window.location.href='/'">
         Back to Homepage
       </button>
       <% } %>
 
       <script>
+        function displayFileName(input) {
+          const fileName = input.files[0]?.name || "No file chosen";
+          document.getElementById("file-name").textContent = fileName;
+          document.getElementById("btn-submit").removeAttribute("style");
+        }
+
         const form = document.querySelector("form");
         form.addEventListener("submit", (event) => {
           event.preventDefault();
@@ -61,8 +111,8 @@
 
     <footer>
       <p>
-        &copy; 2024 Peer Assessment Tool. All rights reserved. Product of Team
-        ThinkVision
+        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of
+        Team ThinkVision
       </p>
     </footer>
   </body>

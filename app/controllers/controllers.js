@@ -18,7 +18,6 @@ exports.register = async (req, res) => {
     // First check if student is in the system
     const student = await Student.findById(ID);
 
-
     if (student.length === 0) {
       console.log("Student not in database.");
       res.send({ registered: false });
@@ -253,7 +252,7 @@ exports.submitEvaluation = (req, res) => {
     await Evaluation.save(reviewerID, teammateID, type, score, comments);
   });
 
-  res.redirect("/teammates"); // Redirect to teammates page after submission
+  res.render("Confirmation.ejs", { teammate: teammateID }); // Redirect to teammates page after submission
 };
 
 exports.summary = async (req, res) => {
@@ -330,7 +329,7 @@ exports.sendMessage = async (req, res) => {
     const message = {
       content: content,
       timestamp: new Date().toISOString(),
-      sender_id: senderId
+      sender_id: senderId,
     };
     res.status(201).json(message);
   } catch (error) {
@@ -352,7 +351,7 @@ exports.getMessages = async (req, res) => {
 
     if (role === "Teacher") {
       const students = await Student.findAll(); // Retrieve all students
-      students.forEach(student => {
+      students.forEach((student) => {
         if (!studentsByTeam[student.team]) {
           studentsByTeam[student.team] = [];
         }
@@ -368,7 +367,13 @@ exports.getMessages = async (req, res) => {
       }
     }
 
-    res.render("Chat.ejs", { messages, studentsByTeam, teacher, receiverId, session: req.session });
+    res.render("Chat.ejs", {
+      messages,
+      studentsByTeam,
+      teacher,
+      receiverId,
+      session: req.session,
+    });
   } catch (error) {
     console.error("Error retrieving messages:", error);
     res.status(500).send("Error retrieving messages");

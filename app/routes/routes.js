@@ -57,7 +57,7 @@ router
   .post(controllers.submitEvaluation);
 
 // Instructor dashboard and evaluation view options
-router.route("/dashboard").get((req, res) => res.render("Dashboard.ejs"));
+router.get("/dashboard", (req, res) => res.render("Dashboard.ejs"));
 router.get("/summary", controllers.summary);
 router.get("/detailed-results", controllers.detailedResults);
 
@@ -67,7 +67,8 @@ router
   .get((req, res) => res.render("Bribing.ejs"))
   .post(controllers.Bribe);
 
-router.route("/bribe-center").get(controllers.AllBribes);
+router.get("/bribe-center", controllers.AllBribes);
+//.post(controllers.BribeDecision);
 
 // Chat routes
 router

@@ -22,6 +22,25 @@
      text-align: center;
  }
 
+ .btn {
+    margin-top: 10px;
+     padding: 10px 20px;
+     font-size: 16px;
+     color: white;
+     background-color: rgb(160, 131, 84);
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     transition: background-color 0.3s;
+     width: 20%;
+     border-radius: 10px;
+     font-size: 18px;
+  }
+
+  .btn:hover {
+    background-color: #b86a38;
+  }
+
  input[type="range"] {
      width: 30vw;
      height: 8px;
@@ -97,20 +116,6 @@
      border-color: #4CAF50;
  }
 
- #submitButton {
-     margin-top: 10px;
-     padding: 10px 20px;
-     font-size: 16px;
-     color: white;
-     background-color: rgb(160, 131, 84);
-     border: none;
-     border-radius: 5px;
-     cursor: pointer;
-     transition: background-color 0.3s;
-     width: 20%;
-     border-radius: 10px;
-     font-size: 18px;
- }
 
  #submitButton:hover {
      background-color: #45a049;

@@ -371,87 +371,92 @@ describe("peer assessment", () => {
     expect(res.render).toHaveBeenCalledWith("ViewEvaluation.ejs", { review });
   });
 
-  test("save peer assessment on cooperation to the database", async () => {
+  describe("register in database", () => {
+    const res = { render: jest.fn() };
     const teammate = { id: 2 };
-    const req = {
-      session: { user: { id: 1 } },
-      body: {
-        teammateID: teammate.id,
-        score_cooperation: 1,
-        comment_cooperation: "",
-      },
-    };
-    const res = { redirect: jest.fn() };
 
-    await controllers.submitEvaluation(req, res);
+    test("cooperation assessment", async () => {
+      const req = {
+        session: { user: { id: 1 } },
+        body: {
+          teammateID: teammate.id,
+          score_cooperation: 1,
+          comment_cooperation: "",
+        },
+      };
 
-    expect(Evaluation.save).toHaveBeenCalledWith(1, 2, "Cooperation", 1, "");
-    expect(res.redirect).toHaveBeenCalledWith("/teammates");
-  });
+      await controllers.submitEvaluation(req, res);
 
-  test("save peer assessment on work ethic to the database", async () => {
-    const teammate = { id: 2 };
-    const req = {
-      session: { user: { id: 1 } },
-      body: {
-        teammateID: teammate.id,
-        score_ethics: 1,
-        comment_ethics: "",
-      },
-    };
-    const res = { redirect: jest.fn() };
+      expect(Evaluation.save).toHaveBeenCalledWith(1, 2, "Cooperation", 1, "");
+      expect(res.render).toHaveBeenCalledWith("Confirmation.ejs", {
+        teammate: teammate.id,
+      });
+    });
 
-    await controllers.submitEvaluation(req, res);
+    test("work ethic assessment", async () => {
+      const req = {
+        session: { user: { id: 1 } },
+        body: {
+          teammateID: teammate.id,
+          score_ethics: 1,
+          comment_ethics: "",
+        },
+      };
 
-    expect(Evaluation.save).toHaveBeenCalledWith(1, 2, "WorkEthic", 1, "");
-    expect(res.redirect).toHaveBeenCalledWith("/teammates");
-  });
+      await controllers.submitEvaluation(req, res);
 
-  test("save peer assessment on practical contribution to the database", async () => {
-    const teammate = { id: 2 };
-    const req = {
-      session: { user: { id: 1 } },
-      body: {
-        teammateID: teammate.id,
-        score_pcontribution: 1,
-        comment_pcontribution: "",
-      },
-    };
-    const res = { redirect: jest.fn() };
+      expect(Evaluation.save).toHaveBeenCalledWith(1, 2, "WorkEthic", 1, "");
+      expect(res.render).toHaveBeenCalledWith("Confirmation.ejs", {
+        teammate: teammate.id,
+      });
+    });
 
-    await controllers.submitEvaluation(req, res);
+    test("practical contribution assessment", async () => {
+      const req = {
+        session: { user: { id: 1 } },
+        body: {
+          teammateID: teammate.id,
+          score_pcontribution: 1,
+          comment_pcontribution: "",
+        },
+      };
 
-    expect(Evaluation.save).toHaveBeenCalledWith(
-      1,
-      2,
-      "PracticalContribution",
-      1,
-      ""
-    );
-    expect(res.redirect).toHaveBeenCalledWith("/teammates");
-  });
+      await controllers.submitEvaluation(req, res);
 
-  test("save peer assessment on conceptual cooperation to the database", async () => {
-    const teammate = { id: 2 };
-    const req = {
-      session: { user: { id: 1 } },
-      body: {
-        teammateID: teammate.id,
-        score_contribution: 1,
-        comment_ccontribution: "",
-      },
-    };
-    const res = { redirect: jest.fn() };
+      expect(Evaluation.save).toHaveBeenCalledWith(
+        1,
+        2,
+        "PracticalContribution",
+        1,
+        ""
+      );
+      expect(res.render).toHaveBeenCalledWith("Confirmation.ejs", {
+        teammate: teammate.id,
+      });
+    });
 
-    await controllers.submitEvaluation(req, res);
+    test("conceptual cooperation assessment", async () => {
+      const req = {
+        session: { user: { id: 1 } },
+        body: {
+          teammateID: teammate.id,
+          score_contribution: 1,
+          comment_ccontribution: "",
+        },
+      };
 
-    expect(Evaluation.save).toHaveBeenCalledWith(
-      1,
-      2,
-      "ConceptualContribution",
-      1,
-      ""
-    );
-    expect(res.redirect).toHaveBeenCalledWith("/teammates");
+      await controllers.submitEvaluation(req, res);
+
+      expect(Evaluation.save).toHaveBeenCalledWith(
+        1,
+        2,
+        "ConceptualContribution",
+        1,
+        ""
+      );
+      expect(res.render).toHaveBeenCalledWith("Confirmation.ejs", {
+        teammate: teammate.id,
+      });
+    });
   });
 });

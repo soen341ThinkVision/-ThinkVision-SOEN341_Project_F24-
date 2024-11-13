@@ -8,14 +8,9 @@ class Evaluation {
                     category, 
                     score, 
                     comment     
-                ) VALUES(
-                    ${reviewer},
-                    ${reviewee},
-                    '${category}',
-                    ${score},
-                    '${comment}'
-                )`;
-    return db.execute(sql);
+                ) VALUES(?, ?, ?, ?, ?)`;
+
+    return db.execute(sql, [reviewer, reviewee, category, score, comment]);
   }
 
   static async getSummary() {

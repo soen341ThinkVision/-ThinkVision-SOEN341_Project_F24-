@@ -7,13 +7,9 @@ class Bribe {
                     amount, 
                     grade, 
                     message
-                ) VALUES(
-                    ${id},
-                    ${amount},
-                    '${grade}',
-                    '${message}'
-                )`;
-    return db.execute(sql);
+                ) VALUES(?, ?, ?, ?)`;
+
+    return db.execute(sql, [id, amount, grade, message]);
   }
 
   static async findAll() {

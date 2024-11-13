@@ -10,6 +10,7 @@
       form {
         width: 30%;
       }
+
       /* Styling for the drag and drop area */
       #drag-drop-area {
         border: 2px dashed #b2b1b1;
@@ -84,24 +85,21 @@
           ondrop="handleDrop(event)"
           ondragover="handleDragOver(event)"
           ondragleave="handleDragLeave(event)"
-          onclick="triggerFileInput()"
-        >
+          onclick="triggerFileInput()">
           <p>Drag and drop a CSV file here or click to select</p>
           <input
             type="file"
             accept=".csv"
             name="file"
             id="csv"
-            style="display: none"
-          />
+            style="display: none" />
         </div>
         <br />
         <button
           class="btn-upload"
           type="submit"
           id="btn-submit"
-          style="display: none"
-        >
+          style="display: none">
           Submit
         </button>
       </form>
@@ -113,87 +111,6 @@
       <button class="btn-upload" onclick="window.location.href='/'">
         Back to Homepage
       </button>
-
-      <script>
-        const form = document.querySelector("form");
-        const fileInput = document.getElementById("csv");
-        const dragDropArea = document.getElementById("drag-drop-area");
-
-        // Handle drag over
-        function handleDragOver(event) {
-          event.preventDefault();
-          dragDropArea.classList.add("hover");
-        }
-
-        // Handle drag leave
-        function handleDragLeave() {
-          dragDropArea.classList.remove("hover");
-        }
-
-        // Handle file drop
-        function handleDrop(event) {
-          event.preventDefault();
-          dragDropArea.classList.remove("hover");
-          const files = event.dataTransfer.files;
-
-          if (files.length > 0) {
-            // Verify file has .csv extension
-            const fileExtension = files[0].name.split(".").pop().toLowerCase();
-            if (fileExtension !== "csv") {
-              alert("Please select a valid .csv file.");
-            } else {
-              fileInput.files = files;
-              dragDropArea.innerHTML = `<p>${files[0].name}</p>`;
-              document.getElementById("btn-submit").removeAttribute("style");
-            }
-          }
-        }
-
-        // Handle file selection from input
-        fileInput.addEventListener("change", (event) => {
-          const file = event.target.files[0];
-          if (file) {
-            dragDropArea.innerHTML = `<p>${file.name}</p>`;
-            document.getElementById("btn-submit").removeAttribute("style");
-          }
-        });
-
-        // Trigger file input when drag-drop area is clicked
-        function triggerFileInput() {
-          fileInput.click();
-        }
-
-        // Handle form submission
-        form.addEventListener("submit", (event) => {
-          event.preventDefault(); // Prevent the default form submission
-          const file = fileInput.files[0];
-
-          const formData = new FormData();
-          formData.append("file", file);
-
-          // Send file to the server using fetch
-          fetch("/upload/0", {
-            method: "POST",
-            body: formData,
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              let { processed } = data;
-              if (processed) {
-                alert(
-                  "File uploaded successfully. All students have been added to the system."
-                );
-                window.location.href = "/"; // Successful upload
-              } else {
-                window.location.href = "/upload/2"; // Failed upload
-              }
-            })
-            .catch((error) => {
-              console.error("Error uploading file:", error);
-              alert("There was an error uploading the file. Please try again.");
-            });
-        });
-      </script>
     </main>
 
     <footer>
@@ -202,5 +119,86 @@
         Team ThinkVision
       </p>
     </footer>
+
+    <script>
+      const form = document.querySelector("form");
+      const fileInput = document.getElementById("csv");
+      const dragDropArea = document.getElementById("drag-drop-area");
+
+      // Handle drag over
+      function handleDragOver(event) {
+        event.preventDefault();
+        dragDropArea.classList.add("hover");
+      }
+
+      // Handle drag leave
+      function handleDragLeave() {
+        dragDropArea.classList.remove("hover");
+      }
+
+      // Handle file drop
+      function handleDrop(event) {
+        event.preventDefault();
+        dragDropArea.classList.remove("hover");
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+          // Verify file has .csv extension
+          const fileExtension = files[0].name.split(".").pop().toLowerCase();
+          if (fileExtension !== "csv") {
+            alert("Please select a valid .csv file.");
+          } else {
+            fileInput.files = files;
+            dragDropArea.innerHTML = `<p>${files[0].name}</p>`;
+            document.getElementById("btn-submit").removeAttribute("style");
+          }
+        }
+      }
+
+      // Handle file selection from input
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          dragDropArea.innerHTML = `<p>${file.name}</p>`;
+          document.getElementById("btn-submit").removeAttribute("style");
+        }
+      });
+
+      // Trigger file input when drag-drop area is clicked
+      function triggerFileInput() {
+        fileInput.click();
+      }
+
+      // Handle form submission
+      form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Prevent the default form submission
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // Send file to the server using fetch
+        fetch("/upload/0", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let { processed } = data;
+            if (processed) {
+              alert(
+                "File uploaded successfully. All students have been added to the system."
+              );
+              window.location.href = "/"; // Successful upload
+            } else {
+              window.location.href = "/upload/2"; // Failed upload
+            }
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+            alert("There was an error uploading the file. Please try again.");
+          });
+      });
+    </script>
   </body>
 </html>

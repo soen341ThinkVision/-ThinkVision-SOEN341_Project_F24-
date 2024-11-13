@@ -1,50 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evaluation</title>
-  <link rel="stylesheet" href="/ViewEvaluation.css">
-</head>
-<body>
-  <div class="evaluation-container">
-    <h2 class="evaluation-title">Evaluation for <%= review.Teammate.username %></h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evaluation</title>
+    <link rel="stylesheet" href="/ViewEvaluation.css" />
+  </head>
 
-    <div class="evaluation-category">
-      <h3 class="category-title">Cooperation</h3>
-      <p><strong>Score:</strong> 
-        <%= review.Cooperation.score ? review.Cooperation.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> 
-        <%= review.Cooperation.comments ? review.Cooperation.comments : 'No Comments' %></p>
-    </div>
+  <body>
+    <main>
+      <div class="evaluation-container">
+        <h2 class="evaluation-title">
+          Evaluation for <%= review.Teammate.username %>
+        </h2>
 
-    <div class="evaluation-category">
-      <h3 class="category-title">Work Ethic</h3>
-      <p><strong>Score:</strong>
-        <%= review.WorkEthic.score ? review.WorkEthic.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> 
-        <%= review.WorkEthic.comments ? review.WorkEthic.comments : 'No Comments' %></p>
-    </div>
+        <div class="evaluation-category">
+          <h3 class="category-title">Cooperation</h3>
+          <p>
+            <strong>Score:</strong> <%= review.Cooperation.score ?
+            review.Cooperation.score : 'Not Evaluated' %>
+          </p>
+          <p>
+            <strong>Comments:</strong> <%= review.Cooperation.comments ?
+            review.Cooperation.comments : 'No Comments' %>
+          </p>
+        </div>
 
-    <div class="evaluation-category">
-      <h3 class="category-title">Practical Contribution</h3>
-      <p><strong>Score:</strong> 
-        <%= review.PracticalContribution.score ? review.PracticalContribution.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> 
-        <%= review.PracticalContribution.comments ? review.PracticalContribution.comments : 'No Comments' %></p>
-    </div>
+        <div class="evaluation-category">
+          <h3 class="category-title">Work Ethic</h3>
+          <p>
+            <strong>Score:</strong> <%= review.WorkEthic.score ?
+            review.WorkEthic.score : 'Not Evaluated' %>
+          </p>
+          <p>
+            <strong>Comments:</strong> <%= review.WorkEthic.comments ?
+            review.WorkEthic.comments : 'No Comments' %>
+          </p>
+        </div>
 
-    <div class="evaluation-category">
-      <h3 class="category-title">Conceptual Contribution</h3>
-      <p><strong>Score:</strong> 
-        <%= review.ConceptualContribution.score ? review.ConceptualContribution.score : 'Not Evaluated' %></p>
-      <p><strong>Comments:</strong> 
-        <%= review.ConceptualContribution.comments ? review.ConceptualContribution.comments : 'No Comments' %></p>
-    </div>
-    <div>
-      <button class="btn" onclick="window.location.href='/teammates'">Back to Team</button>
-    </div>
-  </div>
+        <div class="evaluation-category">
+          <h3 class="category-title">Practical Contribution</h3>
+          <p>
+            <strong>Score:</strong> <%= review.PracticalContribution.score ?
+            review.PracticalContribution.score : 'Not Evaluated' %>
+          </p>
+          <p>
+            <strong>Comments:</strong> <%= review.PracticalContribution.comments
+            ? review.PracticalContribution.comments : 'No Comments' %>
+          </p>
+        </div>
 
-</body>
+        <div class="evaluation-category">
+          <h3 class="category-title">Conceptual Contribution</h3>
+          <p>
+            <strong>Score:</strong> <%= review.ConceptualContribution.score ?
+            review.ConceptualContribution.score : 'Not Evaluated' %>
+          </p>
+          <p>
+            <strong>Comments:</strong> <%=
+            review.ConceptualContribution.comments ?
+            review.ConceptualContribution.comments : 'No Comments' %>
+          </p>
+        </div>
+        <div>
+          <button class="btn" onclick="window.location.href='/teammates'">
+            Back to Team
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>
+        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of
+        Team ThinkVision
+      </p>
+    </footer>
+  </body>
 </html>

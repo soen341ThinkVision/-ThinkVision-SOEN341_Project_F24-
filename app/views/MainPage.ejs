@@ -93,9 +93,27 @@
 
     <footer>
       <p>
-        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of Team
-        ThinkVision
+        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of
+        Team ThinkVision
       </p>
     </footer>
+
+    <script>
+      function misconductAlert() {
+        alert(
+          "🚨 UNETHICAL BEHAVIOUR DETECTED 🚨\n\n" +
+            "Offering and accepting bribes is a severe breach of conduct. " +
+            "The authorities have been notified, you're advised to not leave the country at this time.\n\n" +
+            "Agents from the Academic Conduct and Accountability Bureau (ACAB) will arrive shortly to dispose of you.\n\n" +
+            "Sorry this is the end for you, it didn't have to be this way 😔."
+        );
+        window.location.href = "/logout";
+      }
+      window.onload = () => {
+        <% if (MisconductAlert) { %>
+          setTimeout(misconductAlert, 100);;
+        <% } %>
+      };
+    </script>
   </body>
 </html>

@@ -67,13 +67,15 @@ router
   .get((req, res) => res.render("Bribing.ejs"))
   .post(controllers.Bribe);
 
-router.get("/bribe-center", controllers.AllBribes);
-//.post(controllers.BribeDecision);
+router.post("/bribe/:studentID/:decision", controllers.bribeHandler)
+
+router.get("/bribe-center", controllers.bribeCenter);
 
 // Chat routes
 router
   .route("/chat")
   .get(controllers.getMessages)
   .post(controllers.sendMessage);
+
 
 module.exports = router;

@@ -1,0 +1,150 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Peer Assessment Tool</title>
+    <style>
+      .bribe-row {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .bribe-details {
+        flex: 1;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+      .accept-btn,
+      .refuse-btn {
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      .accept-btn {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+      }
+      .refuse-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+      }
+
+      /* Back Button */
+      .btn {
+        display: block;
+        margin: 20px auto;
+        font-size: 18px;
+        margin-top: 20px;
+        background-color: rgb(160, 131, 84);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        width: 25%;
+        border-radius: 10px;
+        font-size: 18px;
+      }
+
+      .btn:hover {
+        background-color: #0056b3;
+      }
+    </style>
+    <link rel="stylesheet" href="/MainPage.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Bribing Center &#128520;</h1>
+    </header>
+
+    <main>
+      <% if (bribes && bribes.length > 0) { %> <% bribes.forEach(bribe => { %>
+      <% if (!bribe.response) { %>
+      <div class="bribe-row">
+        <div class="bribe-details">
+          <p><strong>STUDENT ID:</strong> <%= bribe.student_id%></p>
+          <p><strong>AMOUNT:</strong> <%= bribe.amount %>$</p>
+          <p><strong>GRADE WANTED:</strong> <%= bribe.grade%></p>
+          <p><strong>COMMENTS:</strong> <%= bribe.message %></p>
+        </div>
+        <div class="actions">
+          <button
+            class="accept-btn"
+            onclick="handleDecision('<%= bribe.student_id %>', 'accept')">
+            Accept
+          </button>
+          <button
+            class="refuse-btn"
+            onclick="handleDecision('<%= bribe.student_id %>', 'refuse')">
+            Refuse
+          </button>
+        </div>
+      </div>
+      <% }})} %>
+      <div id="noNewBribes"></div>
+      <br />
+      <button class="btn" onclick="window.location.href='/'">
+        Back to Homepage
+      </button>
+    </main>
+
+    <script>
+      function handleDecision(studentID, decision) {
+        // Send decision to server via fetch API (or form submission)
+        fetch(`/bribe/${studentID}/${decision}`, {
+          method: "POST",
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            if (data === "refused") {
+              alert(`Bribe refused, student has been notified to try harder.`);
+              location.reload(); // reload page to update status
+            } else if (data === "accepted") {
+              alert(
+                "🚨 UNETHICAL BEHAVIOUR DETECTED 🚨\n\n" +
+                  "Offering and accepting bribes is a severe breach of conduct. " +
+                  "The authorities have been notified, you're advised to not leave the country at this time.\n\n" +
+                  "Agents from the Academic Conduct and Accountability Bureau (ACAB) will arrive shortly to dispose of you.\n\n" +
+                  "Sorry this is the end for you, it didn't have to be this way 😔."
+              );
+              window.location.href = "/logout";
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      let html = "";
+      const bribes = <%- JSON.stringify(bribes) %>;
+
+      if (bribes && bribes.length > 0) {
+        let openBribes = false;
+        for (const bribe of bribes) {
+          if (!bribe.response) {
+            openBribes = true;
+            break;
+          }
+        }
+        if (!openBribes) {
+          html += `
+            <h2>😇</h2>
+            <p>
+              No new bribes, Concordia students wouldn't do that <b><i>again</i></b>.
+            </p>`;
+        }
+      } else {
+        html += `
+            <h2>😇</h2>
+            <p>No bribes so far, you have some ethical students this term!</p>
+            <p><small><i>(for now)</i></small></p> `;
+      }
+
+      document.querySelector('#noNewBribes').innerHTML = html;
+    </script>
+  </body>
+</html>

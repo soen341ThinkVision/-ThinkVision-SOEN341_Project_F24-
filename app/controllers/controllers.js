@@ -6,7 +6,7 @@ const _ = require("lodash");
 // Home page
 exports.homePage = (req, res) => {
   const { username: Username, role: Role } = req.session.user || {};
-  res.render("MainPage.ejs", { Username, Role });
+  res.render("MainPage.ejs", { Username, Role, MisconductAlert: false });
 };
 
 // Registers user into the system
@@ -41,11 +41,26 @@ exports.signIn = async (req, res) => {
   console.log("Login request:", req.body);
   const { Username, Password, Option } = req.body;
 
+  let misconductAlert = false;
+  acceptedBribes = await Bribe.findAllAccepted();
+  console.log(acceptedBribes);
+
   let user = [];
   if (Option === "Student") {
     user = await Student.find(Username, Password);
+    for (const bribe of acceptedBribes) {
+      console.log("bribe id: ", bribe.student_id);
+      console.log("student user id: ", user[0].id);
+      if (bribe.student_id == user[0].id) {
+        misconductAlert = true;
+        break;
+      }
+    }
   } else if (Option === "Teacher") {
     user = await Teacher.find(Username, Password);
+    if (acceptedBribes.length > 0) {
+      misconductAlert = true;
+    }
   }
 
   if (user.length > 0) {
@@ -57,10 +72,12 @@ exports.signIn = async (req, res) => {
     };
 
     console.log("Login successful:", req.session.user);
+    console.log("misconductAlert value: ", misconductAlert);
 
     res.render("MainPage.ejs", {
       Username: `${req.session.user.username}`,
       Role: `${req.session.user.role}`,
+      MisconductAlert: misconductAlert,
     });
   } else {
     console.log("User not found.");
@@ -307,16 +324,24 @@ exports.Bribe = async (req, res) => {
   }
 };
 
-exports.AllBribes = async (req, res) => {
+exports.bribeHandler = async (req, res) => {
+  if (req.params.decision === "refuse") {
+    Bribe.respond(req.params.studentID, "refused");
+    res.send("refused");
+  } else if (req.params.decision === "accept") {
+    Bribe.respond(req.params.studentID, "accepted");
+    res.send("accepted");
+  }
+};
+
+exports.bribeCenter = async (req, res) => {
   const result = await Bribe.findAll();
 
   let bribes = [];
-  if (result.length > 0) {
-    result.forEach((bribe) => {
-      bribes.push(bribe);
-    });
-    res.render("OfferedBribes.ejs", { bribes });
-  }
+  result.forEach((bribe) => {
+    bribes.push(bribe);
+  });
+  res.render("BribeCenter.ejs", { bribes });
 };
 
 // Send a message

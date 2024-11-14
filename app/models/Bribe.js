@@ -12,13 +12,12 @@ class Bribe {
     return db.execute(sql, [id, amount, grade, message]);
   }
 
-  static async findAll() {
-    let sql = `SELECT *
-                FROM bribes`;
+  static async update(id, amount, grade, message) {
+    let sql = `UPDATE bribes
+                SET amount=?, grade=?, message=?, response=NULL
+                WHERE student_id=?`;
 
-    const [bribes, _] = await db.execute(sql);
-
-    return bribes;
+    return db.execute(sql, [amount, grade, message, id]);
   }
 
   static async respond(id, response) {
@@ -29,25 +28,34 @@ class Bribe {
     return db.execute(sql, [response, id]);
   }
 
-  static async findAcceptedById(id) {
+  static async findAll() {
     let sql = `SELECT *
-                FROM bribes
-                WHERE student_id=? 
-                  AND response='accepted'`;
+                FROM bribes`;
 
-    const [acceptedBribes, _] = await db.execute(sql);
+    const [bribes, _] = await db.execute(sql);
 
-    return acceptedBribes;
+    return bribes;
   }
 
-  static async findAllAccepted() {
+  static async findAllReplied() {
     let sql = `SELECT *
                 FROM bribes
-                WHERE response='accepted'`;
+                WHERE response IS NOT NULL 
+                  AND response <> 'closed'`;
 
-    const [acceptedBribes, _] = await db.execute(sql);
+    const [bribes, _] = await db.execute(sql);
 
-    return acceptedBribes;
+    return bribes;
+  }
+
+  static async findById(id) {
+    let sql = `SELECT *
+                FROM bribes
+                WHERE student_id=?`;
+
+    const [bribes, _] = await db.execute(sql, [id]);
+
+    return bribes;
   }
 }
 

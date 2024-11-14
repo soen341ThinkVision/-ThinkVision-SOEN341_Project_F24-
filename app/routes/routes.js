@@ -65,9 +65,9 @@ router.get("/detailed-results", controllers.detailedResults);
 router
   .route("/bribe")
   .get((req, res) => res.render("Bribing.ejs"))
-  .post(controllers.Bribe);
+  .post(controllers.bribe);
 
-router.post("/bribe/:studentID/:decision", controllers.bribeHandler)
+router.put("/bribe/:studentID/:decision", controllers.bribeHandler)
 
 router.get("/bribe-center", controllers.bribeCenter);
 

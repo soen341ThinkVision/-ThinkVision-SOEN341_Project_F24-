@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome to Peer Assessment Tool</title>
-
     <link rel="stylesheet" href="/MainPage.css" />
+    <script src="/scripts/sweetalert2.all.min.js"></script>
   </head>
 
   <body>
@@ -100,18 +100,49 @@
 
     <script>
       function misconductAlert() {
-        alert(
-          "🚨 UNETHICAL BEHAVIOUR DETECTED 🚨\n\n" +
-            "Offering and accepting bribes is a severe breach of conduct. " +
-            "The authorities have been notified, you're advised to not leave the country at this time.\n\n" +
-            "Agents from the Academic Conduct and Accountability Bureau (ACAB) will arrive shortly to dispose of you.\n\n" +
-            "Sorry this is the end for you, it didn't have to be this way 😔."
-        );
-        window.location.href = "/logout";
+        Swal.fire({
+            icon: 'error', // 'error' icon to give it that warning feel
+            title: '🚨 UNETHICAL BEHAVIOUR DETECTED 🚨',
+            html: `
+                <p>This account has been flagged for engaging in grave academic misconduct.
+                The authorities have been notified, you're advised to not leave the country at this time.</p>
+                <p>Academic Conduct and Accountability Bureau (ACAB) officers will arrive shortly to dispose of you.</p>
+                <p><b>Sorry this is the end for you, it didn't have to be this way 😔.</b></p>
+            `,
+            confirmButtonText: 'Logout',
+            showCancelButton: false,
+            background: '#f8d7da',
+            backdrop: 'rgba(255, 0, 0, 0.4)',
+            width: '685px',
+            customClass: {
+                popup: 'popup',
+                title: 'popup-title',
+                htmlContainer: 'popup-text-container',
+                confirmButton: 'popup-confirm'
+            },
+          }).then(() => {
+            window.location.href = "/logout";
+          })
+      }
+
+      function warningAlert() {
+        Swal.fire({
+                title: "Bribe Refused",
+                text: "Try harder next time.",
+                icon: "error",
+                confirmButtonText: "Close",
+                background: '#e9d8bc',
+                color: '#333333',
+                confirmButtonColor: '#e66458d8'
+              })
       }
       window.onload = () => {
-        <% if (MisconductAlert) { %>
-          setTimeout(misconductAlert, 100);;
+        <% if (MisconductAlert == "reported") { %>
+          setTimeout(misconductAlert, 100);
+        <% } else if (MisconductAlert == "warn") { %>
+          const studentID = <%= ID %>;
+          setTimeout(warningAlert, 100);
+          fetch(`/bribe/${studentID}/closed`, { method: "PUT"})
         <% } %>
       };
     </script>

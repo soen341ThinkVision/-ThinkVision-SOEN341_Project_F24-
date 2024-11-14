@@ -8,6 +8,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("css"));
+app.use("/scripts", express.static("./node_modules/sweetalert2/dist"));
 
 app.use(
   session({

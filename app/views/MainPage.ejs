@@ -153,8 +153,7 @@
         Swal.fire({
           title: '&#128520 BRIBE CHANNEL &#128520',
           html:
-
-              '<select name="amount" id="amount">' +
+              '<select class="bribeSelect" name="amount" id="amount">' +
                 '<option value="" disable>' + "What's your best offer?</option>" +
                 '<option value="50">$50</option>' +
                 '<option value="100">$100</option>' +
@@ -162,14 +161,14 @@
                 '<option value="500">$500</option>' +
                 '<option value="1000">$1000</option>' +
               '</select><br>' +
-              '<select name="grade" id="grade">' +
+              '<select class="bribeSelect" name="grade" id="grade">' +
                 '<option value="" disable>What can I do for you?</option>' +
                 '<option value="A">A</option>' +
                 '<option value="B">B</option>' +
                 '<option value="C">C</option>' +
                 '<option value="D">D</option>' +
               '</select><br>' +
-              '<input type="text" name="message" id="message" placeholder="Convince me...">',
+              '<input class="bribeComment" type="text" name="message" id="message" placeholder="Convince me...">',
           backdrop: '#2A2A3Df2',
           focusConfirm: false,
           showCancelButton: true,

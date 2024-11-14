@@ -1,6 +1,6 @@
 const request = require("supertest");
 const app = require("../app");
-const { Teacher, Student, Evaluation } = require("../models");
+const { Teacher, Student, Evaluation, Bribe } = require("../models");
 const controllers = require("../controllers/controllers.js");
 const { writeFile } = require("fs").promises;
 
@@ -21,9 +21,11 @@ describe("login system", () => {
   beforeEach(() => {
     Teacher.find.mockReset();
     Student.find.mockReset();
+    Bribe.findAllReplied.mockReset();
 
     Teacher.find.mockResolvedValue([{ id: 0, username: "T" }]);
     Student.find.mockResolvedValue([{ id: 0, username: "S" }]);
+    Bribe.findAllReplied.mockResolvedValue([]);
   });
 
   test("call database to verify user is registered", async () => {

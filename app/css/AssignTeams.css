@@ -1,0 +1,121 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgb(224, 189, 131);
+  font-family: monospace;
+}
+
+#intro {
+  margin-top: 20px;
+}
+
+#intro h2 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: burlywood;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.wrapper .input-box {
+  width: 100%;
+}
+
+.input-box input {
+  border: none;
+  outline: none;
+  border: 2px solid rgba(203, 95, 95, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  width: 80%;
+  margin-bottom: 10px;
+}
+
+.remember-forgot label input {
+  accent-color: white;
+  margin-right: 3px;
+}
+
+.remember-forgot a {
+  text-decoration: none;
+}
+
+.remember-forgot a:hover {
+  text-decoration: underline;
+}
+
+.wrapper .btn {
+  background-color: rgb(160, 131, 84);
+  color: white;
+  padding: 15px 30px;
+  margin: 10px 0;
+  border: none;
+  cursor: pointer;
+  width: 200px;
+  border-radius: 10px;
+  font-size: 20px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.wrapper .btn:hover {
+  background-color: rgb(140, 120, 70);
+}
+
+.btn-upload {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: rgb(160, 131, 84);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 30%;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.btn-upload:hover {
+  background-color: #b86a38;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #ccc;
+}
+
+#teamSizeButton {
+  margin-left: 1em;
+}
+
+th,
+td {
+  border-bottom: 1px solid #ccc; /* Thin horizontal border */
+  padding: 3px;
+  text-align: left;
+}
+
+tr:last-child td {
+  border-bottom: none; /* Remove the bottom border for the last row */
+}

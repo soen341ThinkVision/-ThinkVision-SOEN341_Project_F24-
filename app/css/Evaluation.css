@@ -1,127 +1,124 @@
- body {
-     background-color: burlywood;
- }
+body {
+  background-color: burlywood;
+}
 
- .container {
-     height: 70vh;
-     width: 50vw;
-     position: absolute;
-     /* or fixed */
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
-     /* Center the container */
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     flex-direction: column;
-     background-color: rgb(224, 189, 131);
-     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-     padding: 2rem;
-     border-radius: 10px;
-     text-align: center;
- }
+.container {
+  height: 70vh;
+  width: 50vw;
+  position: absolute;
+  /* or fixed */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Center the container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #e0bd83;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+}
 
- .btn {
-    margin-top: 10px;
-     padding: 10px 20px;
-     font-size: 16px;
-     color: white;
-     background-color: rgb(160, 131, 84);
-     border: none;
-     border-radius: 5px;
-     cursor: pointer;
-     transition: background-color 0.3s;
-     width: 20%;
-     border-radius: 10px;
-     font-size: 18px;
-  }
+.btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: rgb(160, 131, 84);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 20%;
+  border-radius: 10px;
+  font-size: 18px;
+}
 
-  .btn:hover {
-    background-color: #b86a38;
-  }
+.btn:hover {
+  background-color: #b86a38;
+}
 
- input[type="range"] {
-     width: 30vw;
-     height: 8px;
-     outline: none;
-     -webkit-appearance: none;
-     border-radius: 6px;
-     margin-top: 20px;
+input[type="range"] {
+  width: 30vw;
+  height: 8px;
+  outline: none;
+  -webkit-appearance: none;
+  border-radius: 6px;
+  margin-top: 20px;
+}
 
- }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  box-shadow: 10px 15px 10px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
 
- input[type="range"]::-webkit-slider-thumb {
-     -webkit-appearance: none;
-     height: 30px;
-     width: 30px;
-     border-radius: 50%;
-     box-shadow: 10px 15px 10px rgba(0, 0, 0, 0.2);
-     background-color: #fff;
- }
+.material-icons {
+  color: rgba(115, 47, 2, 0.533);
+  font-size: 130px;
+}
 
- .material-icons {
-     color: rgba(115, 47, 2, 0.533);
-     font-size: 130px;
- }
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right, orange 50%, white 50%);
+  outline: none;
+  opacity: 0.7;
+  transition: background 0.3s;
+}
 
- .slider {
-     -webkit-appearance: none;
-     width: 100%;
-     height: 10px;
-     border-radius: 5px;
-     background: linear-gradient(to right, orange 50%, white 50%);
-     outline: none;
-     opacity: 0.7;
-     transition: background 0.3s;
- }
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4caf50;
+  cursor: pointer;
+  border-radius: 50%;
+}
 
- .slider::-webkit-slider-thumb {
-     -webkit-appearance: none;
-     appearance: none;
-     width: 25px;
-     height: 25px;
-     background: #4CAF50;
-     cursor: pointer;
-     border-radius: 50%;
- }
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4caf50;
+  cursor: pointer;
+  border-radius: 50%;
+}
 
- .slider::-moz-range-thumb {
-     width: 25px;
-     height: 25px;
-     background: #4CAF50;
-     cursor: pointer;
-     border-radius: 50%;
- }
+#emoji {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
 
- #emoji {
-     font-size: 40px;
-     margin-bottom: 10px;
- }
+#commentBox {
+  width: 60%;
+  height: 100px;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  resize: none;
+}
 
- #commentBox {
-     width: 60%;
-     height: 100px;
-     margin-top: 20px;
-     padding: 10px;
-     border: 1px solid #ccc;
-     border-radius: 5px;
-     font-size: 16px;
-     outline: none;
-     resize: none;
+#commentBox:focus {
+  border-color: #4caf50;
+}
 
- }
+#submitButton:hover {
+  background-color: #45a049;
+}
 
- #commentBox:focus {
-     border-color: #4CAF50;
- }
-
-
- #submitButton:hover {
-     background-color: #45a049;
- }
-
- #cooperation {
-     font-size: 20px;
-     margin-top: 20px;
- }
+#cooperation {
+  font-size: 20px;
+  margin-top: 20px;
+}

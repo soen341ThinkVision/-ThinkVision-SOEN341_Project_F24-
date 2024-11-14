@@ -6,7 +6,7 @@ const _ = require("lodash");
 // Home page
 exports.homePage = (req, res) => {
   const { username: Username, role: Role } = req.session.user || {};
-  res.render("MainPage.ejs", { Username, Role });
+  res.render("MainPage.ejs", { Username, Role, MisconductAlert: "none" });
 };
 
 // Registers user into the system
@@ -41,11 +41,32 @@ exports.signIn = async (req, res) => {
   console.log("Login request:", req.body);
   const { Username, Password, Option } = req.body;
 
+  let misconductAlert = "none";
+  const bribes = await Bribe.findAllReplied();
+
   let user = [];
   if (Option === "Student") {
     user = await Student.find(Username, Password);
+    console.log(user);
+    if (user.length > 0) {
+      for (const bribe of bribes) {
+        if (bribe.response != "refused" && bribe.student_id == user[0].id) {
+          misconductAlert = "reported";
+          break;
+        } else if (bribe.student_id == user[0].id) {
+          misconductAlert = "warn";
+          break;
+        }
+      }
+    }
   } else if (Option === "Teacher") {
     user = await Teacher.find(Username, Password);
+    for (const bribe of bribes) {
+      if (bribe.response == "accepted") {
+        misconductAlert = "reported";
+        break;
+      }
+    }
   }
 
   if (user.length > 0) {
@@ -61,6 +82,8 @@ exports.signIn = async (req, res) => {
     res.render("MainPage.ejs", {
       Username: `${req.session.user.username}`,
       Role: `${req.session.user.role}`,
+      MisconductAlert: misconductAlert,
+      ID: `${req.session.user.id}`,
     });
   } else {
     console.log("User not found.");
@@ -294,29 +317,38 @@ exports.detailedResults = async (req, res) => {
   }
 };
 
-exports.Bribe = async (req, res) => {
+exports.bribe = async (req, res) => {
   const studentID = req.session.user.id;
+  console.log(req.body);
   const { amount, grade, message } = req.body;
 
   try {
-    await Bribe.save(studentID, amount, grade, message);
-    console.log("Bribe successfully added.");
+    const response = await Bribe.findById(studentID);
+    if (response.length > 0) {
+      await Bribe.update(studentID, amount, grade, message);
+      console.log("Bribe successfully updated.");
+    } else {
+      await Bribe.save(studentID, amount, grade, message);
+      console.log("Bribe successfully added.");
+    }
     res.redirect("/");
   } catch (err) {
     console.log(err);
   }
 };
 
-exports.AllBribes = async (req, res) => {
-  const result = await Bribe.findAll();
+exports.bribeHandler = async (req, res) => {
+  await Bribe.respond(req.params.studentID, req.params.decision);
+  res.send(req.params.decision);
+};
 
+exports.bribeCenter = async (req, res) => {
+  const result = await Bribe.findAll();
   let bribes = [];
-  if (result.length > 0) {
-    result.forEach((bribe) => {
-      bribes.push(bribe);
-    });
-    res.render("OfferedBribes.ejs", { bribes });
-  }
+  result.forEach((bribe) => {
+    bribes.push(bribe);
+  });
+  res.render("BribeCenter.ejs", { bribes });
 };
 
 // Send a message

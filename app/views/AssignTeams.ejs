@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assign Teams</title>
-    <link rel="stylesheet" href="/MainPage.css" />
+    <link rel="stylesheet" href="/AssignTeams.css" />
   </head>
 
   <body>
@@ -38,7 +38,7 @@
         <button id="teamSizeButton" type="submit">Create Teams</button>
       </form>
       <br />
-      <table style="width: 35%">
+      <table style="width: 25%">
         <thead>
           <tr>
             <th>Student ID</th>
@@ -134,17 +134,15 @@
             request.onreadystatechange = () => {
               if (
                 request.readyState === XMLHttpRequest.DONE &&
-                request.status === 200
+                request.status === 201
               ) {
                 if (input != "-") {
                   alert(`${name}, ID#${id}, was assigned to team ${input} `);
                 } else {
                   alert(`${name}, ID#${id}, has been removed from any teams.`);
                 }
-                window.location.href = "/assign-teams";
               }
             };
-
             request.send(param);
           } else if (input.length === 0) {
             alert(`Assignment failed. Please enter a team name and try again.`);
@@ -155,8 +153,8 @@
 
     <footer>
       <p>
-        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of Team
-        ThinkVision
+        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of
+        Team ThinkVision
       </p>
     </footer>
   </body>

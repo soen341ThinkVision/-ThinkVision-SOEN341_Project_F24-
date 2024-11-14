@@ -56,7 +56,8 @@ pool.query("DROP TABLE IF EXISTS bribes", (error) => {
         student_id int, 
         amount int, 
         grade varchar(255), 
-        message text)`;
+        message text,
+        response text)`;
 
   pool.query(sql, (err) => {
     if (err) console.log(err);

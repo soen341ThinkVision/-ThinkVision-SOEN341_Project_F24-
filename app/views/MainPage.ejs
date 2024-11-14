@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome to Peer Assessment Tool</title>
-
     <link rel="stylesheet" href="/MainPage.css" />
+    <script src="/scripts/sweetalert2.all.min.js"></script>
   </head>
 
   <body>
@@ -38,11 +38,12 @@
           <button class="btn" onclick="window.location.href='/logout'">
             Log Out
           </button>
-          <button class="btn" onclick="window.location.href='/bribe'">
-            Bribe &#128520;
-          </button>
           <button class="btn" onclick="window.location.href='/chat'">
             Go to Chat
+          </button>
+          <br />
+          <button class="bribe-btn" onclick="bribe()">
+            &#128520; Bribe Channel &#128520;
           </button>
         </div>
       </div>
@@ -66,8 +67,10 @@
           <button class="btn" onclick="window.location.href='/dashboard'">
             Dashboard
           </button>
-          <button class="btn" onclick="window.location.href='/bribe-center'">
-            Bribe Center &#128520;
+          <button
+            class="bribe-btn"
+            onclick="window.location.href='/bribe-center'">
+            &#128520; Bribe Center &#128520;
           </button>
           <button class="btn" onclick="window.location.href='/chat'">
             Go to Chat
@@ -93,9 +96,129 @@
 
     <footer>
       <p>
-        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of Team
-        ThinkVision
+        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of
+        Team ThinkVision
       </p>
     </footer>
+
+    <script>
+      function misconductAlert() {
+        Swal.fire({
+            icon: 'error', // 'error' icon to give it that warning feel
+            title: '🚨 UNETHICAL BEHAVIOUR DETECTED 🚨',
+            html: `
+                <p>This account has been flagged for engaging in grave academic misconduct.
+                The authorities have been notified, you're advised to not leave the country at this time.</p>
+                <p>Academic Conduct and Accountability Bureau (ACAB) officers will arrive shortly to dispose of you.</p>
+                <p><b>Sorry this is the end for you, it didn't have to be this way 😔.</b></p>
+            `,
+            confirmButtonText: 'Logout',
+            showCancelButton: false,
+            background: '#f8d7da',
+            backdrop: 'rgba(255, 0, 0, 0.4)',
+            width: '685px',
+            customClass: {
+                popup: 'popup',
+                title: 'popup-title',
+                htmlContainer: 'popup-text-container',
+                confirmButton: 'popup-confirm'
+            },
+          }).then(() => {
+            window.location.href = "/logout";
+          })
+      }
+
+      function warningAlert() {
+        Swal.fire({
+                title: "Bribe Refused",
+                text: "Try harder next time.",
+                icon: "error",
+                confirmButtonText: "Close",
+                background: '#e9d8bc',
+                color: '#333333',
+                confirmButtonColor: '#e66458d8'
+              })
+      }
+      window.onload = () => {
+        <% if (MisconductAlert == "reported") { %>
+          setTimeout(misconductAlert, 100);
+        <% } else if (MisconductAlert == "warn") { %>
+          const studentID = <%= ID %>;
+          setTimeout(warningAlert, 100);
+          fetch(`/bribe/${studentID}/closed`, { method: "PUT"})
+        <% } %>
+      };
+
+      function bribe() {
+        Swal.fire({
+          title: '&#128520 BRIBE CHANNEL &#128520',
+          html:
+              '<select class="bribeSelect" name="amount" id="amount">' +
+                '<option value="" disable>' + "What's your best offer?</option>" +
+                '<option value="50">$50</option>' +
+                '<option value="100">$100</option>' +
+                '<option value="200">$200</option>' +
+                '<option value="500">$500</option>' +
+                '<option value="1000">$1000</option>' +
+              '</select><br>' +
+              '<select class="bribeSelect" name="grade" id="grade">' +
+                '<option value="" disable>What can I do for you?</option>' +
+                '<option value="A">A</option>' +
+                '<option value="B">B</option>' +
+                '<option value="C">C</option>' +
+                '<option value="D">D</option>' +
+              '</select><br>' +
+              '<input class="bribeComment" type="text" name="message" id="message" placeholder="Convince me...">',
+          backdrop: '#2A2A3Df2',
+          focusConfirm: false,
+          showCancelButton: true,
+          confirmButtonText: 'Submit Bribe',
+          customClass: {
+            popup: 'bribe-popup',
+            title: 'bribe-title',
+            htmlContainer: 'bribe-text-container',
+            confirmButton: 'bribe-sent-btn',
+            cancelButton: 'bribe-sent-btn'
+          },
+          preConfirm: () => {
+
+              const amount = document.getElementById('amount').value;
+              const grade = document.getElementById('grade').value;
+              const message = document.getElementById('message').value;
+
+              if (!amount || !grade ) {
+                Swal.showValidationMessage('Your offer is incomplete...');
+                return false;
+              }
+
+              return { amount, grade, message };
+          }
+        }).then((result) => {
+
+          if (result.isConfirmed) {
+
+            fetch('/bribe', {
+              method: "POST",
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(result.value)
+            }).then(() => {
+              Swal.fire({
+                title: 'Bribe sent.',
+                icon: 'success',
+                backdrop: '#2A2A3Df2',
+                confirmButtonText: 'Close',
+                customClass: {
+                  popup: 'bribe-sent',
+                  title: 'sent-title',
+                  text: 'bribe-text-container',
+                  confirmButton: 'bribe-btn',
+                },
+              });
+            })
+
+          }
+        })
+      }
+    </script>
   </body>
 </html>

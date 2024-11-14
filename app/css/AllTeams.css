@@ -9,7 +9,6 @@ body {
     background-color: #f0f8ff; 
 }
 
-
 #welcome-section {
     display: flex;
     flex-direction: row;
@@ -104,7 +103,6 @@ body {
     padding: 20px;
 }
 
-
 .square img {
     width: 150px;
     height: 150px;
@@ -113,7 +111,6 @@ body {
     margin-bottom: 20px;
     border: 3px solid white;
 }
-
 
 .info h2 {
     font-size: 22px;

@@ -234,8 +234,8 @@ footer {
 }
 
 /* Select and input base styles */
-.bribeSelect,
-.bribeComment {
+select,
+input[type="text"] {
   background-color: #4e3a59; /* Dusty Purple */
   color: #d1c9e1; /* Soft Lavender Gray text */
   border: 1px solid #6f4f97; /* Muted Purple (Devil Emoji Purple) */
@@ -250,29 +250,29 @@ footer {
 }
 
 /* Spacing and layout adjustments */
-.bribeSelect {
+select {
   margin: 0px 10px;
   margin-bottom: 25px;
 }
 
-.bribeComment {
+input[type="text"] {
   width: 60%;
 }
 
-.bribeSelect:hover {
+select:hover {
   box-shadow: 0px 0px 8px rgba(32, 87, 15, 0.5); /* Stronger purple glow */
   border-color: #4e3a59; /* Blood red border on hover */
 }
 
-.bribeSelect:focus,
-.bribeComment:focus {
+select:focus,
+input[type="text"]:focus {
   background-color: #4e3a59;
   box-shadow: 0px 0px 10px rgba(32, 87, 15, 0.5); /* Blood red glow */
   color: #ffffff; /* White text for sharp contrast */
 }
 
 /* Placeholder styling for the input */
-.bribeComment::placeholder {
+input[type="text"]::placeholder {
   color: #888888; /* Slightly faded gray for placeholder text */
   font-style: italic;
 }

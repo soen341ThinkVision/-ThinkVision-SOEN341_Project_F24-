@@ -6,8 +6,8 @@ class Message {
     return db.execute(sql);
   }
 
-  static async findByUser(userId) {
-    let sql = `SELECT * FROM messages WHERE sender_id=${userId} OR receiver_id=${userId} ORDER BY timestamp ASC`;
+  static async findByUser(userId, otherUserId) {
+    let sql = `SELECT * FROM messages WHERE (sender_id=${userId} AND receiver_id=${otherUserId}) OR (sender_id=${otherUserId} AND receiver_id=${userId}) ORDER BY timestamp ASC`;
     const [messages, _] = await db.execute(sql);
     return messages;
   }

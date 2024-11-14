@@ -390,12 +390,12 @@ exports.getMessages = async (req, res) => {
         studentsByTeam[student.team].push(student);
       });
       if (receiverId) {
-        messages = await Message.findByUser(receiverId);
+        messages = await Message.findByUser(userId, receiverId);
       }
     } else {
       teacher = await Teacher.findAll(); // Retrieve the teacher
       if (receiverId) {
-        messages = await Message.findByUser(receiverId);
+        messages = await Message.findByUser(userId, receiverId);
       }
     }
 

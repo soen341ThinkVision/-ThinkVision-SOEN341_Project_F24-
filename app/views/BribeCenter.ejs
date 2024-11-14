@@ -139,37 +139,28 @@
               }).then(() => (location.reload()))
             } else if (data == "accepted") {
               Swal.fire({
-            icon: 'error', // 'error' icon to give it that warning feel
-            title: '🚨 UNETHICAL BEHAVIOUR DETECTED 🚨',
-            html: `
-                <p>Offering and accepting bribes is a severe breach of conduct.
-                The authorities have been notified, you're advised to not leave the country at this time.</p>
-                <p>Academic Conduct and Accountability Bureau (ACAB) officers will arrive shortly to dispose of you.</p>
-                <p><b>Sorry this is the end for you, it didn't have to be this way 😔.</b></p>
-            `,
-            confirmButtonText: 'Logout',
-            showCancelButton: false,
-            background: '#f8d7da',
-            backdrop: 'rgba(255, 0, 0, 0.4)',
-            width: '685px',
-            customClass: {
-                popup: 'popup',
-                title: 'popup-title',
-                htmlContainer: 'popup-text-container',
-                confirmButton: 'popup-confirm'
-            },
-          }).then(() => {
-            window.location.href = "/logout";
-          })
-
-
-              // alert("🚨 UNETHICAL BEHAVIOUR DETECTED 🚨\n\n" +
-              //   "Offering and accepting bribes is a severe breach of conduct. " +
-              //   "The authorities have been notified, you're advised to not leave the country at this time.\n\n" +
-              //   "Agents from the Academic Conduct and Accountability Bureau (ACAB) will arrive shortly to dispose of you.\n\n" +
-              //   "Sorry this is the end for you, it didn't have to be this way 😔."
-              // );
-              // window.location.href = "/logout";
+                icon: 'error', // 'error' icon to give it that warning feel
+                title: '🚨 UNETHICAL BEHAVIOUR DETECTED 🚨',
+                html: `
+                    <p>Offering and accepting bribes is a severe breach of conduct.
+                    The authorities have been notified, you're advised to not leave the country at this time.</p>
+                    <p>Academic Conduct and Accountability Bureau (ACAB) officers will arrive shortly to dispose of you.</p>
+                    <p><b>Sorry this is the end for you, it didn't have to be this way 😔.</b></p>
+                `,
+                confirmButtonText: 'Logout',
+                showCancelButton: false,
+                background: '#f8d7da',
+                backdrop: 'rgba(255, 0, 0, 0.4)',
+                width: '685px',
+                customClass: {
+                    popup: 'popup',
+                    title: 'popup-title',
+                    htmlContainer: 'popup-text-container',
+                    confirmButton: 'popup-confirm'
+                },
+              }).then(() => {
+                window.location.href = "/logout";
+              })
             }
           })
       }

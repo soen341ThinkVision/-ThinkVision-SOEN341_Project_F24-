@@ -319,6 +319,7 @@ exports.detailedResults = async (req, res) => {
 
 exports.bribe = async (req, res) => {
   const studentID = req.session.user.id;
+  console.log(req.body);
   const { amount, grade, message } = req.body;
 
   try {

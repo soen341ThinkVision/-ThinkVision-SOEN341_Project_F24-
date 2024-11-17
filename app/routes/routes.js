@@ -69,7 +69,10 @@ router
 
 router.put("/bribe/:studentID/:decision", controllers.bribeHandler)
 
-router.get("/bribe-center", controllers.bribeCenter);
+router
+  .route("/MakeQuestions")
+  .get((req,res) => res.render("SubmitQuestions.ejs"))
+  .post(controllers.SubmitQuestion);
 
 // Chat routes
 router
@@ -77,5 +80,8 @@ router
   .get(controllers.getMessages)
   .post(controllers.sendMessage);
 
+router
+  .route("/checkAnswer")
+  .post(controllers.checkAnswer);
 
 module.exports = router;

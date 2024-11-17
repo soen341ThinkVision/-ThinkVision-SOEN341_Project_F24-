@@ -31,9 +31,19 @@
         See Evaluation
       </button>
       <br />
-      <button class="btn" onclick="window.location.href='/teammates'">
-        Back to Team
-      </button>
+      <div class="review-container">
+        <h2>Pop Quiz!</h2>
+        <p id="question"><%= ChosenQuestion.question %></p> 
+
+        <form id='answerForm' action="/checkAnswer" method="POST">
+            <label for="answer">Your Answer:</label>
+            <input type="text" id="answer" name="answer" placeholder="Enter your answer here..." required>
+
+            <input type="hidden" name="question" value="<%= ChosenQuestion.question %>">
+
+            <button type="submit">Submit Answer</button>
+        </form>
+    </div>
     </main>
 
     <footer>

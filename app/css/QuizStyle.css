@@ -1,33 +1,107 @@
-form {
-    max-width: 400px;
-    margin: 0 auto;
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background: burlywood;
+    /* Light gray background for the page */
+    color: #333;
+    /* Darker text color for readability */
+    margin: 0;
     padding: 20px;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
+/* Header Styling */
+h1 {
+    font-size: 2rem;
+    color: black;
+    /* Vibrant blue for emphasis */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form Container Styling */
+form {
+    max-width: 500px;
+    width: 100%;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+}
+
+/* Label Styling */
 label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
+    color: #444;
+    /* Slightly darker text for labels */
 }
 
-input, textarea, button {
+/* Input and Textarea Styling */
+textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 12px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: #f9f9f9;
+    resize: vertical;
+    /* Allows vertical resizing only */
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+textarea:focus {
+    border-color: burlywood;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    /* Highlight effect */
+    outline: none;
+}
+
+/* Button Styling */
 button {
-    background-color: #007BFF;
+    width: 100%;
+    padding: 12px;
+    background: burlywood;
+    /* Primary button color */
     color: #fff;
+    font-size: 16px;
+    font-weight: bold;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background: rgb(81, 47, 2);
+    /* Darker blue on hover */
+    box-shadow: 0 4px 6px rgba(0, 91, 179, 0.3);
+    /* Slight shadow */
+}
+
+button:active {
+    background: #003f8a;
+    /* Even darker on click */
+    box-shadow: none;
+    /* Removes shadow on click */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    form {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
 }

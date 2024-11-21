@@ -298,40 +298,6 @@ exports.detailedResults = async (req, res) => {
   }
 };
 
-exports.bribe = async (req, res) => {
-  const studentID = req.session.user.id;
-  console.log(req.body);
-  const { amount, grade, message } = req.body;
-
-  try {
-    const response = await Bribe.findById(studentID);
-    if (response.length > 0) {
-      await Bribe.update(studentID, amount, grade, message);
-      console.log("Bribe successfully updated.");
-    } else {
-      await Bribe.save(studentID, amount, grade, message);
-      console.log("Bribe successfully added.");
-    }
-    res.redirect("/");
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.bribeHandler = async (req, res) => {
-  await Bribe.respond(req.params.studentID, req.params.decision);
-  res.send(req.params.decision);
-};
-
-exports.bribeCenter = async (req, res) => {
-  const result = await Bribe.findAll();
-  let bribes = [];
-  result.forEach((bribe) => {
-    bribes.push(bribe);
-  });
-  res.render("BribeCenter.ejs", { bribes });
-};
-
 // Send a message
 exports.sendMessage = async (req, res) => {
   const { receiverId, content } = req.body;

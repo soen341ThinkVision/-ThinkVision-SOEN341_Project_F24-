@@ -61,16 +61,8 @@ router.get("/dashboard", (req, res) => res.render("Dashboard.ejs"));
 router.get("/summary", controllers.summary);
 router.get("/detailed-results", controllers.detailedResults);
 
-// Bribing Option
 router
-  .route("/bribe")
-  .get((req, res) => res.render("Bribing.ejs"))
-  .post(controllers.bribe);
-
-router.put("/bribe/:studentID/:decision", controllers.bribeHandler)
-
-router
-  .route("/MakeQuestions")
+  .route("/make-questions")
   .get((req,res) => res.render("SubmitQuestions.ejs"))
   .post(controllers.SubmitQuestion);
 

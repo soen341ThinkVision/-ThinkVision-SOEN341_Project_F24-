@@ -72,7 +72,7 @@ class Student {
   static async findByTeam(team) {
     let sql = `SELECT * 
                 FROM students 
-                WHERE team=${team}`;
+                WHERE team='${team}'`;
 
     const [students, _] = await db.execute(sql);
 

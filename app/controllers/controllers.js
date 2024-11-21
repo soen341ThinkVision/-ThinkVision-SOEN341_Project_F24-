@@ -387,9 +387,9 @@ exports.checkAnswer = async (req, res) => {
     const isCorrect =
       CheckQuestion.answer.trim().toLowerCase() === answer.trim().toLowerCase();
     if (isCorrect) {
-      res.status(200).send("Correct answer! Well done.");
+      res.render("QuizPass.ejs");
     } else {
-      res.status(400).send("Incorrect answer. Try again.");
+      res.render("QuizFail.ejs");
     }
   } catch (error) {
     console.error("Error checking answer: ", error);

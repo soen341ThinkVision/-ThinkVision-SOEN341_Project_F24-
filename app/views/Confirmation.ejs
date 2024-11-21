@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="/Evaluation.css" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
   </head>
 
   <body>
@@ -26,24 +25,33 @@
       <br />
       <button
         class="btn"
-        onclick="window.location.href='/evaluate/<%= teammate %>'"
-      >
+        onclick="window.location.href='/evaluate/<%= teammate %>'">
         See Evaluation
       </button>
       <br />
+      <% if (ChosenQuestion) { %>
       <div class="review-container">
         <h2>Pop Quiz!</h2>
-        <p id="question"><%= ChosenQuestion.question %></p> 
+        <p id="question"><%= ChosenQuestion.question %></p>
 
-        <form id='answerForm' action="/checkAnswer" method="POST">
-            <label for="answer">Your Answer:</label>
-            <input type="text" id="answer" name="answer" placeholder="Enter your answer here..." required>
+        <form id="answerForm" action="/checkAnswer" method="POST">
+          <label for="answer">Your Answer:</label>
+          <input
+            type="text"
+            id="answer"
+            name="answer"
+            placeholder="Enter your answer here..."
+            required />
 
-            <input type="hidden" name="question" value="<%= ChosenQuestion.question %>">
+          <input
+            type="hidden"
+            name="question"
+            value="<%= ChosenQuestion.question %>" />
 
-            <button type="submit">Submit Answer</button>
+          <button type="submit">Submit Answer</button>
         </form>
-    </div>
+      </div>
+      <% } %>
     </main>
 
     <footer>

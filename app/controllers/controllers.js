@@ -1,4 +1,4 @@
-const {Teacher, Student, Evaluation, Quiz, Message } = require("../models");
+const { Teacher, Student, Evaluation, Quiz, Message } = require("../models");
 const csvtojson = require("csvtojson");
 const { createReadStream, unlinkSync } = require("fs");
 const _ = require("lodash");
@@ -120,15 +120,19 @@ exports.assignAllStudents = async (req, res) => {
   } else {
     var students = await Student.findAll();
 
-    const numOfTeams = Math.ceil(students.length / req.body.size);
+    const numOfTeams = Math.ceil((students.length - 7) / req.body.size);
 
     students = _.shuffle(students);
 
+    var team = 1;
     for (let i = 0; i < students.length; i++) {
-      let team = (i % numOfTeams) + 1;
-      await Student.updateTeam(students[i].id, team);
+      if (students[i].id > 40020000 && students[i].id < 40300000) {
+        await Student.updateTeam(students[i].id, "ThinkVision");
+      } else {
+        await Student.updateTeam(students[i].id, team);
+        team = (team % numOfTeams) + 1;
+      }
     }
-
     return res.status(201).send("Teams auto-assigned.");
   }
 };
@@ -256,7 +260,7 @@ exports.submitEvaluation = async (req, res) => {
 
   const ChosenQuestion = await Quiz.findRandomQuestion();
 
-  res.render("Confirmation.ejs", { teammate: teammateID, ChosenQuestion}); // Redirect to teammates page after submission
+  res.render("Confirmation.ejs", { teammate: teammateID, ChosenQuestion }); // Redirect to teammates page after submission
 };
 
 exports.summary = async (req, res) => {
@@ -361,26 +365,27 @@ exports.getMessages = async (req, res) => {
 
 exports.SubmitQuestion = async (req, res) => {
   try {
-    console.log("Submitted Question" , req.body)
-    const {question, answer} = req.body;
-    await Quiz.save(question,answer);
+    console.log("Submitted Question", req.body);
+    const { question, answer } = req.body;
+    await Quiz.save(question, answer);
     console.log("Question successfully Added");
     res.redirect("/");
-  } catch(error) {
+  } catch (error) {
     console.error("Error submitting Question: ", error);
   }
-}
+};
 
 exports.checkAnswer = async (req, res) => {
   try {
     console.log("BODY request: ", req.body);
-    const {question, answer } = req.body;
+    const { question, answer } = req.body;
     const CheckQuestion = await Quiz.findByQuestionName(question);
 
     if (!CheckQuestion) {
       return res.status(404).send("Question not found.");
     }
-    const isCorrect = CheckQuestion.answer.trim().toLowerCase() === answer.trim().toLowerCase();
+    const isCorrect =
+      CheckQuestion.answer.trim().toLowerCase() === answer.trim().toLowerCase();
     if (isCorrect) {
       res.status(200).send("Correct answer! Well done.");
     } else {

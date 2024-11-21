@@ -61,15 +61,10 @@ router.get("/dashboard", (req, res) => res.render("Dashboard.ejs"));
 router.get("/summary", controllers.summary);
 router.get("/detailed-results", controllers.detailedResults);
 
-// Bribing Option
 router
-  .route("/bribe")
-  .get((req, res) => res.render("Bribing.ejs"))
-  .post(controllers.bribe);
-
-router.put("/bribe/:studentID/:decision", controllers.bribeHandler)
-
-router.get("/bribe-center", controllers.bribeCenter);
+  .route("/make-questions")
+  .get((req,res) => res.render("SubmitQuestions.ejs"))
+  .post(controllers.SubmitQuestion);
 
 // Chat routes
 router
@@ -77,5 +72,8 @@ router
   .get(controllers.getMessages)
   .post(controllers.sendMessage);
 
+router
+  .route("/checkAnswer")
+  .post(controllers.checkAnswer);
 
 module.exports = router;

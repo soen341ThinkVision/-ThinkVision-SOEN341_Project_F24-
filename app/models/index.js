@@ -1,7 +1,7 @@
 const Teacher = require('./Teacher');
 const Student = require('./Student');
 const Evaluation = require('./Evaluation');
-const Bribe = require('./Bribe');
+const Quiz = require('./Quiz');
 const Message = require('./Message');
 
-module.exports = { Teacher, Student, Evaluation, Bribe, Message };
+module.exports = { Teacher, Student, Evaluation, Quiz, Message };

@@ -1,4 +1,4 @@
-const { Teacher, Student, Evaluation, Bribe, Message } = require("../models");
+const {Teacher, Student, Evaluation, Quiz, Message } = require("../models");
 const csvtojson = require("csvtojson");
 const { createReadStream, unlinkSync } = require("fs");
 const _ = require("lodash");
@@ -41,32 +41,12 @@ exports.signIn = async (req, res) => {
   console.log("Login request:", req.body);
   const { Username, Password, Option } = req.body;
 
-  let misconductAlert = "none";
-  const bribes = await Bribe.findAllReplied();
-
   let user = [];
   if (Option === "Student") {
     user = await Student.find(Username, Password);
     console.log(user);
-    if (user.length > 0) {
-      for (const bribe of bribes) {
-        if (bribe.response != "refused" && bribe.student_id == user[0].id) {
-          misconductAlert = "reported";
-          break;
-        } else if (bribe.student_id == user[0].id) {
-          misconductAlert = "warn";
-          break;
-        }
-      }
-    }
   } else if (Option === "Teacher") {
     user = await Teacher.find(Username, Password);
-    for (const bribe of bribes) {
-      if (bribe.response == "accepted") {
-        misconductAlert = "reported";
-        break;
-      }
-    }
   }
 
   if (user.length > 0) {
@@ -82,7 +62,6 @@ exports.signIn = async (req, res) => {
     res.render("MainPage.ejs", {
       Username: `${req.session.user.username}`,
       Role: `${req.session.user.role}`,
-      MisconductAlert: misconductAlert,
       ID: `${req.session.user.id}`,
     });
   } else {
@@ -240,7 +219,7 @@ exports.evaluateTeammate = async (req, res) => {
   }
 };
 
-exports.submitEvaluation = (req, res) => {
+exports.submitEvaluation = async (req, res) => {
   const { teammateID } = req.body;
   const reviewerID = req.session.user.id;
 
@@ -275,7 +254,9 @@ exports.submitEvaluation = (req, res) => {
     await Evaluation.save(reviewerID, teammateID, type, score, comments);
   });
 
-  res.render("Confirmation.ejs", { teammate: teammateID }); // Redirect to teammates page after submission
+  const ChosenQuestion = await Quiz.findRandomQuestion();
+
+  res.render("Confirmation.ejs", { teammate: teammateID, ChosenQuestion}); // Redirect to teammates page after submission
 };
 
 exports.summary = async (req, res) => {
@@ -315,40 +296,6 @@ exports.detailedResults = async (req, res) => {
     console.error("Error fetching detailed results:", error);
     res.status(500).send("Error retrieving detailed results");
   }
-};
-
-exports.bribe = async (req, res) => {
-  const studentID = req.session.user.id;
-  console.log(req.body);
-  const { amount, grade, message } = req.body;
-
-  try {
-    const response = await Bribe.findById(studentID);
-    if (response.length > 0) {
-      await Bribe.update(studentID, amount, grade, message);
-      console.log("Bribe successfully updated.");
-    } else {
-      await Bribe.save(studentID, amount, grade, message);
-      console.log("Bribe successfully added.");
-    }
-    res.redirect("/");
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-exports.bribeHandler = async (req, res) => {
-  await Bribe.respond(req.params.studentID, req.params.decision);
-  res.send(req.params.decision);
-};
-
-exports.bribeCenter = async (req, res) => {
-  const result = await Bribe.findAll();
-  let bribes = [];
-  result.forEach((bribe) => {
-    bribes.push(bribe);
-  });
-  res.render("BribeCenter.ejs", { bribes });
 };
 
 // Send a message
@@ -409,5 +356,38 @@ exports.getMessages = async (req, res) => {
   } catch (error) {
     console.error("Error retrieving messages:", error);
     res.status(500).send("Error retrieving messages");
+  }
+};
+
+exports.SubmitQuestion = async (req, res) => {
+  try {
+    console.log("Submitted Question" , req.body)
+    const {question, answer} = req.body;
+    await Quiz.save(question,answer);
+    console.log("Question successfully Added");
+    res.redirect("/");
+  } catch(error) {
+    console.error("Error submitting Question: ", error);
+  }
+}
+
+exports.checkAnswer = async (req, res) => {
+  try {
+    console.log("BODY request: ", req.body);
+    const {question, answer } = req.body;
+    const CheckQuestion = await Quiz.findByQuestionName(question);
+
+    if (!CheckQuestion) {
+      return res.status(404).send("Question not found.");
+    }
+    const isCorrect = CheckQuestion.answer.trim().toLowerCase() === answer.trim().toLowerCase();
+    if (isCorrect) {
+      res.status(200).send("Correct answer! Well done.");
+    } else {
+      res.status(400).send("Incorrect answer. Try again.");
+    }
+  } catch (error) {
+    console.error("Error checking answer: ", error);
+    res.status(500).send("An error occurred while checking the answer.");
   }
 };

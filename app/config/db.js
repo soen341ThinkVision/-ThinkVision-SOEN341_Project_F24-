@@ -50,14 +50,11 @@ pool.query("DROP TABLE IF EXISTS evaluations", (error) => {
   });
 });
 
-pool.query("DROP TABLE IF EXISTS bribes", (error) => {
+pool.query("DROP TABLE IF EXISTS questions", (error) => {
   const sql = `
-    CREATE TABLE bribes (
-        student_id int, 
-        amount int, 
-        grade varchar(255), 
-        message text,
-        response text)`;
+    CREATE TABLE questions (
+        question varchar(255), 
+        answer varchar(255))`;
 
   pool.query(sql, (err) => {
     if (err) console.log(err);

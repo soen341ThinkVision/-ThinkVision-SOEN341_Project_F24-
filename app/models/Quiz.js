@@ -23,7 +23,7 @@ class Quiz {
   }
 
   static async findByQuestionName(question) {
-    let sql = `SELECT * FROM questions WHERE question ='${question}'`
+    let sql = `SELECT * FROM questions WHERE question ="${question}"`
 
     const [TheQuestion, _] = await db.execute(sql);
 

@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 class Quiz {
   static save(Question, Answer) {
-    let sql = `INSERT INTO questions (
+    const sql = `INSERT INTO questions (
                     question,
                     answer
                 ) VALUES(?, ?)`;
@@ -10,24 +10,23 @@ class Quiz {
     return db.execute(sql, [Question, Answer]);
   }
 
-
   static async findRandomQuestion() {
-    let sql = `SELECT *
+    const sql = `SELECT *
                 FROM questions
                 ORDER BY RAND()
                 LIMIT 1`;
 
-    const [question, _] = await db.execute(sql);
+    const [question] = await db.execute(sql);
     console.log("Question fetched: ", question);
     return question[0];
   }
 
-  static async findByQuestionName(question) {
-    let sql = `SELECT * FROM questions WHERE question ="${question}"`
+  static async findByQuestionName(q) {
+    const sql = `SELECT * FROM questions WHERE question=?`;
 
-    const [TheQuestion, _] = await db.execute(sql);
+    const [question] = await db.execute(sql, [q]);
 
-    return TheQuestion[0];
+    return question[0];
   }
 }
 

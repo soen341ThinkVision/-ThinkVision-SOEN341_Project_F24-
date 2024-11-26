@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 class Evaluation {
   static save(reviewer, reviewee, category, score, comment) {
-    let sql = `INSERT INTO evaluations (
+    const sql = `INSERT INTO evaluations (
                     reviewer_id,
                     reviewee_id, 
                     category, 
@@ -14,7 +14,7 @@ class Evaluation {
   }
 
   static async getSummary() {
-    let sql = `SELECT 
+    const sql = `SELECT 
                     s.id,
                     s.username,
                     s.team,
@@ -32,12 +32,12 @@ class Evaluation {
                 ORDER BY 
                     s.id ASC`;
 
-    const [evaluations, _] = await db.execute(sql);
+    const [evaluations] = await db.execute(sql);
     return evaluations;
   }
 
   static async getDetailed() {
-    let sql = `SELECT 
+    const sql = `SELECT 
                     s.id,
                     s.username,
                     s.team,
@@ -62,18 +62,18 @@ class Evaluation {
                     s.team ASC, 
                     s.id ASC`;
 
-    const [evaluations, _] = await db.execute(sql);
+    const [evaluations] = await db.execute(sql);
     return evaluations;
   }
 
   static async find(reviewer, reviewee) {
-    let sql = `SELECT category, score, comment
+    const sql = `SELECT category, score, comment
                 FROM evaluations
                 WHERE 
                     reviewee_id=${reviewee} AND 
                     reviewer_id=${reviewer}`;
 
-    const [evaluations, _] = await db.execute(sql);
+    const [evaluations] = await db.execute(sql);
     return evaluations;
   }
 }

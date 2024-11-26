@@ -24,6 +24,9 @@ body {
   position: absolute;
   opacity: 0;
   transition: visibility 0.5s, transform 0.5s ease-in, opacity 0.5s ease-in;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .team-block.active {
@@ -51,12 +54,6 @@ body {
   max-width: 700px;
   max-height: 700px;
   margin: 0 auto;
-}
-
-.team-block {
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center;
 }
 
 .btn-container {

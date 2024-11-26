@@ -28,11 +28,9 @@ describe("login system", () => {
 
   test("call database to verify user is registered", async () => {
     for (const role of roles) {
-      const response = await request(app)
+      await request(app)
         .post("/login")
-        .send({
-          Option: `${role}`,
-        });
+        .send({ Option: `${role}` });
     }
 
     expect(Student.find).toHaveBeenCalledTimes(1);
@@ -44,7 +42,7 @@ describe("login system", () => {
     Student.find.mockResolvedValue([]);
 
     for (const role of roles) {
-      const response = await request(app)
+      await request(app)
         .post("/login")
         .send({
           Username: "user",
@@ -56,7 +54,7 @@ describe("login system", () => {
   });
 
   test("do not login if any of username, password, or role are missing", async () => {
-    var requestBody = [
+    let requestBody = [
       { Username: "", Password: "", Option: "Teacher" },
       { Username: "", Password: "", Option: "Student" },
       { Username: "", Password: "0", Option: "Teacher" },
@@ -68,10 +66,7 @@ describe("login system", () => {
     for (const body of requestBody) {
       Teacher.find.mockResolvedValue([]);
       Student.find.mockResolvedValue([]);
-      const response = await request(app)
-        .post("/login")
-        .send(body)
-        .expect("Location", "/login");
+      await request(app).post("/login").send(body).expect("Location", "/login");
     }
 
     requestBody = [
@@ -82,10 +77,7 @@ describe("login system", () => {
     ];
 
     for (const body of requestBody) {
-      const response = await request(app)
-        .post("/login")
-        .send(body)
-        .expect("Location", "/login");
+      await request(app).post("/login").send(body).expect("Location", "/login");
     }
   });
 
@@ -184,9 +176,9 @@ describe("team assignment", () => {
     Student.updateTeam.mockReset();
   });
 
-  var teamSize = 10;
-  var numOfStudents = 50;
-  var students = [];
+  const teamSize = 10;
+  const numOfStudents = 50;
+  let students = [];
   for (let i = 1; i <= numOfStudents; i++) {
     students.push({ id: i, username: `student_${i}` });
   }
@@ -254,8 +246,8 @@ describe("team assignment", () => {
 });
 
 describe("team visibility", () => {
-  var numOfStudents = 5;
-  var students = [];
+  const numOfStudents = 5;
+  let students = [];
   for (let i = 1; i <= numOfStudents; i++) {
     students.push({
       id: i,

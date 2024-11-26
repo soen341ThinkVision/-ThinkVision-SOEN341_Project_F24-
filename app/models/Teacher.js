@@ -22,7 +22,7 @@ class Teacher {
                     username='${username}' AND 
                     password='${password}'`;
 
-    const [teacher, _] = await db.execute(sql);
+    const [teacher] = await db.execute(sql);
 
     return teacher;
   }
@@ -30,7 +30,7 @@ class Teacher {
   static async findAll() {
     let sql = `SELECT * FROM teachers`;
 
-    const [teachers, _] = await db.execute(sql);
+    const [teachers] = await db.execute(sql);
 
     return teachers;
   }

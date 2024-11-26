@@ -42,7 +42,7 @@ class Student {
                 FROM students 
                 ORDER BY team ASC`;
 
-    const [students, _] = await db.execute(sql);
+    const [students] = await db.execute(sql);
 
     return students;
   }
@@ -54,7 +54,7 @@ class Student {
                     username='${username}' AND 
                     password='${password}'`;
 
-    const [student, _] = await db.execute(sql);
+    const [student] = await db.execute(sql);
 
     return student;
   }
@@ -64,7 +64,7 @@ class Student {
                 FROM students 
                 WHERE id=${id}`;
 
-    const [student, _] = await db.execute(sql);
+    const [student] = await db.execute(sql);
 
     return student;
   }
@@ -74,7 +74,7 @@ class Student {
                 FROM students 
                 WHERE team='${team}'`;
 
-    const [students, _] = await db.execute(sql);
+    const [students] = await db.execute(sql);
 
     return students;
   }

@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
   }
 
   if (Option === "Teacher") {
-    const teacher = await Teacher.save(ID, Username, Password);
+    await Teacher.save(ID, Username, Password);
     console.log("Teacher successfully registered.");
     res.send({ registered: true });
   }
@@ -83,8 +83,8 @@ exports.uploadFile = async (req, res) => {
         res.status(400).send({ processed: false });
       } else {
         // saves students in the database
-        for (let i = 0; i < students.length; i++) {
-          await Student.save(students[i].ID, students[i].Name);
+        for (let student of students) {
+          await Student.save(student.ID, student.Name);
         }
         console.log("File processed successfully.");
         res.status(201).send({ processed: true });
@@ -118,18 +118,17 @@ exports.assignAllStudents = async (req, res) => {
   if (req.body.size < 2) {
     res.status(400).send("Invalid team size");
   } else {
-    var students = await Student.findAll();
+    let students = await Student.findAll();
+    students = _.shuffle(students);
 
     const numOfTeams = Math.ceil((students.length - 7) / req.body.size);
 
-    students = _.shuffle(students);
-
-    var team = 1;
-    for (let i = 0; i < students.length; i++) {
-      if (students[i].id > 40020000 && students[i].id < 40300000) {
-        await Student.updateTeam(students[i].id, "ThinkVision");
+    let team = 1;
+    for (let student of students) {
+      if (student.id > 40020000 && student.id < 40300000) {
+        await Student.updateTeam(student.id, "ThinkVision");
       } else {
-        await Student.updateTeam(students[i].id, team);
+        await Student.updateTeam(student.id, team);
         team = (team % numOfTeams) + 1;
       }
     }
@@ -160,7 +159,7 @@ exports.showAllTeams = async (req, res) => {
 
   let teams = [];
   students.forEach((student) => {
-    const { team, username, id } = student;
+    const { team } = student;
     if (!teams[team]) {
       teams[team] = [];
     }
@@ -308,7 +307,7 @@ exports.sendMessage = async (req, res) => {
   const senderId = req.session.user.id;
 
   try {
-    const result = await Message.save(senderId, receiverId, content);
+    await Message.save(senderId, receiverId, content);
     const message = {
       content: content,
       timestamp: new Date().toISOString(),

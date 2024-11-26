@@ -1,5 +1,15 @@
 const db = require("../config/db");
 
+db.execute("DROP TABLE IF EXISTS students").then(async () => {
+  const sql = `CREATE TABLE students (
+    id int, 
+    username varchar(255),
+    password varchar(255), 
+    team varchar(255))`;
+
+  await db.execute(sql);
+});
+
 class Student {
   static save(id, name) {
     let sql = `INSERT INTO students (

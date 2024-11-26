@@ -20,18 +20,14 @@
 }
 
 body {
-
     background-color: burlywood;
     justify-content: center;
     align-items: center;
-
 }
 
 .wrapper {
-
     padding: 5%;
     display: grid;
-
 }
 
 .wrapper h2 {
@@ -43,16 +39,12 @@ body {
 }
 
 .input-box input {
-
-    border: none;
     outline: none;
     border: 2px solid rgba(203, 95, 95, 0.1);
     border-radius: 10px;
-
 }
 
 .input-box i {
-
     font-size: 18px;
     padding: 10px;
 }

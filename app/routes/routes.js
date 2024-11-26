@@ -2,7 +2,7 @@ const router = require("express").Router();
 const multer = require("multer");
 const controllers = require("../controllers/controllers.js");
 
-// Sets up file storage and naming
+// Sets up file storage, size limit, and file naming
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./");
@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     cb(null, "students.csv");
   },
 });
-const upload = multer({ storage: storage, limits: { fileSize: 10000000 } });
+const upload = multer({ storage: storage, limits: { fileSize: 7500000 } });
 
 // Home page
 router.get("/", controllers.homePage);
@@ -63,7 +63,7 @@ router.get("/detailed-results", controllers.detailedResults);
 
 router
   .route("/make-questions")
-  .get((req,res) => res.render("SubmitQuestions.ejs"))
+  .get((req, res) => res.render("SubmitQuestions.ejs"))
   .post(controllers.SubmitQuestion);
 
 // Chat routes
@@ -72,8 +72,6 @@ router
   .get(controllers.getMessages)
   .post(controllers.sendMessage);
 
-router
-  .route("/checkAnswer")
-  .post(controllers.checkAnswer);
+router.route("/checkAnswer").post(controllers.checkAnswer);
 
 module.exports = router;

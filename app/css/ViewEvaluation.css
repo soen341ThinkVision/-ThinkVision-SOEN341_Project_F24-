@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: burlywood; /* Updated */
+  background-color: burlywood;
   margin: 0;
   padding: 0;
   color: #333;
@@ -18,7 +18,7 @@ h1,
 h2,
 h3 {
   text-align: center;
-  color: #4b2e2e; /* Updated */
+  color: #4b2e2e;
 }
 
 /* Detailed View Section */
@@ -31,7 +31,7 @@ h2 {
 h3 {
   margin-top: 20px;
   font-size: 1.2rem;
-  color: #e0c09a; /* Updated */
+  color: #e0c09a;
 }
 
 /* Evaluation Container */
@@ -60,7 +60,7 @@ h3 {
 
 .category-title {
   font-size: 1.2rem;
-  color: #cc9d64; /* Updated */
+  color: #cc9d64;
   margin: 0;
   margin-bottom: 15px;
 }
@@ -74,7 +74,6 @@ p {
 .btn {
   display: block;
   margin: 20px auto;
-  font-size: 18px;
   margin-top: 20px;
   background-color: rgb(160, 131, 84);
   color: white;
@@ -103,33 +102,16 @@ ul li {
 }
 
 ul li strong {
-  color: #4b2e2e; /* Updated */
+  color: #4b2e2e;
 }
 
 ul li:before {
   content: "• ";
-  color: #4b2e2e; /* Updated */
+  color: #4b2e2e;
   margin-right: 8px;
 }
 
 /* Comments from Students */
 ul li.no-comment {
   color: white;
-}
-
-/* Responsiveness for smaller screens */
-@media (max-width: 768px) {
-  h1,
-  h2,
-  h3 {
-    font-size: 1.2rem;
-  }
-
-  ul li {
-    font-size: 0.9rem;
-  }
-
-  .evaluation-container {
-    padding: 15px;
-  }
 }

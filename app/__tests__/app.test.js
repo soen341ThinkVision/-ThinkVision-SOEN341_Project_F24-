@@ -4,14 +4,9 @@ const { Teacher, Student, Evaluation } = require("../models");
 const controllers = require("../controllers/controllers.js");
 const { writeFile } = require("fs").promises;
 
-jest.mock("mysql2", () => {
-  return {
-    createPool: jest.fn(() => ({
-      query: jest.fn(),
-      promise: jest.fn(),
-    })),
-  };
-});
+jest.mock("../config/db", () => ({
+  execute: jest.fn().mockResolvedValue(),
+}));
 jest.mock("../models");
 global.console.log = jest.fn();
 

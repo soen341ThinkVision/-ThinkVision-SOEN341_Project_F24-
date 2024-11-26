@@ -1,5 +1,18 @@
 const db = require("../config/db");
 
+db.execute("DROP TABLE IF EXISTS evaluations").then(async () => {
+  const sql = `
+      CREATE TABLE evaluations (
+        id int AUTO_INCREMENT PRIMARY KEY,
+        reviewee_id int, 
+        category varchar(255), 
+        score int, 
+        comment text, 
+        reviewer_id int)`;
+
+  await db.execute(sql);
+});
+
 class Evaluation {
   static save(reviewer, reviewee, category, score, comment) {
     const sql = `INSERT INTO evaluations (

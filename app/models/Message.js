@@ -1,5 +1,16 @@
 const db = require("../config/db");
 
+db.execute("DROP TABLE IF EXISTS messages").then(async () => {
+  const sql = `CREATE TABLE messages (
+        id int AUTO_INCREMENT PRIMARY KEY,
+        sender_id int,
+        receiver_id int,
+        content text,
+        timestamp datetime)`;
+
+  await db.execute(sql);
+});
+
 class Message {
   static save(senderId, receiverId, content) {
     const sql = `INSERT INTO messages (

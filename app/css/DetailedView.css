@@ -20,7 +20,7 @@ h1 {
 h2 {
     margin-top: 30px;
     font-size: 1.5rem;
-    color:white ; 
+    color:white ;
 }
 
 h3 {
@@ -85,6 +85,9 @@ ul li:before {
 
 /* Styling for comments that are missing */
 ul li.no-comment {
+    color: white;
+}
+h3{
     color: white;
 }
 

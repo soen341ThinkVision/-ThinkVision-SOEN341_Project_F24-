@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --verbose --silent",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "tailwindcss -i ./css/AssignTeams.css -o ./css/output.css --watch"

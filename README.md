@@ -20,15 +20,15 @@ The Peer Assessment System will include the following functionality:
 
  The project is managed by the following students
 
-|             Name           |    Student ID    |       Roles      |
-|----------------------------|------------------|------------------|
-|       Ariel Kegeles        |     40264293     |      Backend     |
-|     Anthony Mousaoubaa     |     40284605     |      Backend     |
-|     Hugo Galvao Valente    |     40282022     |      Backend     |
-|        Nasib Guma          |     40283693     |      Frontend    |
-|     Robert Craciunescu     |     40282245     |      Frontend    |
-|   Mugisha Samuel Rugomwa   |     40265564     |      Frontend    |
-|        Rafael Maia         |     40022446     |      Backend     |
+|             Name           |    Student ID    |      GitHub ID     |       Roles      |
+|----------------------------|------------------|--------------------|------------------|
+|       Ariel Kegeles        |     40264293     |    ariel20030601   |      Backend     |
+|     Anthony Mousaoubaa     |     40284605     |      ConUNony      |      Backend     |
+|     Hugo Galvao Valente    |     40282022     |       hugogv12     |      Backend     |
+|   Mugisha Samuel Rugomwa   |     40265564     |     MugishaSamy    |      Frontend    |
+|        Nasib Guma          |     40283693     |       Nasibgz      |      Frontend    |
+|        Rafael Maia         |     40022446     |      rfpcmaia      |      Backend     |
+|     Robert Craciunescu     |     40282245     |      TheRobber     |      Frontend    |
 
 # Meetings
 

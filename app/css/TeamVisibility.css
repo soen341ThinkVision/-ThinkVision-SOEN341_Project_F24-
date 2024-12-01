@@ -89,3 +89,7 @@ button {
 button:hover {
     background-color: #b86a38;
 }
+a {
+    text-decoration: none;
+    color: inherit;
+}

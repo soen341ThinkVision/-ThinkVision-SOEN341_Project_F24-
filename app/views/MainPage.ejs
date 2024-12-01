@@ -10,7 +10,7 @@
 
   <body>
     <header>
-      <h1>Welcome to the Peer Assessment Tool</h1>
+      <h1>Peer Assessment System</h1>
     </header>
 
     <main>
@@ -47,28 +47,25 @@
       <% } %> <% if (Username && Role==="Teacher" ) { %>
       <div class="button-container">
         <div class="wrapper">
-          <button class="btn" onclick="window.location.href='/upload/0'">
-            Upload Students
-          </button>
           <button class="btn" onclick="window.location.href='/assign-teams'">
             Assign Teams
           </button>
           <button class="btn" onclick="window.location.href='/teams'">
             View Teams
           </button>
-          <button class="btn" onclick="window.location.href='/logout'">
-            Log Out
+          <button class="btn" onclick="window.location.href='/dashboard'">
+            Dashboard
           </button>
         </div>
         <div class="wrapper">
-          <button class="btn" onclick="window.location.href='/dashboard'">
-            Dashboard
+          <button class="btn" onclick="window.location.href='/chat'">
+            Messages
           </button>
           <button class="btn" onclick="window.location.href='/make-questions'">
             Mini Game
           </button>
-          <button class="btn" onclick="window.location.href='/chat'">
-            Go to Chat
+          <button class="btn" onclick="window.location.href='/logout'">
+            Log Out
           </button>
         </div>
       </div>

@@ -4,151 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Assign Teams</title>
-    <link rel="stylesheet" href="/AssignTeams.css" />
+    <link href="/output.css" rel="stylesheet" />
+    <style>
+      #drag-drop-area {
+        border: 2px dashed #b2b1b1;
+        padding: 20px;
+        text-align: center;
+        background-color: #f9f9f999;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      #drag-drop-area.hover {
+        background-color: #e0d7cac6;
+        transition: background-color 0.3s ease;
+      }
+    </style>
   </head>
 
   <body>
-    <header>
-      <h1>Peer Assessment Tool</h1>
+    <header class="flex h-24 items-center justify-center">
+      <h1 class="text-center text-2xl font-bold">Peer Assessment Tool</h1>
     </header>
 
-    <main>
-      <section id="intro">
-        <h2>Assign Teams</h2>
+    <main class="flex flex-col items-center gap-8 p-6">
+      <section id="intro" class="text-center">
+        <h2 class="text-4xl font-extrabold text-gray-900">Assign Teams</h2>
       </section>
-      <h3>
-        To individually assign a student to a team, enter team name or number
-        under column "Team".
-      </h3>
-      <p>
-        Note, after assigning a student to a team, enter "-" to unassign them.
-      </p>
-      <br />
-      <form>
-        <label for="teamSize">Max students per team:</label>
-        <select name="teamSize" id="teamSize" type="number">
+
+      <form id="upload" class="mb-6 flex flex-col items-center gap-4">
+        <h3 class="text-lg font-semibold text-gray-900">
+          Please upload the course roster:
+        </h3>
+        <div
+          id="drag-drop-area"
+          ondrop="handleDrop(event)"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          onclick="triggerFileInput()"
+          class="flex h-28 w-full items-center justify-center"
+        >
+          <p>Drag and drop a CSV file or click to select</p>
+          <input
+            type="file"
+            accept=".csv"
+            name="file"
+            id="csv"
+            style="display: none"
+          />
+        </div>
+        <button
+          class="rounded-lg bg-green-700 px-8 py-3 font-bold text-white transition hover:bg-green-900"
+          type="submit"
+          id="btn-submit"
+          style="display: none"
+        >
+          Submit
+        </button>
+      </form>
+
+      <form id="assignSelect" class="flex flex-wrap items-center gap-4">
+        <label for="teamSize" class="text-base font-semibold"
+          >Max students per team:</label
+        >
+        <select
+          name="teamSize"
+          id="teamSize"
+          type="number"
+          class="w-16 rounded-lg border border-gray-300 bg-white p-2 shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+        >
           <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
           <option value="5">5</option>
           <option value="6">6</option>
           <option value="7">7</option>
-          <option value="8">8</option></select
-        ><br />
-        <button id="teamSizeButton" type="submit">Create Teams</button>
+          <option value="8">8</option>
+        </select>
+        <button
+          id="teamSizeButton"
+          type="submit"
+          class="rounded-lg bg-green-700 px-5 py-1 font-bold text-white transition hover:bg-green-900"
+        >
+          Assign Teams
+        </button>
       </form>
-      <br />
-      <table style="width: 25%">
-        <thead>
+      <h3 id="instructions" class="w-2/5 text-lg font-medium text-gray-950">
+        To individually assign a student to a team, enter team name or number
+        under column "Team".
+      </h3>
+
+      <table
+        class="w-2/5 table-auto border-collapse rounded-lg border-gray-600 bg-orange-200 shadow-md"
+      >
+        <thead class="bg-orange-100 text-gray-900">
           <tr>
-            <th>Student ID</th>
-            <th>Name</th>
-            <th>Team</th>
+            <th
+              class="border border-gray-300 border-b-gray-400 px-4 py-2 text-left text-base"
+            >
+              Student ID
+            </th>
+            <th
+              class="border border-gray-300 border-b-gray-400 px-4 py-2 text-left text-base"
+            >
+              Name
+            </th>
+            <th
+              class="w-1/4 border border-gray-300 border-b-gray-400 px-4 py-2 text-left text-base"
+            >
+              Team
+            </th>
           </tr>
         </thead>
         <tbody id="results"></tbody>
       </table>
-      <br /><br />
-      <button class="btn" onclick="window.location.href='/'">
+      <button
+        class="btn rounded-lg bg-amber-800 px-10 py-4 font-bold text-white transition hover:bg-amber-950"
+        onclick="window.location.href='/'"
+      >
         Back to Homepage
       </button>
-
-      <script>
-        let html = "";
-        const students =  <%- JSON.stringify(result) %>;
-
-        if (students.length > 0) {
-          students.forEach((student) => {
-            if (typeof student.team === "object") {
-              var team = "-";
-            } else {
-              var team = student.team;
-            }
-            html += `
-              <tr>
-                <td>`+student.id+`</td>
-                <td style="text-align:left">`+student.username+`</td>
-                <td contenteditable
-                    onclick="this.innerHTML=''"
-                    onblur="update_data(this,
-                                        '`+student.username+`',
-                                        `+student.id+`,
-                                        '`+team+`')">`
-                    +team+`</td>
-              </tr>`;
-          });
-        } else {
-            html += `
-              <tr>
-                <td colspan="3"><br>
-                  <h2>No students in the system. Please upload the course roster first.</h2>
-                </td>
-              </tr?>`;
-        }
-
-        document.querySelector("#results").innerHTML = html;
-
-        // Auto-assign teams based on teacher's input of number of students per team
-        document.querySelector("form").onsubmit = (event) => {
-          event.preventDefault();
-
-          fetch("/assign-teams", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              size: Number(
-                document.querySelector("select[name=teamSize]").value
-              ),
-            }),
-          }).then(() => {
-            window.location.href = "/assign-teams";
-            document.getElementById("teamSize").reset();
-          });
-        };
-
-        // Prevents return key from being registered as part of a team name
-        document
-          .getElementById("results")
-          .addEventListener("keydown", (evt) => {
-            if (evt.keyCode === 13) {
-              evt.preventDefault();
-              results_body.blur();
-            }
-          });
-
-        // Assigns an individual student's team based on teacher's input
-        function update_data(element, name, id, currentTeam) {
-          var input = element.innerHTML;
-          if (input.length > 0 && input != currentTeam) {
-            const param = `&team=` + input + `&id=` + id + ``;
-
-            const request = new XMLHttpRequest();
-
-            request.open(`PUT`, `/assign-teams`, true);
-
-            request.setRequestHeader(
-              "Content-Type",
-              "application/x-www-form-urlencoded"
-            );
-
-            request.onreadystatechange = () => {
-              if (
-                request.readyState === XMLHttpRequest.DONE &&
-                request.status === 201
-              ) {
-                if (input != "-") {
-                  alert(`${name}, ID#${id}, was assigned to team ${input} `);
-                } else {
-                  alert(`${name}, ID#${id}, has been removed from any teams.`);
-                }
-              }
-            };
-            request.send(param);
-          } else if (input.length === 0) {
-            alert(`Assignment failed. Please enter a team name and try again.`);
-          }
-        }
-      </script>
     </main>
 
     <footer>
@@ -157,5 +133,188 @@
         Team ThinkVision
       </p>
     </footer>
+
+    <script>
+      let table = "";
+      const students =  <%- JSON.stringify(result) %>;
+
+      if (students.length > 0) {
+        document.querySelector("#upload").remove();
+        students.forEach((student) => {
+          if (typeof student.team === "object") {
+            var team = "-";
+          } else {
+            var team = student.team;
+          }
+          table += `
+            <tr class="hover:bg-gray-300 even:bg-orange-100">
+              <td class="px-3 py-2 border border-gray-300 text-left">`+student.id+`</td>
+              <td class="px-3 py-2 border border-gray-300 text-left">`+student.username+`</td>
+              <td class="px-3 py-2 border border-gray-300 text-center"
+                  contenteditable
+                  onclick="this.innerHTML=''"
+                  onblur="update_data(this,
+                                      '`+student.username+`',
+                                      `+student.id+`,
+                                      '`+team+`')">`
+                  +team+`</td>
+            </tr>`;
+        });
+      } else {
+        document.querySelector("#assignSelect").remove();
+        document.querySelector("#instructions").remove();
+          table += `
+            <tr>
+              <td colspan="3" class="text-center py-4"><br>
+                <h2 class="text-xl font-semibold text-gray-700">No students in the system. Please upload the course roster first.</h2>
+              </td>
+            </tr?>`;
+      }
+
+      document.querySelector("#results").innerHTML = table;
+
+      // Auto-assign teams based on teacher's input of number of students per team
+      document.querySelector("form").onsubmit = (event) => {
+        event.preventDefault();
+
+        fetch("/assign-teams", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            size: Number(
+              document.querySelector("select[name=teamSize]").value
+            ),
+          }),
+        }).then(() => {
+          window.location.href = "/assign-teams";
+          document.getElementById("teamSize").reset();
+        });
+      };
+
+      // Prevents return key from being registered as part of a team name
+      document
+        .getElementById("results")
+        .addEventListener("keydown", (evt) => {
+          if (evt.keyCode === 13) {
+            evt.preventDefault();
+            results_body.blur();
+          }
+        });
+
+      // Assigns an individual student's team based on teacher's input
+      function update_data(element, name, id, currentTeam) {
+        var input = element.textContent;
+        if (input.length > 0 && input != currentTeam) {
+          const param = `&team=` + input + `&id=` + id + ``;
+
+          const request = new XMLHttpRequest();
+
+          request.open(`PUT`, `/assign-teams`, true);
+
+          request.setRequestHeader(
+            "Content-Type",
+            "application/x-www-form-urlencoded"
+          );
+
+          request.onreadystatechange = () => {
+            if (
+              request.readyState === XMLHttpRequest.DONE &&
+              request.status === 201
+            ) {
+              if (input != "-") {
+                alert(`${name}, ID#${id}, was assigned to team ${input} `);
+              } else {
+                alert(`${name}, ID#${id}, has been removed from any teams.`);
+              }
+            }
+          };
+          request.send(param);
+          window.location.href = "/assign-teams";
+        } else if (input.length === 0) {
+          alert(`Assignment failed. Please enter a team name and try again.`);
+        }
+      }
+    </script>
+
+    <script id="fileUpload">
+      const form = document.querySelector("form");
+      const fileInput = document.getElementById("csv");
+      const dragDropArea = document.getElementById("drag-drop-area");
+
+      // Handle drag over
+      function handleDragOver(event) {
+        event.preventDefault();
+        dragDropArea.classList.add("hover");
+      }
+
+      // Handle drag leave
+      function handleDragLeave() {
+        dragDropArea.classList.remove("hover");
+      }
+
+      // Handle file drop
+      function handleDrop(event) {
+        event.preventDefault();
+        dragDropArea.classList.remove("hover");
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+          // Verify file has .csv extension
+          const fileExtension = files[0].name.split(".").pop().toLowerCase();
+          if (fileExtension !== "csv") {
+            alert("Please select a valid .csv file.");
+          } else {
+            fileInput.files = files;
+            dragDropArea.innerHTML = `<p>${files[0].name}</p>`;
+            document.getElementById("btn-submit").removeAttribute("style");
+          }
+        }
+      }
+
+      // Handle file selection from input
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          dragDropArea.innerHTML = `<p>${file.name}</p>`;
+          document.getElementById("btn-submit").removeAttribute("style");
+        }
+      });
+
+      // Trigger file input when drag-drop area is clicked
+      function triggerFileInput() {
+        fileInput.click();
+      }
+
+      // Handle form submission
+      form.addEventListener("submit", (event) => {
+        event.preventDefault(); // Prevent the default form submission
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // Send file to the server using fetch
+        fetch("/upload/0", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            let { processed } = data;
+            if (processed) {
+              alert(
+                "File uploaded successfully. All students have been added to the system.",
+              );
+              window.location.href = "/assign-teams"; // Successful upload
+            } else {
+              window.location.href = "/assign-teams"; // Failed upload
+            }
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+            alert("There was an error uploading the file. Please try again.");
+          });
+      });
+    </script>
   </body>
 </html>

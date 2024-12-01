@@ -121,17 +121,13 @@ exports.assignAllStudents = async (req, res) => {
     let students = await Student.findAll();
     students = _.shuffle(students);
 
-    const numOfTeams = Math.ceil((students.length - 7) / req.body.size);
+    const numOfTeams = Math.ceil(students.length / req.body.size);
 
-    let team = 1;
-    for (let student of students) {
-      if (student.id > 40020000 && student.id < 40300000) {
-        await Student.updateTeam(student.id, "ThinkVision");
-      } else {
-        await Student.updateTeam(student.id, team);
-        team = (team % numOfTeams) + 1;
-      }
+    for (let i = 0; i < students.length; i++) {
+      let team = (i % numOfTeams) + 1;
+      await Student.updateTeam(students[i].id, team);
     }
+
     return res.status(201).send("Teams auto-assigned.");
   }
 };

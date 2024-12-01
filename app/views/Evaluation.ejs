@@ -4,246 +4,273 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Evaluate Teammate</title>
-    <link rel="stylesheet" href="/MainPage.css" />
-    <link rel="stylesheet" href="/Evaluation.css" />
+    <link href="/output.css" rel="stylesheet" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
-    <style>
-      /* Hide all slider containers initially */
-      .slider-container {
-        display: none;
-      }
-
-      /* Show the active slider container */
-      .slider-container.active {
-        display: block;
-      }
-    </style>
+    <script src="/scripts/sweetalert2.all.min.js"></script>
   </head>
 
   <body>
-    <div class="evaluation-container">
-      <h1>Evaluate <%= teammate.username %></h1>
-      <form action="/evaluate/<%= teammate.id %>" method="POST">
+    <header
+      class="mb-8 flex h-24 items-center justify-center border-b border-gray-200 pb-4 shadow-md"
+    >
+      <h1 class="text-center text-2xl font-bold">Peer Assessment System</h1>
+    </header>
+
+    <main class="mx-auto w-full rounded-lg p-6 shadow-lg">
+      <section class="mb-8 text-center">
+        <h1 class="text-3xl font-semibold text-gray-800">
+          Evaluate <%= teammate.username %>
+        </h1>
+      </section>
+
+      <form
+        action="/evaluate/<%= teammate.id %>"
+        method="POST"
+        class="flex w-5/6 flex-col items-center gap-6 space-y-4"
+      >
         <input type="hidden" name="teammateID" value="<%= teammate.id %>" />
-        <div class="container">
-          <h1>Criteria of Evaluation</h1>
 
-          <!-- Radio Buttons for Selecting Criteria -->
-          <input
-            type="radio"
-            name="TypeOfEval"
-            id="Cooperation"
-            value="Cooperation"
-            onclick="showSlider('Cooperation')"
-          />
-          <label for="Cooperation">Cooperation</label><br />
-
-          <input
-            type="radio"
-            name="TypeOfEval"
-            id="Ethics"
-            value="Ethics"
-            onclick="showSlider('Ethics')"
-          />
-          <label for="Ethics">Work Ethic</label><br />
-
-          <input
-            type="radio"
-            name="TypeOfEval"
-            id="PracticalContribution"
-            value="PracticalContribution"
-            onclick="showSlider('PracticalContribution')"
-          />
-          <label for="PracticalContribution">Practical Contribution</label
-          ><br />
-
-          <input
-            type="radio"
-            name="TypeOfEval"
-            id="ConceptualContribution"
-            value="ConceptualContribution"
-            onclick="showSlider('ConceptualContribution')"
-          />
-          <label for="ConceptualContribution">Conceptual Contribution</label
-          ><br />
-
-          <!-- Sliders and Comments for each evaluation criterion with unique IDs -->
-          <div id="CooperationSlider" class="slider-container">
-            <label for="cooperationSlider">Cooperation Score:</label>
+        <!-- Cooperation -->
+        <div class="m-8 w-2/3 rounded-3xl bg-[#FFEBCD] p-6 shadow-lg">
+          <h2 class="my-3 text-xl font-semibold text-gray-800">Cooperation</h2>
+          <div class="mb-2 flex items-center justify-center space-x-6">
+            <span class="number text-base font-bold" id="cooperationNumber">
+              3
+            </span>
             <input
               type="range"
               min="0"
               max="5"
-              value="3"
-              id="cooperationSlider"
-              class="slider"
+              value="0"
+              id="cooperation"
+              class="slider w-1/2 self-start"
               name="score_cooperation"
             />
+            <i class="material-icons emoji !text-5xl" id="cooperationEmoji">
+              sentiment_satisfied
+            </i>
           </div>
-
-          <div id="EthicsSlider" class="slider-container">
-            <label for="ethicsSlider">Work Ethic Score:</label>
-            <input
-              type="range"
-              min="0"
-              max="5"
-              value="3"
-              id="ethicsSlider"
-              class="slider"
-              name="score_ethics"
-            />
-          </div>
-
-          <div id="PracticalContributionSlider" class="slider-container">
-            <label for="practicalContributionSlider"
-              >Practical Contribution Score:</label
-            >
-            <input
-              type="range"
-              min="0"
-              max="5"
-              value="3"
-              id="practicalContributionSlider"
-              class="slider"
-              name="score_pcontribution"
-            />
-          </div>
-
-          <div id="ConceptualContributionSlider" class="slider-container">
-            <label for="conceptualContributionSlider"
-              >Conceptual Contribution Score:</label
-            >
-            <input
-              type="range"
-              min="0"
-              max="5"
-              value="3"
-              id="conceptualContributionSlider"
-              class="slider"
-              name="score_contribution"
-            />
-          </div>
-
-          <!-- Emoji and Number Display -->
-          <i class="material-icons" id="emoji">sentiment_satisfied</i>
-          <span id="number">3</span>
-
-          <!-- Comment Boxes for each slider, displayed below the emoji and score -->
-          <div id="CooperationComment" class="slider-container">
-            <label for="cooperationComment">Comment for Cooperation:</label>
-            <textarea
-              id="cooperationCommentBox"
-              name="comment_cooperation"
-              rows="3"
-              placeholder="Enter your comment for Cooperation..."
-            ></textarea>
-          </div>
-
-          <div id="EthicsComment" class="slider-container">
-            <label for="ethicsComment">Comment for Work Ethic:</label>
-            <textarea
-              id="ethicsCommentBox"
-              name="comment_ethics"
-              rows="3"
-              placeholder="Enter your comment for Work Ethic..."
-            ></textarea>
-          </div>
-
-          <div id="PracticalContributionComment" class="slider-container">
-            <label for="practicalContributionComment"
-              >Comment for Practical Contribution:</label
-            >
-            <textarea
-              id="practicalContributionComment"
-              name="comment_pcontribution"
-              rows="3"
-              placeholder="Enter your comment for Practical Contribution..."
-            ></textarea>
-          </div>
-
-          <div id="ConceptualContributionComment" class="slider-container">
-            <label for="conceptualContributionComment">
-              Comment for Conceptual Contribution:
-            </label>
-            <textarea
-              id="conceptualContributionCommentBox"
-              name="comment_ccontribution"
-              rows="3"
-              placeholder="Enter your comment for Conceptual Contribution..."
-            ></textarea>
-          </div>
-
-          <!-- Submit Button -->
-          <button class="btn" type="submit" id="submitButton">Submit</button>
-          <br />
-          <button class="btn" onclick="window.location.href='/teammates'">
-            Back to Team
-          </button>
+          <textarea
+            id="cooperationCommentBox"
+            name="comment_cooperation"
+            rows="3"
+            placeholder="Any feedback on cooperation?"
+            class="my-4 w-3/4 rounded-lg border border-gray-300 p-2"
+          ></textarea>
         </div>
 
-        <!-- JavaScript to Handle Slider and Comment Visibility and Updates -->
-        <script>
-          function showSlider(type) {
-            const sliders = document.querySelectorAll(".slider-container");
-            sliders.forEach((slider) => slider.classList.remove("active"));
+        <!-- Work Ethic -->
+        <div class="m-8 w-2/3 rounded-3xl bg-[#FFEBCD] p-6 shadow-lg">
+          <h2 class="my-3 text-xl font-semibold text-gray-800">Work Ethic</h2>
+          <div class="mb-2 flex items-center justify-center space-x-6">
+            <span class="number w-2 text-base font-bold" id="ethicsNumber"
+              >3</span
+            >
+            <input
+              type="range"
+              min="0"
+              max="5"
+              value="0"
+              id="ethics"
+              class="slider w-full self-start"
+              name="score_ethics"
+            />
+            <p class="material-icons emoji w-2 !text-5xl" id="ethicsEmoji">
+              sentiment_satisfied
+            </p>
+          </div>
+          <textarea
+            id="ethicsCommentBox"
+            name="comment_ethics"
+            rows="3"
+            placeholder="Any feedback on work ethic?"
+            class="my-4 w-3/4 rounded-lg border border-gray-300 p-2"
+          ></textarea>
+        </div>
 
-            document.getElementById(type + "Slider").classList.add("active");
-            document.getElementById(type + "Comment").classList.add("active");
+        <!-- Practical Contribution -->
+        <div class="m-8 w-2/3 rounded-3xl bg-[#FFEBCD] p-6 shadow-lg">
+          <h2 class="my-3 text-xl font-semibold text-gray-800">
+            Practical Contribution
+          </h2>
+          <div class="mb-2 flex items-center justify-center space-x-6">
+            <span
+              class="number w-2 text-base font-bold"
+              id="practicalContributionNumber"
+              >3</span
+            >
+            <input
+              type="range"
+              min="0"
+              max="5"
+              value="0"
+              id="practicalContribution"
+              class="slider w-full self-start"
+              name="score_pcontribution"
+            />
+            <p
+              class="material-icons emoji w-2 !text-5xl"
+              id="practicalContributionEmoji"
+            >
+              sentiment_satisfied
+            </p>
+          </div>
+          <textarea
+            id="practicalContributionComment"
+            name="comment_pcontribution"
+            rows="3"
+            placeholder="Any feedback on practical contribution?"
+            class="my-4 w-3/4 rounded-lg border border-gray-300 p-2"
+          ></textarea>
+        </div>
 
-            const activeSlider = document
-              .getElementById(type + "Slider")
-              .querySelector(".slider");
-            updateSliderDisplay(activeSlider);
-          }
+        <!-- Conceptual Contribution -->
+        <div class="m-8 w-2/3 rounded-3xl bg-[#FFEBCD] p-6 shadow-lg">
+          <h2 class="my-3 text-xl font-semibold text-gray-800">
+            Conceptual Contribution
+          </h2>
+          <div class="mb-2 flex items-center justify-center space-x-6">
+            <span
+              class="number w-2 text-base font-bold"
+              id="conceptualContributionNumber"
+              >3</span
+            >
+            <input
+              type="range"
+              min="0"
+              max="5"
+              value="0"
+              id="conceptualContribution"
+              class="slider w-full self-start"
+              name="score_contribution"
+            />
+            <p
+              class="material-icons emoji mr-6 w-2 !text-5xl"
+              id="conceptualContributionEmoji"
+            >
+              sentiment_satisfied
+            </p>
+          </div>
+          <textarea
+            id="conceptualContributionCommentBox"
+            name="comment_ccontribution"
+            rows="3"
+            placeholder="Any feedback on conceptual contribution?"
+            class="my-4 w-3/4 rounded-lg border border-gray-300 p-2"
+          ></textarea>
+        </div>
 
-          function updateSliderDisplay(slider) {
-            const emoji = document.getElementById("emoji");
-            const number = document.getElementById("number");
-            const emoticons = [
-              "mood_bad",
-              "sentiment_very_dissatisfied",
-              "sentiment_dissatisfied",
-              "sentiment_satisfied",
-              "sentiment_satisfied_alt",
-              "sentiment_very_satisfied",
-            ];
-
-            function updateSliderColor(value) {
-              const colorMap = [
-                "black",
-                "red",
-                "orange",
-                "yellow",
-                "#9ACD32",
-                "green",
-              ];
-              const color = colorMap[value];
-              const percentage = (value / 5) * 100;
-              slider.style.background = `linear-gradient(to right, ${color} ${percentage}%, black ${percentage}%)`;
-            }
-
-            number.innerHTML = slider.value;
-            emoji.innerHTML = emoticons[slider.value];
-            updateSliderColor(slider.value);
-
-            slider.oninput = function () {
-              emoji.innerHTML = emoticons[slider.value];
-              number.innerHTML = slider.value;
-              updateSliderColor(slider.value);
-            };
-          }
-
-          document.addEventListener("DOMContentLoaded", () => {
-            const initialRadio = document.querySelector(
-              'input[name="TypeOfEval"]:checked'
-            );
-            if (initialRadio) showSlider(initialRadio.id);
-          });
-        </script>
+        <!-- Submit and Back Button -->
+        <div class="m-8 flex w-3/5 justify-between">
+          <button
+            type="button"
+            onclick="window.location.href='/teammates'"
+            class="block h-12 w-52 rounded-lg bg-[#A0522D] px-6 py-2 text-base font-semibold text-gray-50 transition hover:bg-[#8B4513]"
+          >
+            Back to Team
+          </button>
+          <button
+            type="submit"
+            id="submitButton"
+            onclick="return validateForm(event)"
+            class="block h-12 w-52 rounded-lg bg-green-600 px-8 py-2 text-base font-semibold text-gray-50 transition hover:bg-green-700"
+          >
+            Submit
+          </button>
+        </div>
       </form>
-    </div>
+    </main>
+
+    <footer>
+      <p>
+        &copy; 2024 Peer Assessment Tool. All rights kinda reserved. Product of
+        Team ThinkVision
+      </p>
+    </footer>
+
+    <!-- JavaScript to Handle Slider and Comment Visibility and Updates -->
+    <script>
+      function validateForm(event) {
+        // Select all sliders
+        const sliders = document.querySelectorAll(".slider");
+        let isValid = true;
+
+        // Loop through sliders to check if any are at 0
+        sliders.forEach((slider) => {
+          if (slider.value == 0) {
+            isValid = false;
+          }
+        });
+
+        // If any slider is at 0, prevent form submission and show SweetAlert
+        if (!isValid) {
+          event.preventDefault(); // Prevent form submission
+          Swal.fire({
+            icon: "warning",
+            title: "Incomplete Evaluation",
+            text: "Please complete the evaluation for all categories before submitting.",
+            confirmButtonText: "OK",
+          });
+        }
+
+        return isValid; // Allow submission if all sliders are non-zero
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Select all sliders on the page
+        const sliders = document.querySelectorAll(".slider");
+
+        // Emojis and number values based on the slider value
+        const emoticons = [
+          "sentiment_neutral", // 0
+          "sentiment_very_dissatisfied", // 1
+          "sentiment_dissatisfied", // 2
+          "sentiment_satisfied", // 3
+          "sentiment_satisfied_alt", // 4
+          "sentiment_very_satisfied", // 5
+        ];
+
+        // Color map for slider background (optional)
+        const colorMap = [
+          "black",
+          "red",
+          "orange",
+          "#fcd34d",
+          "#9ACD32",
+          "green",
+        ];
+
+        sliders.forEach((slider) => {
+          // For each slider, find the related emoji and number by id
+          const sliderId = slider.id; // e.g., "cooperationSlider"
+          const emoji = document.querySelector(`#${sliderId}Emoji`);
+          const number = document.querySelector(`#${sliderId}Number`);
+
+          // Set initial values
+          updateSliderDisplay(slider, emoji, number);
+
+          // Add input event listener for each slider
+          slider.addEventListener("input", function () {
+            updateSliderDisplay(slider, emoji, number);
+          });
+        });
+
+        // Function to update the emoji, number, and background color
+        function updateSliderDisplay(slider, emoji, number) {
+          const sliderValue = slider.value;
+
+          // Update the emoji and number based on the slider value
+          emoji.innerHTML = emoticons[sliderValue];
+          number.innerHTML = sliderValue;
+
+          // Update the slider's background color dynamically
+          const percentage = (sliderValue / 5) * 100;
+          slider.style.background = `linear-gradient(to right, ${colorMap[sliderValue]} ${percentage}%, black ${percentage}%)`;
+        }
+      });
+    </script>
   </body>
 </html>
